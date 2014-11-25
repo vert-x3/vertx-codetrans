@@ -1,13 +1,5 @@
 package io.vertx.examples;
 
-import com.sun.source.util.TreePath;
-import com.sun.source.util.Trees;
-import com.sun.tools.javac.code.Flags;
-import com.sun.tools.javac.comp.Attr;
-import com.sun.tools.javac.processing.JavacProcessingEnvironment;
-import com.sun.tools.javac.tree.JCTree;
-import com.sun.tools.javac.util.Context;
-import io.vertx.codegen.TypeInfo;
 import io.vertx.examples.annotations.CodeTranslate;
 import org.junit.Assert;
 
@@ -16,10 +8,8 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
@@ -89,11 +79,8 @@ public class ConvertingProcessor extends AbstractProcessor {
   }
 
   private Map<String, String> result = new HashMap<>();
-  private Trees trees;
-  private DeclaredType SystemType;
-  private Attr attr;
   private Lang lang;
-  private TypeInfo.Factory factory;
+  private CodeTranslator translator;
 
   public ConvertingProcessor(Lang lang) {
     this.lang = lang;
@@ -111,11 +98,7 @@ public class ConvertingProcessor extends AbstractProcessor {
   @Override
   public synchronized void init(ProcessingEnvironment processingEnv) {
     super.init(processingEnv);
-    this.trees = Trees.instance(processingEnv);
-    this.SystemType = (DeclaredType) processingEnv.getElementUtils().getTypeElement(System.class.getName()).asType();
-    Context context = ((JavacProcessingEnvironment)processingEnv).getContext();
-    this.attr = Attr.instance(context);
-    this.factory = new TypeInfo.Factory(processingEnv.getElementUtils(), processingEnv.getTypeUtils());
+    this.translator = new CodeTranslator(processingEnv);
   }
 
   @Override
@@ -123,24 +106,9 @@ public class ConvertingProcessor extends AbstractProcessor {
     for (Element annotatedElt : roundEnv.getElementsAnnotatedWith(CodeTranslate.class)) {
       ExecutableElement methodElt = (ExecutableElement) annotatedElt;
       TypeElement typeElt = (TypeElement) methodElt.getEnclosingElement();
-      attributeClass(typeElt);
-      TreePath path = trees.getPath(annotatedElt);
-      ModelBuilder builder = new ModelBuilder(SystemType, factory, lang);
-      CodeModel model = builder.build(path);
-      CodeWriter writer = new CodeWriter(lang);
-      model.render(writer);
-      result.put(typeElt.toString().replace('.', '/') + '.' + lang.getExtension(), writer.getBuffer().toString());
+      String translation = translator.translate(methodElt, lang);
+      result.put(typeElt.toString().replace('.', '/') + '.' + lang.getExtension(), translation);
     }
     return false;
-  }
-
-  public void attributeClass(Element classElement) {
-    assert classElement.getKind() == ElementKind.CLASS;
-    JCTree.JCClassDecl ct = (JCTree.JCClassDecl) trees.getTree(classElement);
-    if (ct.sym != null) {
-      if ((ct.sym.flags_field & Flags.UNATTRIBUTED) != 0) {
-        attr.attribClass(ct.pos(), ct.sym);
-      }
-    }
   }
 }
