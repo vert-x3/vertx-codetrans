@@ -4,11 +4,14 @@ import com.sun.source.tree.LambdaExpressionTree;
 import io.vertx.codegen.TypeInfo;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 public interface Lang {
+
+  Callable<?> compile(ClassLoader loader, String path) throws Exception;
 
   default void renderIfThenElse(ExpressionModel condition, StatementModel thenBody, StatementModel elseBody, CodeWriter writer) {
     writer.append("if ");

@@ -1,7 +1,6 @@
 package asyncresult;
 
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.file.OpenOptions;
 import io.vertx.examples.AsyncResultTest;
 import io.vertx.examples.CodeTrans;
 
@@ -13,7 +12,7 @@ public class AsyncResultFailed extends AbstractVerticle {
   @Override
   @CodeTrans
   public void start() throws Exception {
-    vertx.fileSystem().truncate("----", 0, res -> {
+    AsyncResultTest.callbackWithFailure(res -> {
       AsyncResultTest.setCause(res.cause(), res.failed());
     });
   }

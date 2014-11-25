@@ -9,14 +9,14 @@ import jdk.nashorn.internal.runtime.ScriptObject;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Callable;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 public abstract class ConversionTestBase {
 
-  public static Lang[] langs() { return new Lang[] { new JavaScriptLang(), new GroovyLang() }; }
+  public static Lang[] langs() { return new Lang[] { new GroovyLang(), new JavaScriptLang() }; }
 
   public String runJavaScript(String path) {
     return run(new JavaScriptLang(), path);
@@ -43,20 +43,14 @@ public abstract class ConversionTestBase {
     Vertx vertx = Vertx.vertx();
     ArrayBlockingQueue<AsyncResult<String>> latch = new ArrayBlockingQueue<>(1);
     ClassLoader prev = Thread.currentThread().getContextClassLoader();
-    Thread.currentThread().setContextClassLoader(new LoadingClassLoader(Thread.currentThread().getContextClassLoader(), results));
+    LoadingClassLoader loader = new LoadingClassLoader(Thread.currentThread().getContextClassLoader(), results);
+    Thread.currentThread().setContextClassLoader(loader);
+
     try {
-      vertx.deployVerticle(lang.getExtension() + ":" + path + "." + lang.getExtension(), latch::add);
-      AsyncResult<String> result;
-      try {
-        result = latch.poll(10, TimeUnit.SECONDS);
-      } catch (InterruptedException e) {
-        throw new AssertionError(e);
-      }
-      if (result.failed()) {
-        throw new AssertionError(result.cause());
-      }
-    } finally {
-      Thread.currentThread().setContextClassLoader(prev);
+      Callable<?> callable = lang.compile(loader, path);
+      callable.call();
+    } catch (Exception e) {
+      throw new AssertionError(e);
     }
     return results.get(path + "." + lang.getExtension());
   }

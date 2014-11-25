@@ -4,15 +4,39 @@ import com.sun.source.tree.LambdaExpressionTree;
 import io.vertx.codegen.Helper;
 import io.vertx.codegen.TypeInfo;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 public class JavaScriptLang implements Lang {
+
+  @Override
+  public Callable<?> compile(ClassLoader loader, String path) throws Exception {
+    ScriptEngineManager mgr = new ScriptEngineManager();
+    ScriptEngine engine = mgr.getEngineByName("nashorn");
+    engine.put("__engine", engine);
+    InputStream require = getClass().getClassLoader().getResourceAsStream("vertx-js/util/require.js");
+    if (require == null) {
+      throw new Exception("Not require.js");
+    }
+    engine.put(ScriptEngine.FILENAME, "require.js");
+    engine.eval(new InputStreamReader(require));
+    engine.eval("var console = require('vertx-js/util/console')");
+    InputStream source = loader.getResourceAsStream(path + ".js");
+    if (source == null) {
+      throw new Exception("Could not find " + path + ".js");
+    }
+    return () -> engine.eval(new InputStreamReader(source));
+  }
 
   static class JavaScriptRenderer extends CodeWriter {
     LinkedHashSet<TypeInfo.Class> modules = new LinkedHashSet<>();

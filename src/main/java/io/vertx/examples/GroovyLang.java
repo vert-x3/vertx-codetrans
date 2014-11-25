@@ -1,18 +1,40 @@
 package io.vertx.examples;
 
 import com.sun.source.tree.LambdaExpressionTree;
+import groovy.lang.GroovyClassLoader;
+import groovy.lang.GroovyCodeSource;
+import groovy.lang.Script;
 import io.vertx.codegen.TypeInfo;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 public class GroovyLang implements Lang {
+
+  @Override
+  public Callable<?> compile(ClassLoader loader, String path) throws Exception {
+    InputStream resource = loader.getResourceAsStream(path + ".groovy");
+    if (resource != null) {
+      try (InputStreamReader reader = new InputStreamReader(resource)) {
+        GroovyClassLoader compiler = new GroovyClassLoader(loader);
+        Class clazz = compiler.parseClass(new GroovyCodeSource(reader, path.replace('/', '.'), "/"));
+        return () -> {
+          Script script = (Script) clazz.newInstance();
+          return script.run();
+        };
+      }
+    }
+    throw new Exception("Could not compile " + path);
+  }
 
   static class GroovyRenderer extends CodeWriter {
     LinkedHashSet<TypeInfo.Class> imports = new LinkedHashSet<>();

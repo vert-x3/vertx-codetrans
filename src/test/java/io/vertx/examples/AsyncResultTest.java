@@ -1,5 +1,8 @@
 package io.vertx.examples;
 
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Future;
+import io.vertx.core.Handler;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +16,14 @@ import java.util.concurrent.TimeUnit;
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 public class AsyncResultTest extends ConversionTestBase {
+
+  public static void callbackWithSuccess(Handler<AsyncResult> callback) {
+    callback.handle(Future.succeededFuture("hello"));
+  }
+
+  public static void callbackWithFailure(Handler<AsyncResult> callback) {
+    callback.handle(Future.failedFuture("oh no"));
+  }
 
   public static String path;
 
@@ -42,7 +53,7 @@ public class AsyncResultTest extends ConversionTestBase {
       result = null;
       run(lang, "asyncresult/AsyncResultSucceeded");
       resultLatch.await(10, TimeUnit.SECONDS);
-      Assert.assertNotNull(result);
+      Assert.assertEquals("hello", result);
       Assert.assertEquals(Boolean.TRUE, succeeded);
     }
   }
