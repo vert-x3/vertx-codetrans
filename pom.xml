@@ -11,7 +11,7 @@
   </parent>
 
   <groupId>io.vertx</groupId>
-  <artifactId>vertx-codetrans</artifactId>
+  <artifactId>codetrans</artifactId>
   <version>1.0-SNAPSHOT</version>
 
   <name>Vert.x code translator</name>
