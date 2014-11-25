@@ -8,7 +8,6 @@ import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.util.Context;
 import io.vertx.codegen.TypeInfo;
-import io.vertx.core.AbstractVerticle;
 import io.vertx.examples.annotations.CodeTranslate;
 import org.junit.Assert;
 
@@ -91,7 +90,6 @@ public class ConvertingProcessor extends AbstractProcessor {
 
   private Map<String, String> result = new HashMap<>();
   private Trees trees;
-  private DeclaredType AbstractVerticleType;
   private DeclaredType SystemType;
   private Attr attr;
   private Lang lang;
@@ -114,7 +112,6 @@ public class ConvertingProcessor extends AbstractProcessor {
   public synchronized void init(ProcessingEnvironment processingEnv) {
     super.init(processingEnv);
     this.trees = Trees.instance(processingEnv);
-    this.AbstractVerticleType = (DeclaredType) processingEnv.getElementUtils().getTypeElement(AbstractVerticle.class.getName()).asType();
     this.SystemType = (DeclaredType) processingEnv.getElementUtils().getTypeElement(System.class.getName()).asType();
     Context context = ((JavacProcessingEnvironment)processingEnv).getContext();
     this.attr = Attr.instance(context);
