@@ -1,7 +1,6 @@
 package io.vertx.codetrans;
 
 import io.vertx.codetrans.annotations.CodeTranslate;
-import org.junit.Assert;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -48,7 +47,6 @@ public class ConvertingProcessor extends AbstractProcessor {
       if (url == null) {
         throw new Exception("Cannot resolve source " + source + "");
       }
-      Assert.assertNotNull(url);
       files.add(new File(url.toURI()));
     }
     Iterable<? extends JavaFileObject> fileObjects = manager.getJavaFileObjects(files.toArray(new File[files.size()]));
