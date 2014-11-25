@@ -1,8 +1,8 @@
 package classexpression;
 
 import io.vertx.core.AbstractVerticle;
-import io.vertx.examples.ClassExpressionTest;
-import io.vertx.examples.annotations.CodeTranslate;
+import io.vertx.codetrans.ClassExpressionTest;
+import io.vertx.codetrans.annotations.CodeTranslate;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>

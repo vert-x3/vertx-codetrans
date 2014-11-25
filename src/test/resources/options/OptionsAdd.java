@@ -2,8 +2,8 @@ package options;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.http.HttpServerOptions;
-import io.vertx.examples.annotations.CodeTranslate;
-import io.vertx.examples.OptionsTest;
+import io.vertx.codetrans.annotations.CodeTranslate;
+import io.vertx.codetrans.OptionsTest;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>

@@ -1,8 +1,8 @@
 package lambda;
 
 import io.vertx.core.AbstractVerticle;
-import io.vertx.examples.annotations.CodeTranslate;
-import io.vertx.examples.LambdaTest;
+import io.vertx.codetrans.annotations.CodeTranslate;
+import io.vertx.codetrans.LambdaTest;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>

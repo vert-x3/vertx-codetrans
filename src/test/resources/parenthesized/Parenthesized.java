@@ -1,8 +1,8 @@
 package parenthesized;
 
 import io.vertx.core.AbstractVerticle;
-import io.vertx.examples.annotations.CodeTranslate;
-import io.vertx.examples.ParenthesizedTest;
+import io.vertx.codetrans.annotations.CodeTranslate;
+import io.vertx.codetrans.ParenthesizedTest;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>

@@ -1,8 +1,8 @@
 package object;
 
 import io.vertx.core.AbstractVerticle;
-import io.vertx.examples.annotations.CodeTranslate;
-import io.vertx.examples.ObjectTest;
+import io.vertx.codetrans.annotations.CodeTranslate;
+import io.vertx.codetrans.ObjectTest;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>

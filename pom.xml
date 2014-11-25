@@ -155,7 +155,7 @@
                     <argument>-Dlang=${lang}</argument>
                     <argument>-classpath</argument>
                     <classpath/>
-                    <argument>io.vertx.examples.Runner</argument>
+                    <argument>io.vertx.codetrans.Runner</argument>
                   </arguments>
                   <workingDirectory>${project.basedir}/src/examples/raw/${lang}</workingDirectory>
                 </configuration>
@@ -191,7 +191,7 @@
                     <argument>-Dlang=groovy</argument>
                     <argument>-classpath</argument>
                     <classpath/>
-                    <argument>io.vertx.examples.ConversionRunner</argument>
+                    <argument>io.vertx.codetrans.ConversionRunner</argument>
                   </arguments>
                   <workingDirectory>${project.build.directory}/raw</workingDirectory>
                 </configuration>
