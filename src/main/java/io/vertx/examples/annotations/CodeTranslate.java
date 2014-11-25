@@ -1,4 +1,4 @@
-package io.vertx.examples;
+package io.vertx.examples.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.SOURCE)
-public @interface CodeTrans {
+public @interface CodeTranslate {
 }

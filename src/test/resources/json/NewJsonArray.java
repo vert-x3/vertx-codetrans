@@ -1,10 +1,8 @@
 package json;
 
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.file.OpenOptions;
 import io.vertx.core.json.JsonArray;
-import io.vertx.examples.AsyncResultTest;
-import io.vertx.examples.CodeTrans;
+import io.vertx.examples.annotations.CodeTranslate;
 import io.vertx.examples.JsonTest;
 
 /**
@@ -13,7 +11,7 @@ import io.vertx.examples.JsonTest;
 public class NewJsonArray extends AbstractVerticle {
 
   @Override
-  @CodeTrans
+  @CodeTranslate
   public void start() throws Exception {
     JsonTest.o = new JsonArray();
   }

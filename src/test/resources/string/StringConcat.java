@@ -1,7 +1,7 @@
 package string;
 
 import io.vertx.core.AbstractVerticle;
-import io.vertx.examples.CodeTrans;
+import io.vertx.examples.annotations.CodeTranslate;
 import io.vertx.examples.StringTest;
 
 /**
@@ -10,7 +10,7 @@ import io.vertx.examples.StringTest;
 public class StringConcat extends AbstractVerticle {
 
   @Override
-  @CodeTrans
+  @CodeTranslate
   public void start() throws Exception {
     int a = 3;
     StringTest.o = "_" + a + "_";

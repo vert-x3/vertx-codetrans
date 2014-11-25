@@ -3,7 +3,7 @@ package options;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.net.JKSOptions;
-import io.vertx.examples.CodeTrans;
+import io.vertx.examples.annotations.CodeTranslate;
 import io.vertx.examples.OptionsTest;
 
 /**
@@ -12,7 +12,7 @@ import io.vertx.examples.OptionsTest;
 public class NestedOptions extends AbstractVerticle {
 
   @Override
-  @CodeTrans
+  @CodeTranslate
   public void start() throws Exception {
     OptionsTest.options = new HttpServerOptions().setKeyStoreOptions(new JKSOptions().setPath("/mystore.jks").setPassword("secret"));
   }

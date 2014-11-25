@@ -9,6 +9,7 @@ import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.util.Context;
 import io.vertx.codegen.TypeInfo;
 import io.vertx.core.AbstractVerticle;
+import io.vertx.examples.annotations.CodeTranslate;
 import org.junit.Assert;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -106,7 +107,7 @@ public class ConvertingProcessor extends AbstractProcessor {
 
   @Override
   public Set<String> getSupportedAnnotationTypes() {
-    return Collections.singleton(CodeTrans.class.getName());
+    return Collections.singleton(CodeTranslate.class.getName());
   }
 
   @Override
@@ -122,7 +123,7 @@ public class ConvertingProcessor extends AbstractProcessor {
 
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-    for (Element annotatedElt : roundEnv.getElementsAnnotatedWith(CodeTrans.class)) {
+    for (Element annotatedElt : roundEnv.getElementsAnnotatedWith(CodeTranslate.class)) {
       ExecutableElement methodElt = (ExecutableElement) annotatedElt;
       TypeElement typeElt = (TypeElement) methodElt.getEnclosingElement();
       attributeClass(typeElt);

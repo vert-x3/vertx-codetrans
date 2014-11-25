@@ -1,7 +1,7 @@
 package lambda;
 
 import io.vertx.core.AbstractVerticle;
-import io.vertx.examples.CodeTrans;
+import io.vertx.examples.annotations.CodeTranslate;
 import io.vertx.examples.LambdaTest;
 
 /**
@@ -10,7 +10,7 @@ import io.vertx.examples.LambdaTest;
 public class Lambda extends AbstractVerticle {
 
   @Override
-  @CodeTrans
+  @CodeTranslate
   public void start() throws Exception {
     LambdaTest.invoke((obj) -> {
       LambdaTest.o = obj;
