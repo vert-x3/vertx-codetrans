@@ -1,6 +1,7 @@
 package variable;
 
 import io.vertx.core.AbstractVerticle;
+import io.vertx.examples.CodeTrans;
 import io.vertx.examples.VariableTest;
 
 /**
@@ -9,6 +10,7 @@ import io.vertx.examples.VariableTest;
 public class Variable extends AbstractVerticle {
 
   @Override
+  @CodeTrans
   public void start() throws Exception {
     String o = VariableTest.constant;
     String b;

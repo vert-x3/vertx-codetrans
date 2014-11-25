@@ -4,6 +4,7 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.file.OpenOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.examples.AsyncResultTest;
+import io.vertx.examples.CodeTrans;
 import io.vertx.examples.JsonTest;
 
 /**
@@ -12,6 +13,7 @@ import io.vertx.examples.JsonTest;
 public class NewJsonObject extends AbstractVerticle {
 
   @Override
+  @CodeTrans
   public void start() throws Exception {
     JsonTest.o = new JsonObject();
   }

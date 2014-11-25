@@ -1,6 +1,7 @@
 package object;
 
 import io.vertx.core.AbstractVerticle;
+import io.vertx.examples.CodeTrans;
 import io.vertx.examples.ObjectTest;
 
 /**
@@ -9,6 +10,7 @@ import io.vertx.examples.ObjectTest;
 public class Equals extends AbstractVerticle {
 
   @Override
+  @CodeTrans
   public void start() throws Exception {
     Object o = ObjectTest.o;
     ObjectTest.isEquals = o.equals(o);

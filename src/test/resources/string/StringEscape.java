@@ -1,6 +1,7 @@
 package string;
 
 import io.vertx.core.AbstractVerticle;
+import io.vertx.examples.CodeTrans;
 import io.vertx.examples.StringTest;
 
 /**
@@ -9,6 +10,7 @@ import io.vertx.examples.StringTest;
 public class StringEscape extends AbstractVerticle {
 
   @Override
+  @CodeTrans
   public void start() throws Exception {
     StringTest.o = "\n\"\\'";
   }

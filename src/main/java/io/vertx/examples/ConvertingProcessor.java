@@ -106,7 +106,7 @@ public class ConvertingProcessor extends AbstractProcessor {
 
   @Override
   public Set<String> getSupportedAnnotationTypes() {
-    return Collections.singleton("*");
+    return Collections.singleton(CodeTrans.class.getName());
   }
 
   @Override
@@ -122,23 +122,16 @@ public class ConvertingProcessor extends AbstractProcessor {
 
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-    for (Element rootElt : roundEnv.getRootElements()) {
-      if (processingEnv.getTypeUtils().isAssignable(rootElt.asType(), AbstractVerticleType)) {
-        for (Element enclosedElt : rootElt.getEnclosedElements()) {
-          if (enclosedElt instanceof ExecutableElement) {
-            ExecutableElement exeElt = (ExecutableElement) enclosedElt;
-            if (exeElt.getSimpleName().toString().equals("start") && exeElt.getParameters().isEmpty()) {
-              attributeClass(rootElt);
-              TreePath path = trees.getPath(exeElt);
-              ModelBuilder builder = new ModelBuilder(SystemType, factory, lang);
-              CodeModel model = builder.build(path);
-              CodeWriter writer = new CodeWriter(lang);
-              model.render(writer);
-              result.put(rootElt.toString().replace('.', '/') + '.' + lang.getExtension(), writer.getBuffer().toString());
-            }
-          }
-        }
-      }
+    for (Element annotatedElt : roundEnv.getElementsAnnotatedWith(CodeTrans.class)) {
+      ExecutableElement methodElt = (ExecutableElement) annotatedElt;
+      TypeElement typeElt = (TypeElement) methodElt.getEnclosingElement();
+      attributeClass(typeElt);
+      TreePath path = trees.getPath(annotatedElt);
+      ModelBuilder builder = new ModelBuilder(SystemType, factory, lang);
+      CodeModel model = builder.build(path);
+      CodeWriter writer = new CodeWriter(lang);
+      model.render(writer);
+      result.put(typeElt.toString().replace('.', '/') + '.' + lang.getExtension(), writer.getBuffer().toString());
     }
     return false;
   }
