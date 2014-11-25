@@ -21,10 +21,10 @@ import javax.lang.model.type.DeclaredType;
  */
 public class CodeTranslator {
 
-  private Trees trees;
-  private DeclaredType SystemType;
-  private Attr attr;
-  private TypeInfo.Factory factory;
+  private final Trees trees;
+  private final DeclaredType SystemType;
+  private final Attr attr;
+  private final TypeInfo.Factory factory;
 
   public CodeTranslator(ProcessingEnvironment processingEnv) {
     this.trees = Trees.instance(processingEnv);
