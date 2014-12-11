@@ -129,9 +129,25 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     ExpressionModel expression = scan(node.getExpression(), p);
     switch (node.getKind()) {
       case POSTFIX_INCREMENT:
+        // Note we don't handle the case (3++) that is not legal in JavaScript
         return expression.onPostFixIncrement();
+      case POSTFIX_DECREMENT:
+        // Note we don't handle the case (3--) that is not legal in JavaScript
+        return expression.onPostFixDecrement();
+      case PREFIX_INCREMENT:
+        // Note we don't handle the case (++3) that is not legal in JavaScript
+        return expression.onPrefixIncrement();
+      case PREFIX_DECREMENT:
+        // Note we don't handle the case (--3) that is not legal in JavaScript
+        return expression.onPrefixDecrement();
+      case LOGICAL_COMPLEMENT:
+        return expression.onLogicalComplement();
+      case UNARY_MINUS:
+        return expression.unaryMinus();
+      case UNARY_PLUS:
+        return expression.unaryPlus();
       default:
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Unary operator " + node.getKind().name() + " not yet implemented");
     }
   }
 
@@ -147,17 +163,56 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     ExpressionModel right = scan(node.getRightOperand(), p);
     String op;
     switch (node.getKind()) {
+      case CONDITIONAL_AND:
+        op = "&&";
+        break;
+      case CONDITIONAL_OR:
+        op = "||";
+        break;
+      case EQUAL_TO:
+        op = "==";
+        break;
+      case NOT_EQUAL_TO:
+        op = "!=";
+        break;
       case PLUS:
         op = "+";
         break;
       case LESS_THAN:
         op = "<";
         break;
+      case LESS_THAN_EQUAL:
+        op = "<=";
+        break;
+      case GREATER_THAN:
+        op = ">";
+        break;
+      case GREATER_THAN_EQUAL:
+        op = ">=";
+        break;
       case MULTIPLY:
         op = "*";
         break;
+      case DIVIDE:
+        op = "/";
+        break;
+      case AND:
+        op = "&";
+        break;
+      case OR:
+        op = "|";
+        break;
+      case XOR:
+        op = "^";
+        break;
+      case MINUS:
+        op = "-";
+        break;
+      case REMAINDER:
+        op = "%";
+        break;
       default:
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Binary operator " + node.getKind().name() + " not yet implemented");
     }
     return lang.combine(left, op, right);
   }
@@ -165,14 +220,18 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
   @Override
   public ExpressionModel visitLiteral(LiteralTree node, VisitContext p) {
     switch (node.getKind()) {
+      case NULL_LITERAL:
+        return lang.nullLiteral();
       case STRING_LITERAL:
         return lang.stringLiteral(node.getValue().toString());
       case BOOLEAN_LITERAL:
         return ExpressionModel.render(renderer -> renderer.getLang().renderBooleanLiteral(node.getValue().toString(), renderer));
       case INT_LITERAL:
         return ExpressionModel.render(renderer -> renderer.getLang().renderIntegerLiteral(node.getValue().toString(), renderer));
+      case CHAR_LITERAL:
+        return ExpressionModel.render(renderer -> renderer.getLang().renderCharLiteral(node.getValue().toString().charAt(0), renderer));
       default:
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Literal " + node.getKind().name() + " not yet implemented");
     }
   }
 

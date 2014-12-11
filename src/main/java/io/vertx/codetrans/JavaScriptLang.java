@@ -20,6 +20,19 @@ import java.util.concurrent.Callable;
 public class JavaScriptLang implements Lang {
 
   @Override
+  public void renderBinary(ExpressionModel left, String op, ExpressionModel right, CodeWriter writer) {
+    switch (op) {
+      case "==":
+        op = "===";
+        break;
+      case "!=":
+        op = "!==";
+        break;
+    }
+    Lang.super.renderBinary(left, op, right, writer);
+  }
+
+  @Override
   public Callable<?> compile(ClassLoader loader, String path) throws Exception {
     ScriptEngineManager mgr = new ScriptEngineManager();
     ScriptEngine engine = mgr.getEngineByName("nashorn");

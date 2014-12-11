@@ -105,10 +105,20 @@ public interface Lang {
     }
   }
 
+  default void renderNullLiteral(CodeWriter writer) {
+    writer.append("null");
+  }
+
   default void renderStringLiteral(String value, CodeWriter writer) {
     writer.append('"');
     renderCharacters(value, writer);
     writer.append('"');
+  }
+
+  default void renderCharLiteral(char value, CodeWriter writer) {
+    writer.append('\'');
+    renderCharacters(Character.toString(value), writer);
+    writer.append('\'');
   }
 
   default void renderBooleanLiteral(String value, CodeWriter writer) {
@@ -119,9 +129,39 @@ public interface Lang {
     writer.append(value);
   }
 
-  default void renderPostFixIncrement(ExpressionModel expression, CodeWriter writer) {
+  default void renderPostfixIncrement(ExpressionModel expression, CodeWriter writer) {
     expression.render(writer);
     writer.append("++");
+  }
+
+  default void renderPrefixIncrement(ExpressionModel expression, CodeWriter writer) {
+    writer.append("++");
+    expression.render(writer);
+  }
+
+  default void renderPostfixDecrement(ExpressionModel expression, CodeWriter writer) {
+    expression.render(writer);
+    writer.append("--");
+  }
+
+  default void renderPrefixDecrement(ExpressionModel expression, CodeWriter writer) {
+    writer.append("--");
+    expression.render(writer);
+  }
+
+  default void renderLogicalComplement(ExpressionModel expression, CodeWriter writer) {
+    writer.append("!");
+    expression.render(writer);
+  }
+
+  default void renderUnaryMinus(ExpressionModel expression, CodeWriter writer) {
+    writer.append("-");
+    expression.render(writer);
+  }
+
+  default void renderUnaryPlus(ExpressionModel expression, CodeWriter writer) {
+    writer.append("+");
+    expression.render(writer);
   }
 
   //
@@ -135,6 +175,10 @@ public interface Lang {
   void renderOptions(OptionsModel options, CodeWriter writer);
 
   //
+
+  default ExpressionModel nullLiteral() {
+    return ExpressionModel.render(renderer -> renderer.getLang().renderNullLiteral(renderer));
+  }
 
   default ExpressionModel stringLiteral(String value) {
     return ExpressionModel.render(renderer -> renderer.getLang().renderStringLiteral(value, renderer));

@@ -40,7 +40,43 @@ public class ExpressionModel extends CodeModel {
 
   public ExpressionModel onPostFixIncrement() {
     return ExpressionModel.render((renderer) -> {
-      renderer.getLang().renderPostFixIncrement(ExpressionModel.this, renderer);
+      renderer.getLang().renderPostfixIncrement(ExpressionModel.this, renderer);
+    });
+  }
+
+  public ExpressionModel onPrefixIncrement() {
+    return ExpressionModel.render((renderer) -> {
+      renderer.getLang().renderPrefixIncrement(ExpressionModel.this, renderer);
+    });
+  }
+
+  public ExpressionModel onPostFixDecrement() {
+    return ExpressionModel.render((renderer) -> {
+      renderer.getLang().renderPostfixDecrement(ExpressionModel.this, renderer);
+    });
+  }
+
+  public ExpressionModel onPrefixDecrement() {
+    return ExpressionModel.render((renderer) -> {
+      renderer.getLang().renderPrefixDecrement(ExpressionModel.this, renderer);
+    });
+  }
+
+  public ExpressionModel onLogicalComplement() {
+    return ExpressionModel.render((renderer) -> {
+      renderer.getLang().renderLogicalComplement(ExpressionModel.this, renderer);
+    });
+  }
+
+  public ExpressionModel unaryMinus() {
+    return ExpressionModel.render((renderer) -> {
+      renderer.getLang().renderUnaryMinus(ExpressionModel.this, renderer);
+    });
+  }
+
+  public ExpressionModel unaryPlus() {
+    return ExpressionModel.render((renderer) -> {
+      renderer.getLang().renderUnaryPlus(ExpressionModel.this, renderer);
     });
   }
 
