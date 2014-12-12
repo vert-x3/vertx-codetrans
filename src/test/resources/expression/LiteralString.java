@@ -1,18 +1,26 @@
 package expression;
 
-import io.vertx.codetrans.ExpressionTest;
-import io.vertx.core.AbstractVerticle;
+import io.vertx.codetrans.LiteralExpressionTest;
 import io.vertx.codetrans.annotations.CodeTranslate;
-import io.vertx.codetrans.ControlTest;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class LiteralString extends AbstractVerticle {
+public class LiteralString {
 
-  @Override
   @CodeTranslate
-  public void start() throws Exception {
-    ExpressionTest.result = "foobar";
+  public void value() throws Exception {
+    LiteralExpressionTest.result = "foobar";
+  }
+
+  @CodeTranslate
+  public void concat() throws Exception {
+    int a = 3;
+    LiteralExpressionTest.result = "_" + a + "_";
+  }
+
+  @CodeTranslate
+  public void escape() throws Exception {
+    LiteralExpressionTest.result = "\n\"\\'";
   }
 }

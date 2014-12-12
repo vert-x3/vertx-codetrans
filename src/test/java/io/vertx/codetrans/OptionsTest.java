@@ -17,64 +17,48 @@ public class OptionsTest extends ConversionTestBase {
   public static Object options;
 
   @Test
-  public void testEmptyOptionsJavaScript() throws Exception {
+  public void testEmpty() throws Exception {
     options = null;
-    runJavaScript("options/EmptyOptions");
+    runJavaScript("options/Options", "empty");
     Assert.assertEquals(new JsonObject(), unwrapJsonObject((ScriptObject) options));
-  }
-
-  @Test
-  public void testEmptyOptionsGroovy() throws Exception {
     options = null;
-    runGroovy("options/EmptyOptions");
+    runGroovy("options/Options", "empty");
     Assert.assertEquals(new JsonObject(), unwrapJsonObject((Map<String, Object>) options));
   }
 
   @Test
-  public void testOptionsSetJavaScript() throws Exception {
+  public void testSet() throws Exception {
     options = null;
-    runJavaScript("options/OptionsSet");
+    runJavaScript("options/Options", "set");
     Assert.assertEquals(new JsonObject().put("host", "localhost").put("port", 8080), unwrapJsonObject((ScriptObject) options));
-  }
-
-  @Test
-  public void testOptionsSetGroovy() throws Exception {
     options = null;
-    runGroovy("options/OptionsSet");
+    runGroovy("options/Options", "set");
     Assert.assertEquals(new JsonObject().put("host", "localhost").put("port", 8080), unwrapJsonObject((Map<String, Object>) options));
   }
 
   @Test
-  public void testNestedOptionsJavaScript() throws Exception {
+  public void testNested() throws Exception {
     options = null;
-    runJavaScript("options/NestedOptions");
+    runJavaScript("options/Options", "nested");
     Assert.assertEquals(new JsonObject().put("keyStoreOptions", new JsonObject().put("path", "/mystore.jks").put("password", "secret")), unwrapJsonObject((ScriptObject) options));
-  }
-
-  @Test
-  public void testNestedOptionsGroovy() throws Exception {
     options = null;
-    runGroovy("options/NestedOptions");
+    runGroovy("options/Options", "nested");
     Assert.assertEquals(new JsonObject().put("keyStoreOptions", new JsonObject().put("path", "/mystore.jks").put("password", "secret")), unwrapJsonObject((Map<String, Object>) options));
   }
 
   @Test
-  public void testOptionsAddJavaScript() throws Exception {
+  public void testAdd() throws Exception {
     options = null;
-    runJavaScript("options/OptionsAdd");
+    runJavaScript("options/Options", "add");
     HttpServerOptions actual = new HttpServerOptions(unwrapJsonObject((ScriptObject) options));
     HashSet<String> expected = new HashSet<>();
     expected.add("foo");
     expected.add("bar");
     Assert.assertEquals(expected, actual.getEnabledCipherSuites());
-  }
-
-  @Test
-  public void testOptionsAddGroovy() throws Exception {
     options = null;
-    runGroovy("options/OptionsAdd");
-    HttpServerOptions actual = new HttpServerOptions(unwrapJsonObject((Map<String, Object>) options));
-    HashSet<String> expected = new HashSet<>();
+    runGroovy("options/Options", "add");
+    actual = new HttpServerOptions(unwrapJsonObject((Map<String, Object>) options));
+    expected = new HashSet<>();
     expected.add("foo");
     expected.add("bar");
     Assert.assertEquals(expected, actual.getEnabledCipherSuites());

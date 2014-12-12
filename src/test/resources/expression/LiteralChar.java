@@ -1,18 +1,15 @@
 package expression;
 
-import io.vertx.codetrans.ExpressionTest;
-import io.vertx.core.AbstractVerticle;
+import io.vertx.codetrans.LiteralExpressionTest;
 import io.vertx.codetrans.annotations.CodeTranslate;
-import io.vertx.codetrans.ControlTest;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class LiteralChar extends AbstractVerticle {
+public class LiteralChar {
 
-  @Override
   @CodeTranslate
   public void start() throws Exception {
-    ExpressionTest.result = 'a';
+    LiteralExpressionTest.result = 'a';
   }
 }

@@ -105,7 +105,7 @@ public class ConvertingProcessor extends AbstractProcessor {
       ExecutableElement methodElt = (ExecutableElement) annotatedElt;
       TypeElement typeElt = (TypeElement) methodElt.getEnclosingElement();
       String translation = translator.translate(methodElt, lang);
-      result.put(typeElt.toString().replace('.', '/') + '.' + lang.getExtension(), translation);
+      result.put(typeElt.toString().replace('.', '/') + "_" + methodElt.getSimpleName() + '.' + lang.getExtension(), translation);
     }
     return false;
   }

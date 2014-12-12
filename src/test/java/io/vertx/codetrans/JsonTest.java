@@ -17,146 +17,98 @@ public class JsonTest extends ConversionTestBase {
   public static Object o;
 
   @Test
-  public void testNewJsonObjectJavaScript() {
-    runJavaScript("json/NewJsonObject");
+  public void testJsObjectInstantiate() {
+    runJavaScript("json/JsObject", "instantiate");
     Assert.assertEquals(new JsonObject(), unwrapJsonObject((ScriptObject) o));
-  }
-
-  @Test
-  public void testNewJsonObjectGroovy() {
-    runGroovy("json/NewJsonObject");
+    runGroovy("json/JsObject", "instantiate");
     Assert.assertEquals(new JsonObject(), unwrapJsonObject((Map<String, Object>) o));
   }
 
   @Test
-  public void testJsonObjectPutStringJavaScript() {
-    runJavaScript("json/JsonObjectPutString");
+  public void testJsObjectPutString() {
+    runJavaScript("json/JsObject", "putString");
     Assert.assertEquals(new JsonObject().put("foo", "foo_value"), unwrapJsonObject((ScriptObject) o));
-  }
-
-  @Test
-  public void testJsonObjectPutStringGroovy() {
-    runGroovy("json/JsonObjectPutString");
+    runGroovy("json/JsObject", "putString");
     Assert.assertEquals(new JsonObject().put("foo", "foo_value"), unwrapJsonObject((Map<String, Object>) o));
   }
 
   @Test
-  public void testJsonObjectPutBooleanJavaScript() {
-    runJavaScript("json/JsonObjectPutBoolean");
+  public void testJsObjectPutBoolean() {
+    runJavaScript("json/JsObject", "putBoolean");
     Assert.assertEquals(new JsonObject().put("_true", true).put("_false", false), unwrapJsonObject((ScriptObject) o));
-  }
-
-  @Test
-  public void testJsonObjectPutBooleanGroovy() {
-    runGroovy("json/JsonObjectPutBoolean");
+    runGroovy("json/JsObject", "putBoolean");
     Assert.assertEquals(new JsonObject().put("_true", true).put("_false", false), unwrapJsonObject((Map<String, Object>) o));
   }
 
   @Test
-  public void testJsonObjectPutNumberJavaScript() {
-    runJavaScript("json/JsonObjectPutNumber");
+  public void testJsObjectPutNumber() {
+    runJavaScript("json/JsObject", "putNumber");
     Assert.assertEquals(new JsonObject().put("port", 8080), unwrapJsonObject((ScriptObject) o));
-  }
-
-  @Test
-  public void testJsonObjectPutNumberGroovy() {
-    runGroovy("json/JsonObjectPutNumber");
+    runGroovy("json/JsObject", "putNumber");
     Assert.assertEquals(new JsonObject().put("port", 8080), unwrapJsonObject((Map<String, Object>) o));
   }
 
   @Test
-  public void testJsonObjectPutObjectJavaScript() {
-    runJavaScript("json/JsonObjectPutObject");
+  public void testJsObjectPutObject() {
+    runJavaScript("json/JsObject", "putObject");
     Assert.assertEquals(new JsonObject().put("nested", new JsonObject().put("foo", "bar")), unwrapJsonObject((ScriptObject) o));
-  }
-
-  @Test
-  public void testJsonObjectPutObjectGroovy() {
-    runGroovy("json/JsonObjectPutObject");
+    runGroovy("json/JsObject", "putObject");
     Assert.assertEquals(new JsonObject().put("nested", new JsonObject().put("foo", "bar")), unwrapJsonObject((Map<String, Object>) o));
   }
 
   @Test
-  public void testJsonObjectPutArrayJavaScript() {
-    runJavaScript("json/JsonObjectPutArray");
+  public void testJsObjectPutArray() {
+    runJavaScript("json/JsObject", "putArray");
     Assert.assertEquals(new JsonObject().put("nested", new JsonArray().add("foo")), unwrapJsonObject((ScriptObject) o));
-  }
-
-  @Test
-  public void testJsonObjectPutArrayGroovy() {
-    runGroovy("json/JsonObjectPutArray");
+    runGroovy("json/JsObject", "putArray");
     Assert.assertEquals(new JsonObject().put("nested", new JsonArray().add("foo")), unwrapJsonObject((Map<String, Object>) o));
   }
 
   @Test
-  public void testNewJsonArrayJavaScript() {
-    runJavaScript("json/NewJsonArray");
+  public void testJsArrayInstantiate() {
+    runJavaScript("json/JsArray", "instantiate");
     Assert.assertEquals(new JsonArray(), unwrapJsonArray((ScriptObject) o));
-  }
-
-  @Test
-  public void testNewJsonArrayGroovy() {
-    runGroovy("json/NewJsonArray");
+    runGroovy("json/JsArray", "instantiate");
     Assert.assertEquals(new JsonArray(), unwrapJsonArray((List<Object>) o));
   }
 
   @Test
-  public void testJsonArrayAddStringJavaScript() {
-    runJavaScript("json/JsonArrayAddString");
+  public void testJsArrayAddString() {
+    runJavaScript("json/JsArray", "addString");
     Assert.assertEquals(new JsonArray().add("foo"), unwrapJsonArray((ScriptObject) o));
-  }
-
-  @Test
-  public void testsonArrayAddStringGroovy() {
-    runGroovy("json/JsonArrayAddString");
+    runGroovy("json/JsArray", "addString");
     Assert.assertEquals(new JsonArray().add("foo"), unwrapJsonArray((List<Object>) o));
   }
 
   @Test
-  public void testJsonArrayAddBooleanJavaScript() {
-    runJavaScript("json/JsonArrayAddBoolean");
+  public void testJsArrayAddBoolean() {
+    runJavaScript("json/JsArray", "addBoolean");
     Assert.assertEquals(new JsonArray().add(true).add(false), unwrapJsonArray((ScriptObject) o));
-  }
-
-  @Test
-  public void testsonArrayAddBooleanGroovy() {
-    runGroovy("json/JsonArrayAddBoolean");
+    runGroovy("json/JsArray", "addBoolean");
     Assert.assertEquals(new JsonArray().add(true).add(false), unwrapJsonArray((List<Object>) o));
   }
 
   @Test
-  public void testJsonArrayAddNumberJavaScript() {
-    runJavaScript("json/JsonArrayAddNumber");
+  public void testJsArrayAddNumber() {
+    runJavaScript("json/JsArray", "addNumber");
     Assert.assertEquals(new JsonArray().add(8080), unwrapJsonArray((ScriptObject) o));
-  }
-
-  @Test
-  public void testsonArrayAddNumberGroovy() {
-    runGroovy("json/JsonArrayAddNumber");
+    runGroovy("json/JsArray", "addNumber");
     Assert.assertEquals(new JsonArray().add(8080), unwrapJsonArray((List<Object>) o));
   }
 
   @Test
-  public void testJsonArrayAddArrayJavaScript() {
-    runJavaScript("json/JsonArrayAddArray");
+  public void testJsArrayAddArray() {
+    runJavaScript("json/JsArray", "addArray");
     Assert.assertEquals(new JsonArray().add(new JsonArray().add("foo")), unwrapJsonArray((ScriptObject) o));
-  }
-
-  @Test
-  public void testsonArrayAddArrayGroovy() {
-    runGroovy("json/JsonArrayAddArray");
+    runGroovy("json/JsArray", "addArray");
     Assert.assertEquals(new JsonArray().add(new JsonArray().add("foo")), unwrapJsonArray((List<Object>) o));
   }
 
   @Test
-  public void testJsonArrayAddObjectJavaScript() {
-    runJavaScript("json/JsonArrayAddObject");
+  public void testJsArrayAddObject() {
+    runJavaScript("json/JsArray", "addObject");
     Assert.assertEquals(new JsonArray().add(new JsonObject().put("foo", "foo_value")), unwrapJsonArray((ScriptObject) o));
-  }
-
-  @Test
-  public void testsonArrayAddObjectGroovy() {
-    runGroovy("json/JsonArrayAddObject");
+    runGroovy("json/JsArray", "addObject");
     Assert.assertEquals(new JsonArray().add(new JsonObject().put("foo", "foo_value")), unwrapJsonArray((List<Object>) o));
   }
 }

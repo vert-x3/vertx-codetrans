@@ -16,29 +16,35 @@ public class ControlTest extends ConversionTestBase {
   public static String o;
 
   @Test
-  public void testThenEval() throws Exception {
-    runAll("control/ThenEval", () -> {
-      Assert.assertEquals("ok", o);
+  public void testIfElseEvalElse() throws Exception {
+    runAll("control/IfElse", "evalElse", () -> {
+      Assert.assertEquals("inElse", o);
       o = null;
     });
   }
 
   @Test
-  public void testThenSkip() throws Exception {
-    runAll("control/ThenSkip", () -> Assert.assertEquals(null, o));
-  }
-
-  @Test
-  public void testElseEval() throws Exception {
-    runAll("control/ElseEval", () -> {
-      Assert.assertEquals("ok", o);
+  public void testIfElseEvalThen() throws Exception {
+    runAll("control/IfElse", "evalThen", () -> {
+      Assert.assertEquals("inThen", o);
       o = null;
     });
   }
 
   @Test
-  public void testElseSkip() throws Exception {
-    runAll("control/ElseSkip", () -> Assert.assertEquals(null, o));
+  public void testIfEvalThen() throws Exception {
+    runAll("control/If", "evalThen", () -> {
+      Assert.assertEquals("inThen", o);
+      o = null;
+    });
+  }
+
+  @Test
+  public void testIfSkipThen() throws Exception {
+    runAll("control/If", "skipThen", () -> {
+      Assert.assertEquals(null, o);
+      o = null;
+    });
   }
 
   public static List<String> list = Collections.unmodifiableList(Arrays.asList("foo", "bar", "juu"));

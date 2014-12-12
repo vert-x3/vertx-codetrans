@@ -1,6 +1,5 @@
 package module;
 
-import io.vertx.core.AbstractVerticle;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.codetrans.annotations.CodeTranslate;
 import io.vertx.codetrans.ModuleTest;
@@ -8,9 +7,8 @@ import io.vertx.codetrans.ModuleTest;
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class Module extends AbstractVerticle {
+public class Module {
 
-  @Override
   @CodeTranslate
   public void start() throws Exception {
     ModuleTest.buffer = Buffer.buffer("the_buffer");

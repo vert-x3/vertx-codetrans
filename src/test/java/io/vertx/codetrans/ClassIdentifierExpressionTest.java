@@ -9,7 +9,7 @@ import java.util.Collections;
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class ClassExpressionTest extends ConversionTestBase {
+public class ClassIdentifierExpressionTest extends ConversionTestBase {
 
   private static int invoked;
   private static final ArrayList<Object> args = new ArrayList<>();
@@ -23,34 +23,26 @@ public class ClassExpressionTest extends ConversionTestBase {
   }
 
   @Test
-  public void testInvokeStaticMethodJavaScript() throws Exception {
+  public void testInvokeStaticMethod() throws Exception {
     invoked = 0;
     args.clear();
-    runJavaScript("classexpression/InvokeStaticMethodVerticle");
+    runJavaScript("expression/ClassIdentifier", "invokeStaticMethod");
+    Assert.assertEquals(1, invoked);
+    Assert.assertEquals(Collections.<Object>singletonList("foo"), args);
+    invoked = 0;
+    args.clear();
+    runGroovy("expression/ClassIdentifier", "invokeStaticMethod");
     Assert.assertEquals(1, invoked);
     Assert.assertEquals(Collections.<Object>singletonList("foo"), args);
   }
 
   @Test
-  public void testInvokeStaticMethodGroovy() throws Exception {
-    invoked = 0;
-    args.clear();
-    runGroovy("classexpression/InvokeStaticMethodVerticle");
-    Assert.assertEquals(1, invoked);
-    Assert.assertEquals(Collections.<Object>singletonList("foo"), args);
-  }
-
-  @Test
-  public void testAccessStaticFieldJavaScript() throws Exception {
+  public void testAccessStaticField() throws Exception {
     field = null;
-    runJavaScript("classexpression/AccessStaticFieldVerticle");
+    runJavaScript("expression/ClassIdentifier", "accessStaticField");
     Assert.assertEquals("foo", field);
-  }
-
-  @Test
-  public void testAccessStaticFieldGroovy() throws Exception {
     field = null;
-    runGroovy("classexpression/AccessStaticFieldVerticle");
+    runGroovy("expression/ClassIdentifier", "accessStaticField");
     Assert.assertEquals("foo", field);
   }
 }

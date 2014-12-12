@@ -1,14 +1,11 @@
 package io.vertx.codetrans;
 
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import jdk.nashorn.internal.runtime.ScriptObject;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Callable;
 
 /**
@@ -22,8 +19,16 @@ public abstract class ConversionTestBase {
     return run(new JavaScriptLang(), path);
   }
 
+  public String runJavaScript(String path, String method) {
+    return run(new JavaScriptLang(), path, method);
+  }
+
   public String runGroovy(String path) {
     return run(new GroovyLang(), path);
+  }
+
+  public String runGroovy(String path, String method) {
+    return run(new GroovyLang(), path, method);
   }
 
   public void runAll(String path, Runnable after) {
@@ -33,26 +38,37 @@ public abstract class ConversionTestBase {
     }
   }
 
+  public void runAll(String path, String method, Runnable after) {
+    for (Lang lang : langs()) {
+      run(lang, path, method);
+      after.run();
+    }
+  }
+
   public String run(Lang lang, String path) {
+    return run(lang, path, "start");
+  }
+
+  public String run(Lang lang, String path, String method) {
     Map<String, String> results;
     try {
-      results = ConvertingProcessor.convert(ClassExpressionTest.class.getClassLoader(), lang, path + ".java");
+      results = ConvertingProcessor.convert(ClassIdentifierExpressionTest.class.getClassLoader(), lang, path + ".java");
     } catch (Exception e) {
       throw new AssertionError(e);
     }
-    Vertx vertx = Vertx.vertx();
-    ArrayBlockingQueue<AsyncResult<String>> latch = new ArrayBlockingQueue<>(1);
-    ClassLoader prev = Thread.currentThread().getContextClassLoader();
-    LoadingClassLoader loader = new LoadingClassLoader(Thread.currentThread().getContextClassLoader(), results);
-    Thread.currentThread().setContextClassLoader(loader);
-
+    Thread current = Thread.currentThread();
+    ClassLoader prev = current.getContextClassLoader();
+    LoadingClassLoader loader = new LoadingClassLoader(current.getContextClassLoader(), results);
+    current.setContextClassLoader(loader);
     try {
-      Callable<?> callable = lang.compile(loader, path);
+      Callable<?> callable = lang.compile(loader, path + "_" + method);
       callable.call();
     } catch (Exception e) {
       throw new AssertionError(e);
+    } finally {
+      current.setContextClassLoader(prev);
     }
-    return results.get(path + "." + lang.getExtension());
+    return results.get(path + "_" + method + "." + lang.getExtension());
   }
 
   private Object unwrapJsonElement(ScriptObject obj) {

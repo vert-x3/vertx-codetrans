@@ -47,11 +47,11 @@ public class AsyncResultTest extends ConversionTestBase {
   }
 
   @Test
-  public void testAsyncResultSucceeded() throws Exception {
+  public void testAsyncResultHandlerSucceeded() throws Exception {
     for (Lang lang : langs()) {
       resultLatch = new CountDownLatch(1);
       result = null;
-      run(lang, "asyncresult/AsyncResultSucceeded");
+      run(lang, "asyncresult/AsyncResultHandler", "succeeded");
       resultLatch.await(10, TimeUnit.SECONDS);
       Assert.assertEquals("hello", result);
       Assert.assertEquals(Boolean.TRUE, succeeded);
@@ -68,11 +68,11 @@ public class AsyncResultTest extends ConversionTestBase {
   }
 
   @Test
-  public void testAsyncResultFailed() throws Exception {
+  public void testAsyncResultHandlerFailed() throws Exception {
     for (Lang lang : langs()) {
       causeLatch = new CountDownLatch(1);
       cause = null;
-      run(lang, "asyncresult/AsyncResultFailed");
+      run(lang, "asyncresult/AsyncResultHandler", "failed");
       causeLatch.await(10, TimeUnit.SECONDS);
       Assert.assertNotNull(cause);
       Assert.assertEquals(Boolean.TRUE, failed);

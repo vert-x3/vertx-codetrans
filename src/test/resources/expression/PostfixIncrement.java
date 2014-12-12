@@ -1,20 +1,17 @@
 package expression;
 
-import io.vertx.codetrans.ExpressionTest;
-import io.vertx.core.AbstractVerticle;
+import io.vertx.codetrans.UnaryOperatorExpressionTest;
 import io.vertx.codetrans.annotations.CodeTranslate;
-import io.vertx.codetrans.ControlTest;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class PostfixIncrement extends AbstractVerticle {
+public class PostfixIncrement {
 
-  @Override
   @CodeTranslate
   public void start() throws Exception {
     int a = 3;
-    ExpressionTest.result = a++;
-    ExpressionTest.result2 = a;
+    UnaryOperatorExpressionTest.result = a++;
+    UnaryOperatorExpressionTest.result2 = a;
   }
 }
