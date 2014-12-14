@@ -16,6 +16,7 @@
   <name>Vert.x code translator</name>
 
   <properties>
+    <vertx.version>3.0.0-SNAPSHOT</vertx.version>
     <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
   </properties>
 
@@ -24,12 +25,12 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-core</artifactId>
-      <version>3.0.0.docgen-SNAPSHOT</version>
+      <version>${vertx.version}</version>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-codegen</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>${vertx.version}</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
