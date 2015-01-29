@@ -48,7 +48,7 @@ public class OptionsModel extends ExpressionModel {
       name = Character.toLowerCase(identifier.charAt(3)) + identifier.substring(4) + "s"; // 's' for plural
       memberFactory = $ -> new Member.Array(render(name));
     } else {
-      throw new UnsupportedOperationException("Not implemented");
+      throw unsupported();
     }
     return new ExpressionModel() {
       @Override
@@ -61,7 +61,7 @@ public class OptionsModel extends ExpressionModel {
           copy.put(name, member);
           return new OptionsModel(type, copy);
         } else {
-          throw new UnsupportedOperationException("not yet implemented");
+          throw unsupported();
         }
       }
     };

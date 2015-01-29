@@ -28,4 +28,13 @@ public class CodeModel {
     e.initCause(where);
     throw e;
   }
+
+  protected final UnsupportedOperationException unsupported() {
+    return new UnsupportedOperationException(getClass().getName() + " unimplemented");
+  }
+
+  protected final UnsupportedOperationException unsupported(String feature) {
+    return new UnsupportedOperationException(getClass().getName() + " has not implemented: " + feature);
+  }
+
 }

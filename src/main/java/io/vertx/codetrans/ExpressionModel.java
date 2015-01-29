@@ -18,7 +18,7 @@ public class ExpressionModel extends CodeModel {
             renderer.getLang().renderEquals(ExpressionModel.this, args.get(0), renderer);
           });
         } else {
-          throw new UnsupportedOperationException("Not yet implemented"); // Equals overloading
+          throw unsupported("equals overloading");
         }
       });
     } else {
@@ -29,7 +29,7 @@ public class ExpressionModel extends CodeModel {
   }
 
   public ExpressionModel onNew(List<ExpressionModel> arguments) {
-    throw new UnsupportedOperationException("Not implemented with arguments " + arguments);
+    throw unsupported(" with arguments " + arguments);
   }
 
   public ExpressionModel onMethodInvocation(List<ExpressionModel> arguments) {
@@ -96,7 +96,7 @@ public class ExpressionModel extends CodeModel {
         if (expected.equals(identifier)) {
           return f.get();
         } else {
-          throw new UnsupportedOperationException();
+          throw unsupported();
         }
       }
     };
