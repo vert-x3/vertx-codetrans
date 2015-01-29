@@ -121,9 +121,15 @@ public interface Lang {
     writer.append('\'');
   }
 
+  void renderFloatLiteral(String value, CodeWriter writer);
+
+  void renderDoubleLiteral(String value, CodeWriter writer);
+
   default void renderBooleanLiteral(String value, CodeWriter writer) {
     writer.append(value);
   }
+
+  void renderLongLiteral(String value, CodeWriter writer);
 
   default void renderIntegerLiteral(String value, CodeWriter writer) {
     writer.append(value);

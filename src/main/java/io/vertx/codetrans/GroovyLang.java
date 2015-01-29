@@ -90,6 +90,24 @@ public class GroovyLang implements Lang {
   }
 
   @Override
+  public void renderLongLiteral(String value, CodeWriter writer) {
+    renderCharacters(value, writer);
+    writer.append('L');
+  }
+
+  @Override
+  public void renderFloatLiteral(String value, CodeWriter writer) {
+    renderCharacters(value, writer);
+    writer.append('f');
+  }
+
+  @Override
+  public void renderDoubleLiteral(String value, CodeWriter writer) {
+    renderCharacters(value, writer);
+    writer.append('d');
+  }
+
+  @Override
   public ExpressionModel combine(ExpressionModel left, String op, ExpressionModel right) {
     if (op.equals("+")) {
       if (left instanceof GStringLiteralModel) {

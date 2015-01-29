@@ -56,12 +56,42 @@ public class LiteralExpressionTest extends ConversionTestBase {
   }
 
   @Test
+  public void testLiteralLong() throws Exception {
+    runAll("expression/LiteralLong", "positiveValue", () -> {
+      assertEquals(4L, ((Number)result).longValue());
+    });
+    runAll("expression/LiteralLong", "negativeValue", () -> {
+      assertEquals(-4L, ((Number)result).longValue());
+    });
+  }
+
+  @Test
   public void testLiteralBoolean() throws Exception {
     runAll("expression/LiteralBoolean", "trueValue", () -> {
       assertEquals(true, result);
     });
     runAll("expression/LiteralBoolean", "falseValue", () -> {
       assertEquals(false, result);
+    });
+  }
+
+  @Test
+  public void testLiteralFloat() throws Exception {
+    runAll("expression/LiteralFloat", "positiveValue", () -> {
+      assertEquals(4.0f, ((Number)result).floatValue(), 0.001);
+    });
+    runAll("expression/LiteralFloat", "negativeValue", () -> {
+      assertEquals(-4.0f, ((Number)result).floatValue(), 0.001);
+    });
+  }
+
+  @Test
+  public void testLiteralDouble() throws Exception {
+    runAll("expression/LiteralDouble", "positiveValue", () -> {
+      assertEquals(4.0d, ((Number)result).doubleValue(), 0.001);
+    });
+    runAll("expression/LiteralDouble", "negativeValue", () -> {
+      assertEquals(-4.0d, ((Number)result).doubleValue(), 0.001);
     });
   }
 }

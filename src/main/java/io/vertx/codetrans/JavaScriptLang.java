@@ -20,6 +20,21 @@ import java.util.concurrent.Callable;
 public class JavaScriptLang implements Lang {
 
   @Override
+  public void renderLongLiteral(String value, CodeWriter writer) {
+    renderCharacters(value, writer);
+  }
+
+  @Override
+  public void renderFloatLiteral(String value, CodeWriter writer) {
+    renderCharacters(value, writer);
+  }
+
+  @Override
+  public void renderDoubleLiteral(String value, CodeWriter writer) {
+    renderCharacters(value, writer);
+  }
+
+  @Override
   public void renderBinary(ExpressionModel left, String op, ExpressionModel right, CodeWriter writer) {
     switch (op) {
       case "==":

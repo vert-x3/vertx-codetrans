@@ -228,8 +228,14 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
         return ExpressionModel.render(renderer -> renderer.getLang().renderBooleanLiteral(node.getValue().toString(), renderer));
       case INT_LITERAL:
         return ExpressionModel.render(renderer -> renderer.getLang().renderIntegerLiteral(node.getValue().toString(), renderer));
+      case LONG_LITERAL:
+        return ExpressionModel.render(renderer -> renderer.getLang().renderLongLiteral(node.getValue().toString(), renderer));
       case CHAR_LITERAL:
         return ExpressionModel.render(renderer -> renderer.getLang().renderCharLiteral(node.getValue().toString().charAt(0), renderer));
+      case FLOAT_LITERAL:
+        return ExpressionModel.render(renderer -> renderer.getLang().renderFloatLiteral(node.getValue().toString(), renderer));
+      case DOUBLE_LITERAL:
+        return ExpressionModel.render(renderer -> renderer.getLang().renderDoubleLiteral(node.getValue().toString(), renderer));
       default:
         throw new UnsupportedOperationException("Literal " + node.getKind().name() + " not yet implemented");
     }
