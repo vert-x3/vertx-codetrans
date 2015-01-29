@@ -230,7 +230,7 @@ public class Runner {
       doneHandler.handle(null);
     } else {
       String[] next = Arrays.copyOf(deployments, deployments.length - 1);
-      vertx.undeployVerticle(deployments[deployments.length - 1], result -> {
+      vertx.undeploy(deployments[deployments.length - 1], result -> {
         undeploy(next, doneHandler);
       });
     }
