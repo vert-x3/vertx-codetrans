@@ -155,6 +155,22 @@ public class JavaScriptLang implements Lang {
   }
 
   @Override
+  public void renderJsonObjectAssign(ExpressionModel expression, ExpressionModel name, ExpressionModel value, CodeWriter writer) {
+    expression.render(writer);
+    writer.append('.');
+    name.render(writer);
+    writer.append(" = ");
+    value.render(writer);
+  }
+
+  @Override
+  public void renderJsonObjectMemberSelect(ExpressionModel expression, ExpressionModel name, CodeWriter writer) {
+    expression.render(writer);
+    writer.append('.');
+    name.render(writer);
+  }
+
+  @Override
   public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, String resultName, CodeModel body) {
     return lambda(null, null, Arrays.asList(resultName, resultName + "_err"), body);
   }

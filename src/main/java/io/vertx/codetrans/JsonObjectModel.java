@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class JsonObjectModel extends ExpressionModel {
 
-  public static ExpressionModel CLASS_MODEL = forNew(args -> {
+  private static ExpressionModel CLASS_MODEL = forNew(args -> {
     switch (args.size()) {
       case 0:
         return new JsonObjectModel(Collections.emptyList());
@@ -16,6 +16,50 @@ public class JsonObjectModel extends ExpressionModel {
         throw new UnsupportedOperationException();
     }
   });
+
+  public static ExpressionModel classModel() {
+    return CLASS_MODEL;
+  }
+
+  public static ExpressionModel instanceModel(ExpressionModel expression) {
+    return new ExpressionModel() {
+      @Override
+      public ExpressionModel onMemberSelect(String identifier) {
+        switch (identifier) {
+          case "put":
+            return ExpressionModel.forMethodInvocation( arguments ->
+                ExpressionModel.render( writer -> {
+                  writer.getLang().renderJsonObjectAssign(expression, arguments.get(0), arguments.get(1), writer);
+                })
+            );
+          case "getString":
+          case "getJsonObject":
+          case "getInteger":
+          case "getLong":
+          case "getFloat":
+          case "getDouble":
+          case "getBoolean":
+          case "getJsonArray":
+          case "getValue":
+            return ExpressionModel.forMethodInvocation( arguments -> {
+              if (arguments.size() == 1) {
+                return ExpressionModel.render( writer -> {
+                  writer.getLang().renderJsonObjectMemberSelect(expression, arguments.get(0), writer);
+                });
+              } else {
+                throw unsupported("Invalid arguments " + arguments);
+              }
+            });
+          default:
+            throw unsupported("Method " + identifier);
+        }
+      }
+      @Override
+      public void render(CodeWriter writer) {
+        expression.render(writer);
+      }
+    };
+  }
 
   private final List<Member> entries;
 

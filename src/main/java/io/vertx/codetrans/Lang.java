@@ -180,6 +180,10 @@ public interface Lang {
 
   void renderOptions(OptionsModel options, CodeWriter writer);
 
+  void renderJsonObjectAssign(ExpressionModel expression, ExpressionModel name, ExpressionModel value, CodeWriter writer);
+
+  void renderJsonObjectMemberSelect(ExpressionModel expression, ExpressionModel name, CodeWriter writer);
+
   //
 
   default ExpressionModel nullLiteral() {

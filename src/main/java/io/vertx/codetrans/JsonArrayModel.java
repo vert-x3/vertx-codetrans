@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class JsonArrayModel extends ExpressionModel {
 
-  public static final ExpressionModel CLASS_MODEL = forNew(args -> {
+  private static final ExpressionModel CLASS_MODEL = forNew(args -> {
     switch (args.size()) {
       case 0:
         return new JsonArrayModel(Collections.emptyList());
@@ -16,6 +16,10 @@ public class JsonArrayModel extends ExpressionModel {
         throw new UnsupportedOperationException();
     }
   });
+
+  public static ExpressionModel classModel() {
+    return CLASS_MODEL;
+  }
 
   private List<ExpressionModel> values;
 
