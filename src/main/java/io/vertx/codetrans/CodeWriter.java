@@ -18,15 +18,17 @@ public class CodeWriter implements Appendable {
     return lang;
   }
 
-  public void indent() {
+  public CodeWriter indent() {
     indent += 2;
+    return this;
   }
 
-  public void unindent() {
+  public CodeWriter unindent() {
     if (indent < 2) {
       throw new IllegalStateException();
     }
     indent -= 2;
+    return this;
   }
 
   public StringBuilder getBuffer() {

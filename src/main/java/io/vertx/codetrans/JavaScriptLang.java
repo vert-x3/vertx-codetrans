@@ -120,7 +120,8 @@ public class JavaScriptLang implements Lang {
   }
 
   private void renderJsonObject(Iterable<Member> members, CodeWriter writer, boolean unquote) {
-    writer.append("{");
+    writer.append("{\n");
+    writer.indent();
     for (Iterator<Member> iterator = members.iterator();iterator.hasNext();) {
       Member member = iterator.next();
       String name = member.name.render(writer.getLang());
@@ -134,21 +135,23 @@ public class JavaScriptLang implements Lang {
         renderJsonArray(((Member.Array) member).values, writer);
       }
       if (iterator.hasNext()) {
-        writer.append(", ");
+        writer.append(',');
       }
+      writer.append('\n');
     }
-    writer.append("}");
+    writer.unindent().append("}");
   }
 
   private void renderJsonArray(List<ExpressionModel> values, CodeWriter writer) {
-    writer.append('[');
+    writer.append("[\n").indent();
     for (int i = 0;i < values.size();i++) {
-      if (i > 0) {
-        writer.append(", ");
-      }
       values.get(i).render(writer);
+      if (i < values.size() - 1) {
+        writer.append(',');
+      }
+      writer.append('\n');
     }
-    writer.append(']');
+    writer.unindent().append(']');
   }
 
   @Override
