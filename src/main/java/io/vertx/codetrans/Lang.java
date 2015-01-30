@@ -182,7 +182,11 @@ public interface Lang {
 
   void renderJsonObjectAssign(ExpressionModel expression, ExpressionModel name, ExpressionModel value, CodeWriter writer);
 
+  void renderOptionsAssign(ExpressionModel expression, ExpressionModel name, ExpressionModel value, CodeWriter writer);
+
   void renderJsonObjectMemberSelect(ExpressionModel expression, ExpressionModel name, CodeWriter writer);
+
+  void renderOptionsMemberSelect(ExpressionModel expression, ExpressionModel name, CodeWriter writer);
 
   //
 

@@ -27,13 +27,33 @@ public class OptionsTest extends ConversionTestBase {
   }
 
   @Test
-  public void testSet() throws Exception {
+  public void testSetFromConstructor() throws Exception {
     options = null;
-    runJavaScript("options/Options", "set");
+    runJavaScript("options/Options", "setFromConstructor");
     Assert.assertEquals(new JsonObject().put("host", "localhost").put("port", 8080), unwrapJsonObject((ScriptObject) options));
     options = null;
-    runGroovy("options/Options", "set");
+    runGroovy("options/Options", "setFromConstructor");
     Assert.assertEquals(new JsonObject().put("host", "localhost").put("port", 8080), unwrapJsonObject((Map<String, Object>) options));
+  }
+
+  @Test
+  public void testSetFromIdentifier() throws Exception {
+    options = null;
+    runJavaScript("options/Options", "setFromIdentifier");
+    Assert.assertEquals(new JsonObject().put("host", "localhost").put("port", 8080), unwrapJsonObject((ScriptObject) options));
+    options = null;
+    runGroovy("options/Options", "setFromIdentifier");
+    Assert.assertEquals(new JsonObject().put("host", "localhost").put("port", 8080), unwrapJsonObject((Map<String, Object>) options));
+  }
+
+  @Test
+  public void testgetFromIdentifier() throws Exception {
+    options = null;
+    runJavaScript("options/Options", "getFromIdentifier");
+    Assert.assertEquals("localhost", options);
+    options = null;
+    runGroovy("options/Options", "getFromIdentifier");
+    Assert.assertEquals("localhost", options);
   }
 
   @Test

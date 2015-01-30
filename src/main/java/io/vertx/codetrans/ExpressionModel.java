@@ -159,6 +159,10 @@ public class ExpressionModel extends CodeModel {
   public static ExpressionModel render(String s) {
     return new ExpressionModel() {
       @Override
+      public String render(Lang lang) {
+        return s;
+      }
+      @Override
       public void render(CodeWriter writer) {
         writer.append(s);
       }

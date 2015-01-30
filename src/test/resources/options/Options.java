@@ -26,7 +26,21 @@ public class Options {
   }
 
   @CodeTranslate
-  public void set() throws Exception {
+  public void setFromConstructor() throws Exception {
     OptionsTest.options = new HttpServerOptions().setPort(8080).setHost("localhost");
+  }
+
+  @CodeTranslate
+  public void setFromIdentifier() throws Exception {
+    HttpServerOptions options = new HttpServerOptions();
+    options.setPort(8080);
+    options.setHost("localhost");
+    OptionsTest.options = options;
+  }
+
+  @CodeTranslate
+  public void getFromIdentifier() throws Exception {
+    HttpServerOptions options = new HttpServerOptions().setHost("localhost");
+    OptionsTest.options = options.getHost();
   }
 }

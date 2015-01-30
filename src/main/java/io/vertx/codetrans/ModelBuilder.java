@@ -258,7 +258,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
         } else if (type.getKind() == ClassKind.JSON_ARRAY) {
           return JsonArrayModel.classModel();
         } else if (type.getKind() == ClassKind.DATA_OBJECT) {
-          return OptionsModel.create(type);
+          return OptionsModel.classModel(type);
         } else {
           return lang.classExpression(type);
         }
@@ -270,16 +270,14 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
       } else {
         String identifier = node.getName().toString();
         TypeInfo type = factory.create(ident.type);
-        if (type.getKind() == ClassKind.JSON_OBJECT) {
-          ExpressionModel name = new ExpressionModel() {
-            @Override
-            public void render(CodeWriter writer) {
-              writer.append(identifier);
-            }
-          };
-          return JsonObjectModel.instanceModel(name);
+        switch (type.getKind()) {
+          case JSON_OBJECT:
+            return JsonObjectModel.instanceModel(ExpressionModel.render(identifier));
+          case DATA_OBJECT:
+            return OptionsModel.instanceModel(ExpressionModel.render(identifier), (TypeInfo.Class) type);
+          default:
+            return ExpressionModel.render(identifier);
         }
-        return ExpressionModel.render(identifier);
       }
     }
   }

@@ -13,8 +13,36 @@ import java.util.function.Function;
  */
 public class OptionsModel extends ExpressionModel {
 
-  public static ExpressionModel create(TypeInfo.Class type) {
+  public static ExpressionModel classModel(TypeInfo.Class type) {
     return forNew(args -> new OptionsModel(type));
+  }
+
+  public static ExpressionModel instanceModel(ExpressionModel expression, TypeInfo.Class type) {
+    return new ExpressionModel() {
+      @Override
+      public ExpressionModel onMemberSelect(String identifier) {
+        return ExpressionModel.forMethodInvocation(arguments -> {
+          if (isSet(identifier)) {
+            return ExpressionModel.render( writer -> {
+              writer.getLang().renderOptionsAssign(expression,
+                  ExpressionModel.render(unwrapSet(identifier)),
+                  arguments.get(0), writer);
+            });
+          }
+          if (isGet(identifier)) {
+            return ExpressionModel.render( writer -> {
+              writer.getLang().renderOptionsMemberSelect(expression,
+                  ExpressionModel.render(unwrapSet(identifier)), writer);
+            });
+          }
+          throw new UnsupportedOperationException("TODO");
+        });
+      }
+      @Override
+      public void render(CodeWriter writer) {
+        expression.render(writer);
+      }
+    };
   }
 
   private final TypeInfo.Class type;
@@ -29,10 +57,6 @@ public class OptionsModel extends ExpressionModel {
     this.members = members;
   }
 
-  public TypeInfo.Class getType() {
-    return type;
-  }
-
   public Iterable<Member> getMembers() {
     return members.values();
   }
@@ -41,11 +65,11 @@ public class OptionsModel extends ExpressionModel {
   public ExpressionModel onMemberSelect(String identifier) {
     String name;
     Function<String, Member> memberFactory;
-    if (identifier.length() > 3 && identifier.startsWith("set")) {
-      name = Character.toLowerCase(identifier.charAt(3)) + identifier.substring(4);
+    if (isSet(identifier)) {
+      name = unwrapSet(identifier);
       memberFactory = $ -> new Member.Single(render(name));
-    } else if (identifier.length() > 3 && identifier.startsWith("add")) {
-      name = Character.toLowerCase(identifier.charAt(3)) + identifier.substring(4) + "s"; // 's' for plural
+    } else if (isAdd(identifier)) {
+      name = unwrapAdd(identifier);
       memberFactory = $ -> new Member.Array(render(name));
     } else {
       throw unsupported();
@@ -69,5 +93,34 @@ public class OptionsModel extends ExpressionModel {
 
   public void render(CodeWriter writer) {
     writer.getLang().renderOptions(this, writer);
+  }
+
+  private static boolean isGet(String identifier) {
+    return (identifier.startsWith("get") && identifier.length() > 3) ||
+        (identifier.startsWith("is") && identifier.length() > 2);
+  }
+
+  private static String unwrapGet(String identifier) {
+    if (identifier.startsWith("get")) {
+      return Character.toLowerCase(identifier.charAt(3)) + identifier.substring(4);
+    } else {
+      return Character.toLowerCase(identifier.charAt(2)) + identifier.substring(3);
+    }
+  }
+
+  private static boolean isSet(String identifier) {
+    return identifier.startsWith("set") && identifier.length() > 3;
+  }
+
+  private static String unwrapSet(String identifier) {
+    return Character.toLowerCase(identifier.charAt(3)) + identifier.substring(4);
+  }
+
+  private static boolean isAdd(String identifier) {
+    return identifier.startsWith("add") && identifier.length() > 3;
+  }
+
+  private static String unwrapAdd(String identifier) {
+    return Character.toLowerCase(identifier.charAt(3)) + identifier.substring(4) + "s"; // 's' for plural
   }
 }

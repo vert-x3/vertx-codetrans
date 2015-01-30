@@ -285,10 +285,20 @@ public class GroovyLang implements Lang {
   }
 
   @Override
+  public void renderOptionsAssign(ExpressionModel expression, ExpressionModel name, ExpressionModel value, CodeWriter writer) {
+    renderJsonObjectAssign(expression, name, value, writer);
+  }
+
+  @Override
   public void renderJsonObjectMemberSelect(ExpressionModel expression, ExpressionModel name, CodeWriter writer) {
     expression.render(writer);
     writer.append('.');
     name.render(writer);
+  }
+
+  @Override
+  public void renderOptionsMemberSelect(ExpressionModel expression, ExpressionModel name, CodeWriter writer) {
+    renderJsonObjectMemberSelect(expression, name, writer);
   }
 
   @Override
