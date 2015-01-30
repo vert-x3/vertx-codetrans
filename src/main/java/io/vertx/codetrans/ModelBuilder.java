@@ -258,7 +258,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
         } else if (type.getKind() == ClassKind.JSON_ARRAY) {
           return JsonArrayModel.classModel();
         } else if (type.getKind() == ClassKind.DATA_OBJECT) {
-          return OptionsModel.classModel(type);
+          return DataObjectModel.classModel(type);
         } else {
           return lang.classExpression(type);
         }
@@ -274,7 +274,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
           case JSON_OBJECT:
             return JsonObjectModel.instanceModel(ExpressionModel.render(identifier));
           case DATA_OBJECT:
-            return OptionsModel.instanceModel(ExpressionModel.render(identifier), (TypeInfo.Class) type);
+            return DataObjectModel.instanceModel(ExpressionModel.render(identifier), (TypeInfo.Class) type);
           default:
             return ExpressionModel.render(identifier);
         }

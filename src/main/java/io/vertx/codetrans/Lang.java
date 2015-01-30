@@ -178,15 +178,15 @@ public interface Lang {
 
   void renderJsonArray(JsonArrayModel jsonArray, CodeWriter writer);
 
-  void renderOptions(OptionsModel options, CodeWriter writer);
+  void renderDataObject(DataObjectModel model, CodeWriter writer);
 
   void renderJsonObjectAssign(ExpressionModel expression, ExpressionModel name, ExpressionModel value, CodeWriter writer);
 
-  void renderOptionsAssign(ExpressionModel expression, ExpressionModel name, ExpressionModel value, CodeWriter writer);
+  void renderDataObjectAssign(ExpressionModel expression, ExpressionModel name, ExpressionModel value, CodeWriter writer);
 
   void renderJsonObjectMemberSelect(ExpressionModel expression, ExpressionModel name, CodeWriter writer);
 
-  void renderOptionsMemberSelect(ExpressionModel expression, ExpressionModel name, CodeWriter writer);
+  void renderDataObjectMemberSelect(ExpressionModel expression, ExpressionModel name, CodeWriter writer);
 
   //
 

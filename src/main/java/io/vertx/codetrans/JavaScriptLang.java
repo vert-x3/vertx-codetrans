@@ -107,8 +107,8 @@ public class JavaScriptLang implements Lang {
     });
   }
 
-  public void renderOptions(OptionsModel options, CodeWriter writer) {
-    renderJsonObject(options.getMembers(), writer, false);
+  public void renderDataObject(DataObjectModel model, CodeWriter writer) {
+    renderJsonObject(model.getMembers(), writer, false);
   }
 
   public void renderJsonObject(JsonObjectModel jsonObject, CodeWriter writer) {
@@ -164,7 +164,7 @@ public class JavaScriptLang implements Lang {
   }
 
   @Override
-  public void renderOptionsAssign(ExpressionModel expression, ExpressionModel name, ExpressionModel value, CodeWriter writer) {
+  public void renderDataObjectAssign(ExpressionModel expression, ExpressionModel name, ExpressionModel value, CodeWriter writer) {
     renderJsonObjectAssign(expression, name, value, writer);
   }
 
@@ -176,7 +176,7 @@ public class JavaScriptLang implements Lang {
   }
 
   @Override
-  public void renderOptionsMemberSelect(ExpressionModel expression, ExpressionModel name, CodeWriter writer) {
+  public void renderDataObjectMemberSelect(ExpressionModel expression, ExpressionModel name, CodeWriter writer) {
     renderJsonObjectMemberSelect(expression, name, writer);
   }
 

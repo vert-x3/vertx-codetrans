@@ -11,10 +11,10 @@ import java.util.function.Function;
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class OptionsModel extends ExpressionModel {
+public class DataObjectModel extends ExpressionModel {
 
   public static ExpressionModel classModel(TypeInfo.Class type) {
-    return forNew(args -> new OptionsModel(type));
+    return forNew(args -> new DataObjectModel(type));
   }
 
   public static ExpressionModel instanceModel(ExpressionModel expression, TypeInfo.Class type) {
@@ -24,14 +24,14 @@ public class OptionsModel extends ExpressionModel {
         return ExpressionModel.forMethodInvocation(arguments -> {
           if (isSet(identifier)) {
             return ExpressionModel.render( writer -> {
-              writer.getLang().renderOptionsAssign(expression,
+              writer.getLang().renderDataObjectAssign(expression,
                   ExpressionModel.render(unwrapSet(identifier)),
                   arguments.get(0), writer);
             });
           }
           if (isGet(identifier)) {
             return ExpressionModel.render( writer -> {
-              writer.getLang().renderOptionsMemberSelect(expression,
+              writer.getLang().renderDataObjectMemberSelect(expression,
                   ExpressionModel.render(unwrapSet(identifier)), writer);
             });
           }
@@ -48,11 +48,11 @@ public class OptionsModel extends ExpressionModel {
   private final TypeInfo.Class type;
   private final Map<String, Member> members;
 
-  private OptionsModel(TypeInfo.Class type) {
+  private DataObjectModel(TypeInfo.Class type) {
     this(type, Collections.emptyMap());
   }
 
-  private OptionsModel(TypeInfo.Class type, Map<String, Member> members) {
+  private DataObjectModel(TypeInfo.Class type, Map<String, Member> members) {
     this.type = type;
     this.members = members;
   }
@@ -83,7 +83,7 @@ public class OptionsModel extends ExpressionModel {
           Member member = copy.computeIfAbsent(name, memberFactory);
           member.append(value);
           copy.put(name, member);
-          return new OptionsModel(type, copy);
+          return new DataObjectModel(type, copy);
         } else {
           throw unsupported();
         }
@@ -92,7 +92,7 @@ public class OptionsModel extends ExpressionModel {
   }
 
   public void render(CodeWriter writer) {
-    writer.getLang().renderOptions(this, writer);
+    writer.getLang().renderDataObject(this, writer);
   }
 
   private static boolean isGet(String identifier) {
