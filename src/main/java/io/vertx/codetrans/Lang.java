@@ -172,6 +172,10 @@ public interface Lang {
 
   //
 
+  void renderMapGet(ExpressionModel map, ExpressionModel arg, CodeWriter writer);
+
+  //
+
   String getExtension();
 
   void renderJsonObject(JsonObjectModel jsonObject, CodeWriter writer);

@@ -270,4 +270,12 @@ public class JavaScriptLang implements Lang {
       }
     });
   }
+
+  @Override
+  public void renderMapGet(ExpressionModel map, ExpressionModel arg, CodeWriter writer) {
+    map.render(writer);
+    writer.append('[');
+    arg.render(writer);
+    writer.append(']');
+  }
 }

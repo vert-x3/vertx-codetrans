@@ -309,4 +309,12 @@ public class GroovyLang implements Lang {
       renderer.append(")");
     });
   }
+
+  @Override
+  public void renderMapGet(ExpressionModel map, ExpressionModel arg, CodeWriter writer) {
+    map.render(writer);
+    writer.append('[');
+    arg.render(writer);
+    writer.append(']');
+  }
 }

@@ -27,6 +27,7 @@ import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.tree.JCTree;
 import io.vertx.codegen.ClassKind;
 import io.vertx.codegen.TypeInfo;
+import io.vertx.codetrans.annotations.MapModel;
 
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
@@ -275,6 +276,8 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
             return JsonObjectModel.instanceModel(ExpressionModel.render(identifier));
           case DATA_OBJECT:
             return DataObjectModel.instanceModel(ExpressionModel.render(identifier), (TypeInfo.Class) type);
+          case MAP:
+            return new MapModel(ExpressionModel.render(identifier));
           default:
             return ExpressionModel.render(identifier);
         }
