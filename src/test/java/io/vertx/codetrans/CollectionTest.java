@@ -11,10 +11,16 @@ public class CollectionTest extends ConversionTestBase {
   public static Object o;
 
   @Test
-  public void testMap() {
-    runAll("collection/MapGet", "start", () -> {
+  public void testGetOnVariable() {
+    runAll("collection/MapGet", "getOnVariable", () -> {
       assertEquals("foo_value", o);
     });
   }
 
+  @Test
+  public void testGetOnMethodReturn() {
+    runAll("collection/MapGet", "getOnMethodReturn", () -> {
+      assertEquals("foo_value", o);
+    });
+  }
 }

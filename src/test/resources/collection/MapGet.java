@@ -12,9 +12,15 @@ import java.util.Map;
 public class MapGet {
 
   @CodeTranslate
-  public void start() throws Exception {
+  public void getOnVariable() throws Exception {
     Map map = CollectionFactory.createMap();
     Object result = map.get("foo");
+    CollectionTest.o = result;
+  }
+
+  @CodeTranslate
+  public void getOnMethodReturn() throws Exception {
+    Object result = CollectionFactory.createMap().get("foo");
     CollectionTest.o = result;
   }
 }
