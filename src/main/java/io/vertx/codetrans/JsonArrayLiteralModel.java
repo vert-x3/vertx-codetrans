@@ -9,24 +9,15 @@ import java.util.List;
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class JsonArrayModel extends ExpressionModel {
-
-  private static final ExpressionModel CLASS_MODEL = forNew(args -> {
-    switch (args.size()) {
-      case 0:
-        return new JsonArrayModel(Collections.emptyList());
-      default:
-        throw new UnsupportedOperationException();
-    }
-  });
-
-  public static ExpressionModel classModel() {
-    return CLASS_MODEL;
-  }
+public class JsonArrayLiteralModel extends ExpressionModel {
 
   private List<ExpressionModel> values;
 
-  public JsonArrayModel(List<ExpressionModel> values) {
+  public JsonArrayLiteralModel() {
+    this(Collections.emptyList());
+  }
+
+  private JsonArrayLiteralModel(List<ExpressionModel> values) {
     this.values = values;
   }
 
@@ -46,7 +37,7 @@ public class JsonArrayModel extends ExpressionModel {
   public ExpressionModel onMethodInvocation(String methodName, List<ExpressionModel> arguments) {
     switch (methodName) {
       case "add":
-        return new JsonArrayModel(Helper.append(values, arguments.get(0)));
+        return new JsonArrayLiteralModel(Helper.append(values, arguments.get(0)));
       default:
         throw new UnsupportedOperationException("Method " + methodName + " not yet implemented");
     }

@@ -232,15 +232,15 @@ public class GroovyLang implements Lang {
     });
   }
 
-  public void renderDataObject(DataObjectModel model, CodeWriter writer) {
+  public void renderDataObject(DataObjectLiteralModel model, CodeWriter writer) {
     renderJsonObject(model.getMembers(), writer, false);
   }
 
-  public void renderJsonObject(JsonObjectModel jsonObject, CodeWriter writer) {
+  public void renderJsonObject(JsonObjectLiteralModel jsonObject, CodeWriter writer) {
     renderJsonObject(jsonObject.getMembers(), writer, true);
   }
 
-  public void renderJsonArray(JsonArrayModel jsonArray, CodeWriter writer) {
+  public void renderJsonArray(JsonArrayLiteralModel jsonArray, CodeWriter writer) {
     renderJsonArray(jsonArray.getValues(), writer);
   }
 

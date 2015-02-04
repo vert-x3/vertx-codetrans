@@ -180,11 +180,11 @@ public interface Lang {
 
   String getExtension();
 
-  void renderJsonObject(JsonObjectModel jsonObject, CodeWriter writer);
+  void renderJsonObject(JsonObjectLiteralModel jsonObject, CodeWriter writer);
 
-  void renderJsonArray(JsonArrayModel jsonArray, CodeWriter writer);
+  void renderJsonArray(JsonArrayLiteralModel jsonArray, CodeWriter writer);
 
-  void renderDataObject(DataObjectModel model, CodeWriter writer);
+  void renderDataObject(DataObjectLiteralModel model, CodeWriter writer);
 
   void renderJsonObjectAssign(ExpressionModel expression, ExpressionModel name, ExpressionModel value, CodeWriter writer);
 

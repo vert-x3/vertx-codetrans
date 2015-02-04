@@ -16,9 +16,9 @@ public class ExpressionModel extends CodeModel {
   public ExpressionModel as(TypeInfo type) {
     switch (type.getKind()) {
       case JSON_OBJECT:
-        return JsonObjectModel.instanceModel(this);
+        return new JsonObjectModel(this);
       case DATA_OBJECT:
-        return DataObjectModel.instanceModel(this, (TypeInfo.Class) type);
+        return new DataObjectModel(this);
       case MAP:
         return new MapModel(this);
       default:
