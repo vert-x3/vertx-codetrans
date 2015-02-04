@@ -352,7 +352,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
       }
     }
     CodeModel body = scan(node.getBody(), p);
-    return lang.lambda(node.getBodyKind(), parameterTypes, parameterNames, body);
+    return new LambdaExpressionModel(node.getBodyKind(), parameterTypes, parameterNames, body);
   }
 
   @Override

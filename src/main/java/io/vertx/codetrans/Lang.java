@@ -176,6 +176,11 @@ public interface Lang {
 
   void renderMapGet(ExpressionModel map, ExpressionModel arg, CodeWriter writer);
 
+  void renderMapForEach(ExpressionModel map,
+                        String keyName, TypeInfo keyType,
+                        String valueName, TypeInfo valueType,
+                        LambdaExpressionTree.BodyKind bodyKind, CodeModel block, CodeWriter writer);
+
   //
 
   String getExtension();
@@ -194,6 +199,8 @@ public interface Lang {
 
   void renderDataObjectMemberSelect(ExpressionModel expression, ExpressionModel name, CodeWriter writer);
 
+  void renderLambda(LambdaExpressionTree.BodyKind bodyKind, List<TypeInfo> parameterTypes, List<String> parameterNames, CodeModel body, CodeWriter writer);
+
   //
 
   default ExpressionModel nullLiteral() {
@@ -209,8 +216,6 @@ public interface Lang {
   }
 
   ExpressionModel classExpression(TypeInfo.Class type);
-
-  ExpressionModel lambda(LambdaExpressionTree.BodyKind bodyKind, List<TypeInfo> parameterTypes, List<String> parameterNames, CodeModel body);
 
   ExpressionModel asyncResult(String identifier);
 

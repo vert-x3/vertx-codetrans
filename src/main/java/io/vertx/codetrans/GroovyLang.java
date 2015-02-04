@@ -145,23 +145,21 @@ public class GroovyLang implements Lang {
   }
 
   @Override
-  public ExpressionModel lambda(LambdaExpressionTree.BodyKind bodyKind, List<TypeInfo> parameterTypes, List<String> parameterNames, CodeModel body) {
-    return ExpressionModel.render(renderer -> {
-      renderer.append("{");
-      for (int i = 0; i < parameterNames.size(); i++) {
-        if (i == 0) {
-          renderer.append(" ");
-        } else {
-          renderer.append(", ");
-        }
-        renderer.append(parameterNames.get(i));
+  public void renderLambda(LambdaExpressionTree.BodyKind bodyKind, List<TypeInfo> parameterTypes, List<String> parameterNames, CodeModel body, CodeWriter writer) {
+    writer.append("{");
+    for (int i = 0; i < parameterNames.size(); i++) {
+      if (i == 0) {
+        writer.append(" ");
+      } else {
+        writer.append(", ");
       }
-      renderer.append(" ->\n");
-      renderer.indent();
-      body.render(renderer);
-      renderer.unindent();
-      renderer.append("}");
-    });
+      writer.append(parameterNames.get(i));
+    }
+    writer.append(" ->\n");
+    writer.indent();
+    body.render(writer);
+    writer.unindent();
+    writer.append("}");
   }
 
   @Override
@@ -171,7 +169,9 @@ public class GroovyLang implements Lang {
 
   @Override
   public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, String resultName, CodeModel body) {
-    return lambda(null, null, Arrays.asList(resultName), body);
+    return ExpressionModel.render(writer -> {
+      renderLambda(null, null, Arrays.asList(resultName), body, writer);
+    });
   }
 
   @Override
@@ -325,5 +325,12 @@ public class GroovyLang implements Lang {
     writer.append('[');
     arg.render(writer);
     writer.append(']');
+  }
+
+  @Override
+  public void renderMapForEach(ExpressionModel map, String keyName, TypeInfo keyType, String valueName, TypeInfo valueType, LambdaExpressionTree.BodyKind bodyKind, CodeModel block, CodeWriter writer) {
+    map.render(writer);
+    writer.append(".each ");
+    renderLambda(bodyKind, Arrays.asList(keyType, valueType), Arrays.asList(keyName, valueName), block, writer);
   }
 }
