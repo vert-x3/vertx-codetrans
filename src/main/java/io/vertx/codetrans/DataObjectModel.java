@@ -20,23 +20,21 @@ public class DataObjectModel extends ExpressionModel {
   public static ExpressionModel instanceModel(ExpressionModel expression, TypeInfo.Class type) {
     return new ExpressionModel() {
       @Override
-      public ExpressionModel onMemberSelect(String identifier) {
-        return ExpressionModel.forMethodInvocation(arguments -> {
-          if (isSet(identifier)) {
-            return ExpressionModel.render( writer -> {
-              writer.getLang().renderDataObjectAssign(expression,
-                  ExpressionModel.render(unwrapSet(identifier)),
-                  arguments.get(0), writer);
-            });
-          }
-          if (isGet(identifier)) {
-            return ExpressionModel.render( writer -> {
-              writer.getLang().renderDataObjectMemberSelect(expression,
-                  ExpressionModel.render(unwrapSet(identifier)), writer);
-            });
-          }
-          throw new UnsupportedOperationException("TODO");
-        });
+      public ExpressionModel onMethodInvocation(TypeInfo returnType, String methodName, List<ExpressionModel> arguments) {
+        if (isSet(methodName)) {
+          return ExpressionModel.render( writer -> {
+            writer.getLang().renderDataObjectAssign(expression,
+                ExpressionModel.render(unwrapSet(methodName)),
+                arguments.get(0), writer);
+          });
+        }
+        if (isGet(methodName)) {
+          return ExpressionModel.render( writer -> {
+            writer.getLang().renderDataObjectMemberSelect(expression,
+                ExpressionModel.render(unwrapSet(methodName)), writer);
+          });
+        }
+        throw new UnsupportedOperationException("TODO");
       }
       @Override
       public void render(CodeWriter writer) {
@@ -62,33 +60,28 @@ public class DataObjectModel extends ExpressionModel {
   }
 
   @Override
-  public ExpressionModel onMemberSelect(String identifier) {
+  public ExpressionModel onMethodInvocation(TypeInfo returnType, String methodName, List<ExpressionModel> arguments) {
     String name;
     Function<String, Member> memberFactory;
-    if (isSet(identifier)) {
-      name = unwrapSet(identifier);
+    if (isSet(methodName)) {
+      name = unwrapSet(methodName);
       memberFactory = $ -> new Member.Single(render(name));
-    } else if (isAdd(identifier)) {
-      name = unwrapAdd(identifier);
+    } else if (isAdd(methodName)) {
+      name = unwrapAdd(methodName);
       memberFactory = $ -> new Member.Array(render(name));
     } else {
       throw unsupported();
     }
-    return new ExpressionModel() {
-      @Override
-      public ExpressionModel onMethodInvocation(List<ExpressionModel> arguments) {
-        if (arguments.size() == 1) {
-          Map<String, Member> copy = new LinkedHashMap<>(members);
-          ExpressionModel value = arguments.get(0);
-          Member member = copy.computeIfAbsent(name, memberFactory);
-          member.append(value);
-          copy.put(name, member);
-          return new DataObjectModel(type, copy);
-        } else {
-          throw unsupported();
-        }
-      }
-    };
+    if (arguments.size() == 1) {
+      Map<String, Member> copy = new LinkedHashMap<>(members);
+      ExpressionModel value = arguments.get(0);
+      Member member = copy.computeIfAbsent(name, memberFactory);
+      member.append(value);
+      copy.put(name, member);
+      return new DataObjectModel(type, copy);
+    } else {
+      throw unsupported();
+    }
   }
 
   public void render(CodeWriter writer) {

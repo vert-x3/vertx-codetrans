@@ -1,5 +1,7 @@
 package io.vertx.codetrans;
 
+import io.vertx.codegen.TypeInfo;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -32,18 +34,13 @@ public class JsonArrayModel extends ExpressionModel {
   }
 
   @Override
-  public ExpressionModel onMemberSelect(String identifier) {
-    return new ExpressionModel() {
-      @Override
-      public ExpressionModel onMethodInvocation(List<ExpressionModel> arguments) {
-        switch (identifier) {
-          case "add":
-            return new JsonArrayModel(Helper.append(values, arguments.get(0)));
-          default:
-            throw new UnsupportedOperationException("Method " + identifier + " not yet implemented");
-        }
-      }
-    };
+  public ExpressionModel onMethodInvocation(TypeInfo returnType, String methodName, List<ExpressionModel> arguments) {
+    switch (methodName) {
+      case "add":
+        return new JsonArrayModel(Helper.append(values, arguments.get(0)));
+      default:
+        throw new UnsupportedOperationException("Method " + methodName + " not yet implemented");
+    }
   }
 
   @Override

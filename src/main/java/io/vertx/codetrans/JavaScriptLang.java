@@ -204,11 +204,20 @@ public class JavaScriptLang implements Lang {
   }
 
   @Override
-  public ExpressionModel staticFactory(TypeInfo.Class type, String methodName) {
-    return ExpressionModel.render(renderer -> {
-      JavaScriptRenderer jsRenderer = (JavaScriptRenderer) renderer;
+  public ExpressionModel staticFactory(TypeInfo.Class type, String methodName, List<ExpressionModel> arguments) {
+    return ExpressionModel.render(writer -> {
+      JavaScriptRenderer jsRenderer = (JavaScriptRenderer) writer;
       jsRenderer.modules.add(type);
-      renderer.append(type.getSimpleName()).append('.').append(methodName);
+      writer.append(type.getSimpleName()).append('.').append(methodName);
+      writer.append('(');
+      for (int i = 0;i < arguments.size();i++) {
+        ExpressionModel argument = arguments.get(i);
+        if (i > 0) {
+          writer.append(", ");
+        }
+        argument.render(writer);
+      }
+      writer.append(')');
     });
   }
 
@@ -255,16 +264,16 @@ public class JavaScriptLang implements Lang {
 
   @Override
   public ExpressionModel asyncResult(String identifier) {
-    return ExpressionModel.forMemberSelect((member) -> {
+    return ExpressionModel.forMethodInvocation((member, args) -> {
       switch (member) {
         case "succeeded":
-          return ExpressionModel.forMethodInvocation((args) -> ExpressionModel.render("(" + identifier + " != null)"));
+          return ExpressionModel.render("(" + identifier + " != null)");
         case "result":
-          return ExpressionModel.forMethodInvocation((args) -> ExpressionModel.render(identifier));
+          return ExpressionModel.render(identifier);
         case "cause":
-          return ExpressionModel.forMethodInvocation((args) -> ExpressionModel.render(identifier + "_err"));
+          return ExpressionModel.render(identifier + "_err");
         case "failed":
-          return ExpressionModel.forMethodInvocation((args) -> ExpressionModel.render("(" + identifier + " == null)"));
+          return ExpressionModel.render("(" + identifier + " == null)");
         default:
           throw new UnsupportedOperationException("Not implemented");
       }

@@ -27,7 +27,6 @@ import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.tree.JCTree;
 import io.vertx.codegen.ClassKind;
 import io.vertx.codegen.TypeInfo;
-import io.vertx.codetrans.annotations.MapModel;
 
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
@@ -247,13 +246,13 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     JCTree.JCIdent ident = (JCTree.JCIdent) node;
     if (ident.sym instanceof TypeElement) {
       if (ident.type.equals(SystemType)) {
-        return ExpressionModel.forMemberSelect("out", () ->
-            ExpressionModel.forMemberSelect("println", () ->
-                ExpressionModel.forMethodInvocation(args -> lang.console(args.get(0)))));
+        return ExpressionModel.forFieldSelect("out", () ->
+            ExpressionModel.forMethodInvocation("println", args -> lang.console(args.get(0))
+            ));
       } else {
         TypeInfo.Class type = (TypeInfo.Class) factory.create(ident.type);
         if (type.getKind() == ClassKind.API) {
-          return ExpressionModel.forMemberSelect((identifier) -> lang.staticFactory(type, identifier));
+          return ExpressionModel.forMethodInvocation((identifier, arguments) -> lang.staticFactory(type, identifier, arguments));
         } else if (type.getKind() == ClassKind.JSON_OBJECT) {
           return JsonObjectModel.classModel();
         } else if (type.getKind() == ClassKind.JSON_ARRAY) {
@@ -301,14 +300,18 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
   @Override
   public ExpressionModel visitMemberSelect(MemberSelectTree node, VisitContext p) {
     ExpressionModel expression = scan(node.getExpression(), p);
-    return expression.onMemberSelect(node.getIdentifier().toString());
+    return expression.onField(node.getIdentifier().toString());
   }
 
   @Override
   public ExpressionModel visitMethodInvocation(MethodInvocationTree node, VisitContext p) {
-    ExpressionModel methodSelect = scan(node.getMethodSelect(), p);
+    // Is there a case it would not be a member select expression ?
+    MemberSelectTree memberSelect = (MemberSelectTree) node.getMethodSelect();
+    ExpressionModel expression = scan(memberSelect.getExpression(), p);
+    String methodName = memberSelect.getIdentifier().toString();
     List<ExpressionModel> arguments = node.getArguments().stream().map(argument -> scan(argument, p)).collect(Collectors.toList());
-    return methodSelect.onMethodInvocation(arguments);
+    TypeInfo returnType = factory.create(((JCTree) node).type);
+    return expression.onMethodInvocation(returnType, methodName, arguments);
   }
 
   @Override

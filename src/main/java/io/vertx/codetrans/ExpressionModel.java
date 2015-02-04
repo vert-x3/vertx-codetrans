@@ -1,6 +1,9 @@
 package io.vertx.codetrans;
 
+import io.vertx.codegen.TypeInfo;
+
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -10,32 +13,26 @@ import java.util.function.Supplier;
  */
 public class ExpressionModel extends CodeModel {
 
-  public ExpressionModel onMemberSelect(String identifier) {
-    if (identifier.equals("equals")) {
-      return ExpressionModel.forMethodInvocation(args -> {
-        if (args.size() == 1) {
-          return ExpressionModel.render(renderer -> {
-            renderer.getLang().renderEquals(ExpressionModel.this, args.get(0), renderer);
-          });
-        } else {
-          throw unsupported("equals overloading");
-        }
+  public ExpressionModel onMethodInvocation(TypeInfo returnType, String methodName, List<ExpressionModel> arguments) {
+    if (methodName.equals("equals") && arguments.size() == 1) {
+      return ExpressionModel.render(writer -> {
+        writer.getLang().renderEquals(ExpressionModel.this, arguments.get(0), writer);
       });
     } else {
-      return ExpressionModel.render((renderer) -> {
-        renderer.getLang().renderMemberSelect(ExpressionModel.this, identifier, renderer);
+      return ExpressionModel.render(writer -> {
+        writer.getLang().renderMethodInvocation(ExpressionModel.this, methodName, arguments, writer);
       });
     }
   }
 
-  public ExpressionModel onNew(List<ExpressionModel> arguments) {
-    throw unsupported(" with arguments " + arguments);
+  public ExpressionModel onField(String identifier) {
+    return ExpressionModel.render((renderer) -> {
+      renderer.getLang().renderMemberSelect(ExpressionModel.this, identifier, renderer);
+    });
   }
 
-  public ExpressionModel onMethodInvocation(List<ExpressionModel> arguments) {
-    return ExpressionModel.render((renderer) -> {
-      renderer.getLang().renderMethodInvocation(ExpressionModel.this, arguments, renderer);
-    });
+  public ExpressionModel onNew(List<ExpressionModel> arguments) {
+    throw unsupported(" with arguments " + arguments);
   }
 
   public ExpressionModel onPostFixIncrement() {
@@ -89,24 +86,15 @@ public class ExpressionModel extends CodeModel {
     };
   }
 
-  public static ExpressionModel forMemberSelect(String expected, Supplier<ExpressionModel> f) {
+  public static ExpressionModel forFieldSelect(String expected, Supplier<ExpressionModel> f) {
     return new ExpressionModel() {
       @Override
-      public ExpressionModel onMemberSelect(String identifier) {
+      public ExpressionModel onField(String identifier) {
         if (expected.equals(identifier)) {
           return f.get();
         } else {
           throw unsupported();
         }
-      }
-    };
-  }
-
-  public static ExpressionModel forMemberSelect(Function<String, ExpressionModel> f) {
-    return new ExpressionModel() {
-      @Override
-      public ExpressionModel onMemberSelect(String identifier) {
-        return f.apply(identifier);
       }
     };
   }
@@ -129,11 +117,25 @@ public class ExpressionModel extends CodeModel {
     });
   }
 
-  public static ExpressionModel forMethodInvocation(Function<List<ExpressionModel>, ExpressionModel> f) {
+  public static ExpressionModel forMethodInvocation(String methodName, Function<List<ExpressionModel>, ExpressionModel> f) {
+    String s = methodName;
     return new ExpressionModel() {
       @Override
-      public ExpressionModel onMethodInvocation(List<ExpressionModel> arguments) {
-        return f.apply(arguments);
+      public ExpressionModel onMethodInvocation(TypeInfo returnType, String methodName, List<ExpressionModel> arguments) {
+        if (s.equals(methodName)) {
+          return f.apply(arguments);
+        } else {
+          return super.onMethodInvocation(returnType, methodName, arguments);
+        }
+      }
+    };
+  }
+
+  public static ExpressionModel forMethodInvocation(BiFunction<String, List<ExpressionModel>, ExpressionModel> f) {
+    return new ExpressionModel() {
+      @Override
+      public ExpressionModel onMethodInvocation(TypeInfo returnType, String methodName, List<ExpressionModel> arguments) {
+        return f.apply(methodName, arguments);
       }
     };
   }

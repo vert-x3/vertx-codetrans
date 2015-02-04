@@ -175,11 +175,20 @@ public class GroovyLang implements Lang {
   }
 
   @Override
-  public ExpressionModel staticFactory(TypeInfo.Class type, String methodName) {
-    return ExpressionModel.render(renderer -> {
-      GroovyRenderer jsRenderer = (GroovyRenderer) renderer;
+  public ExpressionModel staticFactory(TypeInfo.Class type, String methodName, List<ExpressionModel> arguments) {
+    return ExpressionModel.render(writer -> {
+      GroovyRenderer jsRenderer = (GroovyRenderer) writer;
       jsRenderer.imports.add(type);
-      renderer.append(type.getSimpleName()).append('.').append(methodName);
+      writer.append(type.getSimpleName()).append('.').append(methodName);
+      writer.append('(');
+      for (int i = 0;i < arguments.size();i++) {
+        ExpressionModel argument = arguments.get(i);
+        if (i > 0) {
+          writer.append(", ");
+        }
+        argument.render(writer);
+      }
+      writer.append(')');
     });
   }
 
