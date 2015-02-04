@@ -1,8 +1,5 @@
 package io.vertx.codetrans;
 
-import io.vertx.codegen.TypeInfo;
-import io.vertx.codetrans.ExpressionModel;
-
 import java.util.List;
 
 /**
@@ -17,7 +14,7 @@ public class MapModel extends ExpressionModel {
   }
 
   @Override
-  public ExpressionModel onMethodInvocation(TypeInfo returnType, String methodName, List<ExpressionModel> arguments) {
+  public ExpressionModel onMethodInvocation(String methodName, List<ExpressionModel> arguments) {
     switch (methodName) {
       case "get":
         return ExpressionModel.render(writer -> {
@@ -26,5 +23,10 @@ public class MapModel extends ExpressionModel {
       default:
         throw new UnsupportedOperationException("Map " + methodName + " method not supported");
     }
+  }
+
+  @Override
+  public void render(CodeWriter writer) {
+    expression.render(writer);
   }
 }

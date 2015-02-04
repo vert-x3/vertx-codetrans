@@ -270,16 +270,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
       } else {
         String identifier = node.getName().toString();
         TypeInfo type = factory.create(ident.type);
-        switch (type.getKind()) {
-          case JSON_OBJECT:
-            return JsonObjectModel.instanceModel(ExpressionModel.render(identifier));
-          case DATA_OBJECT:
-            return DataObjectModel.instanceModel(ExpressionModel.render(identifier), (TypeInfo.Class) type);
-          case MAP:
-            return new MapModel(ExpressionModel.render(identifier));
-          default:
-            return ExpressionModel.render(identifier);
-        }
+        return ExpressionModel.render(identifier).as(type);
       }
     }
   }
@@ -300,18 +291,21 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
   @Override
   public ExpressionModel visitMemberSelect(MemberSelectTree node, VisitContext p) {
     ExpressionModel expression = scan(node.getExpression(), p);
-    return expression.onField(node.getIdentifier().toString());
+    TypeInfo fieldType = factory.create(((JCTree) node).type);
+    ExpressionModel fieldExpression = expression.onField(node.getIdentifier().toString());
+    return fieldExpression.as(fieldType);
   }
 
   @Override
   public ExpressionModel visitMethodInvocation(MethodInvocationTree node, VisitContext p) {
     // Is there a case it would not be a member select expression ?
     MemberSelectTree memberSelect = (MemberSelectTree) node.getMethodSelect();
-    ExpressionModel expression = scan(memberSelect.getExpression(), p);
+    ExpressionModel memberSelectExpression = scan(memberSelect.getExpression(), p);
     String methodName = memberSelect.getIdentifier().toString();
     List<ExpressionModel> arguments = node.getArguments().stream().map(argument -> scan(argument, p)).collect(Collectors.toList());
     TypeInfo returnType = factory.create(((JCTree) node).type);
-    return expression.onMethodInvocation(returnType, methodName, arguments);
+    ExpressionModel expression = memberSelectExpression.onMethodInvocation(methodName, arguments);
+    return expression.as(returnType);
   }
 
   @Override

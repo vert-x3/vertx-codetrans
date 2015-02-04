@@ -1,5 +1,6 @@
 package io.vertx.codetrans;
 
+import io.vertx.codegen.ClassKind;
 import io.vertx.codegen.TypeInfo;
 
 import java.util.Collections;
@@ -26,7 +27,7 @@ public class JsonObjectModel extends ExpressionModel {
   public static ExpressionModel instanceModel(ExpressionModel expression) {
     return new ExpressionModel() {
       @Override
-      public ExpressionModel onMethodInvocation(TypeInfo returnType, String methodName, List<ExpressionModel> arguments) {
+      public ExpressionModel onMethodInvocation(String methodName, List<ExpressionModel> arguments) {
         switch (methodName) {
           case "put":
             return ExpressionModel.render(writer -> {
@@ -70,7 +71,15 @@ public class JsonObjectModel extends ExpressionModel {
   }
 
   @Override
-  public ExpressionModel onMethodInvocation(TypeInfo returnType, String methodName, List<ExpressionModel> arguments) {
+  public ExpressionModel as(TypeInfo type) {
+    if (type.getKind() != ClassKind.JSON_OBJECT) {
+      throw new UnsupportedOperationException();
+    }
+    return this;
+  }
+
+  @Override
+  public ExpressionModel onMethodInvocation(String methodName, List<ExpressionModel> arguments) {
     switch (methodName) {
       case "put":
         return new JsonObjectModel(Helper.append(entries, new Member.Single(arguments.get(0)).append(arguments.get(1))));

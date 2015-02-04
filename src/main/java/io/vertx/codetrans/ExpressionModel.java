@@ -13,7 +13,20 @@ import java.util.function.Supplier;
  */
 public class ExpressionModel extends CodeModel {
 
-  public ExpressionModel onMethodInvocation(TypeInfo returnType, String methodName, List<ExpressionModel> arguments) {
+  public ExpressionModel as(TypeInfo type) {
+    switch (type.getKind()) {
+      case JSON_OBJECT:
+        return JsonObjectModel.instanceModel(this);
+      case DATA_OBJECT:
+        return DataObjectModel.instanceModel(this, (TypeInfo.Class) type);
+      case MAP:
+        return new MapModel(this);
+      default:
+        return this;
+    }
+  }
+
+  public ExpressionModel onMethodInvocation(String methodName, List<ExpressionModel> arguments) {
     if (methodName.equals("equals") && arguments.size() == 1) {
       return ExpressionModel.render(writer -> {
         writer.getLang().renderEquals(ExpressionModel.this, arguments.get(0), writer);
@@ -121,11 +134,11 @@ public class ExpressionModel extends CodeModel {
     String s = methodName;
     return new ExpressionModel() {
       @Override
-      public ExpressionModel onMethodInvocation(TypeInfo returnType, String methodName, List<ExpressionModel> arguments) {
+      public ExpressionModel onMethodInvocation(String methodName, List<ExpressionModel> arguments) {
         if (s.equals(methodName)) {
           return f.apply(arguments);
         } else {
-          return super.onMethodInvocation(returnType, methodName, arguments);
+          return super.onMethodInvocation(methodName, arguments);
         }
       }
     };
@@ -134,7 +147,7 @@ public class ExpressionModel extends CodeModel {
   public static ExpressionModel forMethodInvocation(BiFunction<String, List<ExpressionModel>, ExpressionModel> f) {
     return new ExpressionModel() {
       @Override
-      public ExpressionModel onMethodInvocation(TypeInfo returnType, String methodName, List<ExpressionModel> arguments) {
+      public ExpressionModel onMethodInvocation(String methodName, List<ExpressionModel> arguments) {
         return f.apply(methodName, arguments);
       }
     };

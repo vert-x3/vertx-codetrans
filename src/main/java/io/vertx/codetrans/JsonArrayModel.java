@@ -1,5 +1,6 @@
 package io.vertx.codetrans;
 
+import io.vertx.codegen.ClassKind;
 import io.vertx.codegen.TypeInfo;
 
 import java.util.Collections;
@@ -34,7 +35,15 @@ public class JsonArrayModel extends ExpressionModel {
   }
 
   @Override
-  public ExpressionModel onMethodInvocation(TypeInfo returnType, String methodName, List<ExpressionModel> arguments) {
+  public ExpressionModel as(TypeInfo type) {
+    if (type.getKind() != ClassKind.JSON_ARRAY) {
+      throw new UnsupportedOperationException();
+    }
+    return this;
+  }
+
+  @Override
+  public ExpressionModel onMethodInvocation(String methodName, List<ExpressionModel> arguments) {
     switch (methodName) {
       case "add":
         return new JsonArrayModel(Helper.append(values, arguments.get(0)));

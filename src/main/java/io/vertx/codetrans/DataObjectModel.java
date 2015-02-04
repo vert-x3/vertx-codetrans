@@ -20,7 +20,7 @@ public class DataObjectModel extends ExpressionModel {
   public static ExpressionModel instanceModel(ExpressionModel expression, TypeInfo.Class type) {
     return new ExpressionModel() {
       @Override
-      public ExpressionModel onMethodInvocation(TypeInfo returnType, String methodName, List<ExpressionModel> arguments) {
+      public ExpressionModel onMethodInvocation(String methodName, List<ExpressionModel> arguments) {
         if (isSet(methodName)) {
           return ExpressionModel.render( writer -> {
             writer.getLang().renderDataObjectAssign(expression,
@@ -60,7 +60,7 @@ public class DataObjectModel extends ExpressionModel {
   }
 
   @Override
-  public ExpressionModel onMethodInvocation(TypeInfo returnType, String methodName, List<ExpressionModel> arguments) {
+  public ExpressionModel onMethodInvocation(String methodName, List<ExpressionModel> arguments) {
     String name;
     Function<String, Member> memberFactory;
     if (isSet(methodName)) {
@@ -82,6 +82,14 @@ public class DataObjectModel extends ExpressionModel {
     } else {
       throw unsupported();
     }
+  }
+
+  @Override
+  public ExpressionModel as(TypeInfo type) {
+    if (!type.equals(this.type)) {
+      throw new UnsupportedOperationException();
+    }
+    return this;
   }
 
   public void render(CodeWriter writer) {

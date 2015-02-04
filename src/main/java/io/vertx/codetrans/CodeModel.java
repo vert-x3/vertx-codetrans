@@ -8,7 +8,9 @@ public class CodeModel {
   private final Exception where;
 
   public CodeModel() {
-    this.where = new UnsupportedOperationException();
+    this.where = new Exception() {
+
+    };
   }
 
   public String render(Lang lang) {
