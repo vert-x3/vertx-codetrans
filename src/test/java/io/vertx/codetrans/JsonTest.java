@@ -163,6 +163,15 @@ public class JsonTest extends ConversionTestBase {
     runGroovy("json/JsObject", "getValueFromIdentifier");
     Assert.assertEquals("foo_value", o);
   }
+
+  @Test
+  public void testJsonObjectEncodePrettily() {
+    runJavaScript("json/JsObject", "encodePrettily");
+    Assert.assertEquals("{\"foo\":\"foo_value\"}", o);
+    runGroovy("json/JsObject", "encodePrettily");
+    Assert.assertEquals("[foo:foo_value]", o);
+  }
+
   // **
 
   @Test

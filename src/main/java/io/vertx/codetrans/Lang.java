@@ -195,6 +195,8 @@ public interface Lang {
 
   void renderDataObjectAssign(ExpressionModel expression, ExpressionModel name, ExpressionModel value, CodeWriter writer);
 
+  void renderJsonObjectToString(ExpressionModel expression, CodeWriter writer);
+
   void renderJsonObjectMemberSelect(ExpressionModel expression, ExpressionModel name, CodeWriter writer);
 
   void renderDataObjectMemberSelect(ExpressionModel expression, ExpressionModel name, CodeWriter writer);

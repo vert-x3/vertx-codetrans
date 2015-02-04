@@ -129,4 +129,10 @@ public class JsObject {
     JsonObject obj = new JsonObject().put("foo", "foo_value");
     JsonTest.o = obj.getValue("foo");
   }
+
+  @CodeTranslate
+  public void encodePrettily() throws Exception {
+    JsonObject obj = new JsonObject().put("foo", "foo_value");
+    JsonTest.o = obj.encodePrettily();
+  }
 }

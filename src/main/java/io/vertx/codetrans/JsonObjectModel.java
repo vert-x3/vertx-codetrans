@@ -20,6 +20,11 @@ public class JsonObjectModel extends ExpressionModel {
         return ExpressionModel.render(writer -> {
           writer.getLang().renderJsonObjectAssign(expression, arguments.get(0), arguments.get(1), writer);
         });
+      case "encodePrettily": {
+        return ExpressionModel.render(writer -> {
+          writer.getLang().renderJsonObjectToString(expression, writer);
+        });
+      }
       case "getString":
       case "getJsonObject":
       case "getInteger":
