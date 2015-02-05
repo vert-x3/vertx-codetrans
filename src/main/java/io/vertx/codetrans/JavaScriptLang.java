@@ -211,6 +211,11 @@ public class JavaScriptLang implements Lang {
   }
 
   @Override
+  public void renderEnumConstant(TypeInfo.Class.Enum type, String constant, CodeWriter writer) {
+    writer.append('\'').append(constant).append('\'');
+  }
+
+  @Override
   public ExpressionModel staticFactory(TypeInfo.Class type, String methodName, List<ExpressionModel> arguments) {
     return ExpressionModel.render(writer -> {
       JavaScriptRenderer jsRenderer = (JavaScriptRenderer) writer;

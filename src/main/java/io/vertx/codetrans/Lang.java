@@ -203,6 +203,8 @@ public interface Lang {
 
   void renderLambda(LambdaExpressionTree.BodyKind bodyKind, List<TypeInfo> parameterTypes, List<String> parameterNames, CodeModel body, CodeWriter writer);
 
+  void renderEnumConstant(TypeInfo.Class.Enum type, String constant, CodeWriter writer);
+
   //
 
   default ExpressionModel nullLiteral() {

@@ -163,6 +163,11 @@ public class GroovyLang implements Lang {
   }
 
   @Override
+  public void renderEnumConstant(TypeInfo.Class.Enum type, String constant, CodeWriter writer) {
+    writer.append('\'').append(constant).append('\'');
+  }
+
+  @Override
   public ExpressionModel asyncResult(String identifier) {
     return ExpressionModel.render(renderer -> renderer.append(identifier));
   }

@@ -1,9 +1,10 @@
 package io.vertx.codetrans;
 
+import groovy.lang.GString;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -93,5 +94,23 @@ public class LiteralExpressionTest extends ConversionTestBase {
     runAll("expression/LiteralDouble", "negativeValue", () -> {
       assertEquals(-4.0d, ((Number)result).doubleValue(), 0.001);
     });
+  }
+
+  @Test
+  public void testEnumConstant() {
+    runAll("expression/LiteralEnum", "enumConstant", () -> {
+      assertTrue(result instanceof String);
+      assertEquals("THE_CONSTANT", result);
+    });
+  }
+
+  @Test
+  public void testEnumConstantInString() {
+    runJavaScript("expression/LiteralEnum", "enumConstantInString");
+    assertTrue(result instanceof String);
+    assertEquals("->THE_CONSTANT<-", result);
+    runGroovy("expression/LiteralEnum", "enumConstantInString");
+    assertTrue(result instanceof GString);
+    assertEquals("->THE_CONSTANT<-", result.toString());
   }
 }
