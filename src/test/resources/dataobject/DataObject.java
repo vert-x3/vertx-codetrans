@@ -3,7 +3,7 @@ package dataobject;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.codetrans.annotations.CodeTranslate;
 import io.vertx.codetrans.DataObjectTest;
-import io.vertx.core.net.JKSOptions;
+import io.vertx.core.net.JksOptions;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -17,7 +17,7 @@ public class DataObject {
 
   @CodeTranslate
   public void nested() throws Exception {
-    DataObjectTest.o = new HttpServerOptions().setKeyStoreOptions(new JKSOptions().setPath("/mystore.jks").setPassword("secret"));
+    DataObjectTest.o = new HttpServerOptions().setKeyStoreOptions(new JksOptions().setPath("/mystore.jks").setPassword("secret"));
   }
 
   @CodeTranslate
