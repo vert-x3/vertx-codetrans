@@ -70,27 +70,27 @@ public class HelperTest {
     assertEquals(expected, test.toString());
   }
 
-  public static class CommentParser implements FragmentParser {
+  public static class CommentParser extends FragmentParser {
 
     StringBuilder sb = new StringBuilder();
 
     @Override
-    public void onNewline() {
+    void onNewline() {
       sb.append('\n');
     }
 
     @Override
-    public void onComment(char c) {
+    void onComment(char c) {
       sb.append(c);
     }
 
     @Override
-    public void onBeginComment(boolean multiline) {
+    void onBeginComment(boolean multiline) {
       sb.append(multiline ? "/*" : "//");
     }
 
     @Override
-    public void onEndComment(boolean multiline) {
+    void onEndComment(boolean multiline) {
       sb.append(multiline ? "*/" : "\n");
     }
   }
