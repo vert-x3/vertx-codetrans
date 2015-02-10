@@ -38,7 +38,7 @@ public class CodeTranslator {
     TypeElement typeElt = (TypeElement) methodElt.getEnclosingElement();
     attributeClass(typeElt);
     TreePath path = trees.getPath(methodElt);
-    ModelBuilder builder = new ModelBuilder(SystemType, factory, lang);
+    ModelBuilder builder = new ModelBuilder(trees, path, SystemType, factory, lang);
     CodeModel model = builder.build(path);
     CodeWriter writer = new CodeWriter(lang);
     model.render(writer);

@@ -44,12 +44,18 @@ public class GroovyLang implements Lang {
   }
 
   @Override
-  public void renderBlock(List<StatementModel> statements, CodeWriter writer) {
+  public void renderStatement(StatementModel statement, CodeWriter writer) {
+    statement.render(writer);
+    writer.append("\n");
+  }
+
+  @Override
+  public void renderBlock(BlockModel block, CodeWriter writer) {
     if (writer instanceof GroovyRenderer) {
-      Lang.super.renderBlock(statements, writer);
+      Lang.super.renderBlock(block, writer);
     } else {
       GroovyRenderer langRenderer = new GroovyRenderer(this);
-      Lang.super.renderBlock(statements, langRenderer);
+      Lang.super.renderBlock(block, langRenderer);
       for (TypeInfo.Class importedType : langRenderer.imports) {
         writer.append("import ").append(importedType.getName().replace("io.vertx.", "io.vertx.groovy.")).append('\n');
       }

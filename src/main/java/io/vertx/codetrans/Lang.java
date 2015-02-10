@@ -56,11 +56,10 @@ public interface Lang {
     expression.render(writer);
   }
 
-  default void renderBlock(List<StatementModel> statements, CodeWriter writer) {
-    statements.forEach(statement -> {
-      statement.render(writer);
-      writer.append(";\n");
-    });
+  void renderStatement(StatementModel statement, CodeWriter writer);
+
+  default void renderBlock(BlockModel block, CodeWriter writer) {
+    block.render(writer);
   }
 
   default void renderMemberSelect(ExpressionModel expression, String identifier, CodeWriter writer) {
@@ -204,6 +203,30 @@ public interface Lang {
   void renderLambda(LambdaExpressionTree.BodyKind bodyKind, List<TypeInfo> parameterTypes, List<String> parameterNames, CodeModel body, CodeWriter writer);
 
   void renderEnumConstant(TypeInfo.Class.Enum type, String constant, CodeWriter writer);
+
+  default void renderFragment(String fragment, CodeWriter writer) {
+    FragmentParser renderer = new FragmentParser() {
+      @Override
+      public void onNewline() {
+        writer.append('\n');
+      }
+      @Override
+      public void onComment(char c) {
+        writer.append(c);
+      }
+      @Override
+      public void onBeginComment(boolean multiline) {
+        writer.append(multiline ? "/*" : "//");
+      }
+      @Override
+      public void onEndComment(boolean multiline) {
+        if (multiline) {
+          writer.append("*/");
+        }
+      }
+    };
+    renderer.parse(fragment);
+  }
 
   //
 

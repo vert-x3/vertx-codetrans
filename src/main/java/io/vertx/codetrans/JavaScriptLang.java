@@ -74,12 +74,18 @@ public class JavaScriptLang implements Lang {
   }
 
   @Override
-  public void renderBlock(List<StatementModel> statements, CodeWriter writer) {
+  public void renderStatement(StatementModel statement, CodeWriter writer) {
+    statement.render(writer);
+    writer.append(";\n");
+  }
+
+  @Override
+  public void renderBlock(BlockModel block, CodeWriter writer) {
     if (writer instanceof JavaScriptRenderer) {
-      Lang.super.renderBlock(statements, writer);
+      Lang.super.renderBlock(block, writer);
     } else {
       JavaScriptRenderer langRenderer = new JavaScriptRenderer(this);
-      Lang.super.renderBlock(statements, langRenderer);
+      Lang.super.renderBlock(block, langRenderer);
       for (TypeInfo.Class module : langRenderer.modules) {
         writer.append("var ").append(module.getSimpleName()).append(" = require(\"").
             append(module.getModuleName()).append("-js/").append(Helper.convertCamelCaseToUnderscores(module.getSimpleName())).append("\");\n");

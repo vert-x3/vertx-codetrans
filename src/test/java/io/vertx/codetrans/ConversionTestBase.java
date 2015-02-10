@@ -49,13 +49,20 @@ public abstract class ConversionTestBase {
     return run(lang, path, "start");
   }
 
-  public String run(Lang lang, String path, String method) {
-    Map<String, String> results;
+  public String convert(Lang lang, String path, String method) {
+    return convert(lang, path).get(method);
+  }
+
+  public Map<String, String> convert(Lang lang, String path) {
     try {
-      results = ConvertingProcessor.convert(ClassIdentifierExpressionTest.class.getClassLoader(), lang, path + ".java");
+      return ConvertingProcessor.convert(ClassIdentifierExpressionTest.class.getClassLoader(), lang, path + ".java");
     } catch (Exception e) {
       throw new AssertionError(e);
     }
+  }
+
+  public String run(Lang lang, String path, String method) {
+    Map<String, String> results = convert(lang, path);
     Thread current = Thread.currentThread();
     ClassLoader prev = current.getContextClassLoader();
     LoadingClassLoader loader = new LoadingClassLoader(current.getContextClassLoader(), results);
