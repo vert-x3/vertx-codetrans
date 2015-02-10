@@ -10,6 +10,58 @@ import static org.junit.Assert.*;
 public class FragmentTest extends ConversionTestBase {
 
   @Test
+  public void testFragmentParser() {
+    assertFragment("", "");
+    assertFragment("", " ");
+    assertFragment("\n", "\n");
+    assertFragment("<a>", "//a");
+    assertFragment("<a>\n", "//a\n");
+    assertFragment("<a>\n", " //a\n");
+    assertFragment("/*a*/", "/*a*/");
+    assertFragment("/*a*/", "/*a*/");
+    assertFragment("/***/", "/***/");
+    assertFragment("/****/", "/****/");
+    assertFragment("/*\n*/",
+        "/*\n" +
+        "*/");
+    assertFragment("/*\n*/",
+        " /*\n" +
+        " */");
+    assertFragment("/*\n */",
+        " /*\n" +
+        "  */");
+    assertFragment("/*\na */",
+        " /*\n" +
+        "a */");
+    assertFragment("/* \n*/",
+        " /* \n" +
+        "*/");
+  }
+
+  private void assertFragment(String expected, String s) {
+    StringBuilder test = new StringBuilder();
+    new FragmentParser() {
+      @Override
+      public void onNewline() {
+        test.append('\n');
+      }
+      @Override
+      public void onComment(char c) {
+        test.append(c);
+      }
+      @Override
+      public void onBeginComment(boolean multiline) {
+        test.append(multiline ? "/*" : "<");
+      }
+      @Override
+      public void onEndComment(boolean multiline) {
+        test.append(multiline ? "*/" : ">");
+      }
+    }.parse(s);
+    assertEquals(expected, test.toString());
+  }
+
+  @Test
   public void testEmpty() {
     String s = convert(new GroovyLang(), "fragment/Fragment", "fragment/Fragment_empty.groovy");
     assertEquals("def a = null\n", s);
