@@ -69,6 +69,15 @@ public class FragmentTest extends ConversionTestBase {
   }
 
   @Test
+  public void testOnlyLineComments() {
+    Result.Source s = (Result.Source) convert(new GroovyLang(), "fragment/Fragment", "fragment/Fragment_onlyLineComments.groovy");
+    assertEquals("" +
+        "// foo\n" +
+        "// bar\n" +
+        "// juu\n", s.getValue());
+  }
+
+  @Test
   public void testLineComments() {
     Result.Source s = (Result.Source) convert(new GroovyLang(), "fragment/Fragment", "fragment/Fragment_lineComments.groovy");
     assertEquals("" +

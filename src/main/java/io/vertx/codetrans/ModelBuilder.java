@@ -341,71 +341,66 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
 
     List<? extends StatementTree> statements = node.getStatements();
     List<StatementModel> models = statements.stream().map((statement) -> scan(statement, p)).collect(Collectors.toList());
-    if (statements.size() > 0) {
+    LinkedList<String> fragments = new LinkedList<>();
 
-      LinkedList<String> fragments = new LinkedList<>();
-
-      // Read the source code
-      CompilationUnitTree unit = path.getCompilationUnit();
-      StringBuilder buffer = new StringBuilder();
-      try(Reader reader = unit.getSourceFile().openReader(true)) {
-        char[] tmp = new char[256];
-        while (true) {
-          int len = reader.read(tmp);
-          if (len == -1) {
-            break;
-          }
-          buffer.append(tmp, 0, len);
+    // Read the source code
+    CompilationUnitTree unit = path.getCompilationUnit();
+    StringBuilder buffer = new StringBuilder();
+    try(Reader reader = unit.getSourceFile().openReader(true)) {
+      char[] tmp = new char[256];
+      while (true) {
+        int len = reader.read(tmp);
+        if (len == -1) {
+          break;
         }
-        String source = buffer.toString();
-
-        int blockBegin = (int) trees.getSourcePositions().getStartPosition(unit, node);
-        int blockEnd = (int) trees.getSourcePositions().getEndPosition(unit, node) - 1;
-        // There is a bug with lambda blocks that are not set on the '{' but on the parameter list
-        // so we need to correct and move to the '{'
-        while (blockBegin < blockEnd && source.charAt(blockBegin) != '{') {
-          blockBegin++;
-        }
-        while (blockBegin < blockEnd && source.charAt(blockBegin - 1) != '\n') {
-          blockBegin++;
-        }
-        while (blockEnd >= blockBegin && source.charAt(blockEnd - 1) != '\n') {
-          blockEnd--;
-        }
-        int prev = blockBegin;
-        for (StatementTree statement : statements) {
-          int statementBegin = (int) trees.getSourcePositions().getStartPosition(unit, statement);
-          while (statementBegin > prev && source.charAt(statementBegin - 1) != '\n') {
-            statementBegin--;
-          }
-          fragments.add(source.substring(prev, statementBegin));
-          int statementEnd = (int) trees.getSourcePositions().getEndPosition(unit, statement);
-          while (statementEnd < blockEnd && source.charAt(statementEnd - 1) != '\n') {
-            statementEnd++;
-          }
-          prev = statementEnd;
-
-        }
-        fragments.add(source.substring(prev, blockEnd));
-      } catch (IOException e) {
-        e.printStackTrace();
+        buffer.append(tmp, 0, len);
       }
-      return StatementModel.render(renderer -> {
-        renderer.getLang().renderBlock(new BlockModel() {
-          @Override
-          public void render(CodeWriter writer) {
-            for (int i = 0;i < models.size();i++) {
-              StatementModel model = models.get(i);
-              writer.getLang().renderFragment(fragments.get(i), writer);
-              writer.getLang().renderStatement(model, writer);
-            }
-            writer.getLang().renderFragment(fragments.getLast(), writer);
-          }
-        }, renderer);
-      });
-    } else {
-      return StatementModel.render(writer -> {});
+      String source = buffer.toString();
+
+      int blockBegin = (int) trees.getSourcePositions().getStartPosition(unit, node);
+      int blockEnd = (int) trees.getSourcePositions().getEndPosition(unit, node) - 1;
+      // There is a bug with lambda blocks that are not set on the '{' but on the parameter list
+      // so we need to correct and move to the '{'
+      while (blockBegin < blockEnd && source.charAt(blockBegin) != '{') {
+        blockBegin++;
+      }
+      while (blockBegin < blockEnd && source.charAt(blockBegin - 1) != '\n') {
+        blockBegin++;
+      }
+      while (blockEnd >= blockBegin && source.charAt(blockEnd - 1) != '\n') {
+        blockEnd--;
+      }
+      int prev = blockBegin;
+      for (StatementTree statement : statements) {
+        int statementBegin = (int) trees.getSourcePositions().getStartPosition(unit, statement);
+        while (statementBegin > prev && source.charAt(statementBegin - 1) != '\n') {
+          statementBegin--;
+        }
+        fragments.add(source.substring(prev, statementBegin));
+        int statementEnd = (int) trees.getSourcePositions().getEndPosition(unit, statement);
+        while (statementEnd < blockEnd && source.charAt(statementEnd - 1) != '\n') {
+          statementEnd++;
+        }
+        prev = statementEnd;
+
+      }
+      fragments.add(source.substring(prev, blockEnd));
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+    return StatementModel.render(renderer -> {
+      renderer.getLang().renderBlock(new BlockModel() {
+        @Override
+        public void render(CodeWriter writer) {
+          for (int i = 0;i < models.size();i++) {
+            StatementModel model = models.get(i);
+            writer.getLang().renderFragment(fragments.get(i), writer);
+            writer.getLang().renderStatement(model, writer);
+          }
+          writer.getLang().renderFragment(fragments.getLast(), writer);
+        }
+      }, renderer);
+    });
   }
 
   @Override
@@ -439,5 +434,4 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
   public CodeModel visitMethod(MethodTree node, VisitContext p) {
     return scan(node.getBody(), p);
   }
-
 }

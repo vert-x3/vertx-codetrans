@@ -14,6 +14,13 @@ public class Fragment {
   }
 
   @CodeTranslate
+  public void onlyLineComments() throws Exception {
+    // foo
+    // bar
+    // juu
+  }
+
+  @CodeTranslate
   public void lineComments() throws Exception {
     // foo
     String t = null;
