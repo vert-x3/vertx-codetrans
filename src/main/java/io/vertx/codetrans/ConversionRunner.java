@@ -29,7 +29,7 @@ public class ConversionRunner {
         throw new UnsupportedOperationException();
     }
 
-    Map<String, String> result = ConvertingProcessor.convert(ConversionRunner.class.getClassLoader(), lang,
+    Map<String, Result> result = ConvertingProcessor.convert(ConversionRunner.class.getClassLoader(), lang,
         "echo/EchoServer.java",
         "echo/EchoClient.java",
         "http/Client.java",
@@ -78,11 +78,12 @@ public class ConversionRunner {
       Files.copy(in, dst.toPath());
     }
 
-    for (Map.Entry<String, String> generated : result.entrySet()) {
+    for (Map.Entry<String, Result> generated : result.entrySet()) {
       File dst = new File(generated.getKey());
       dst.getParentFile().mkdirs();
       try (FileWriter writer = new FileWriter(dst)) {
-        writer.append(generated.getValue());
+        Result.Source source = (Result.Source) generated.getValue();
+        writer.append(source.getValue());
       }
     }
 

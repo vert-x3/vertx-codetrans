@@ -12,10 +12,10 @@ import java.util.Map;
  */
 public class LoadingClassLoader extends ClassLoader {
 
-  private final Map<String, String> results;
+  private final Map<String, Result> results;
   private final Map<String, File> files;
 
-  public LoadingClassLoader(ClassLoader parent, Map<String, String> results) {
+  public LoadingClassLoader(ClassLoader parent, Map<String, Result> results) {
     super(parent);
     this.results = results;
     this.files = new HashMap<>();
@@ -26,14 +26,18 @@ public class LoadingClassLoader extends ClassLoader {
     File file = files.get(name);
     try {
       if (file == null) {
-        String result = results.get(name);
-        if (result != null) {
+        Result result = results.get(name);
+        if (result instanceof Result.Source) {
           File tmp = Files.createTempFile("vertx", "source").toFile();
           tmp.deleteOnExit();
           try (FileWriter writer = new FileWriter(tmp)) {
-            writer.append(result);
+            writer.append(((Result.Source) result).getValue());
             files.put(name, file = tmp);
           }
+        } else if (result instanceof Result.Failure) {
+          NoClassDefFoundError err = new NoClassDefFoundError("Could not load " + name);
+          err.initCause(((Result.Failure) result).getCause());
+          throw err;
         }
       }
       if (file != null) {

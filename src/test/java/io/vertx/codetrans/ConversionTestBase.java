@@ -49,11 +49,11 @@ public abstract class ConversionTestBase {
     return run(lang, path, "start");
   }
 
-  public String convert(Lang lang, String path, String method) {
+  public Result convert(Lang lang, String path, String method) {
     return convert(lang, path).get(method);
   }
 
-  public Map<String, String> convert(Lang lang, String path) {
+  public Map<String, Result> convert(Lang lang, String path) {
     try {
       return ConvertingProcessor.convert(ClassIdentifierExpressionTest.class.getClassLoader(), lang, path + ".java");
     } catch (Exception e) {
@@ -62,7 +62,7 @@ public abstract class ConversionTestBase {
   }
 
   public String run(Lang lang, String path, String method) {
-    Map<String, String> results = convert(lang, path);
+    Map<String, Result> results = convert(lang, path);
     Thread current = Thread.currentThread();
     ClassLoader prev = current.getContextClassLoader();
     LoadingClassLoader loader = new LoadingClassLoader(current.getContextClassLoader(), results);
@@ -75,7 +75,8 @@ public abstract class ConversionTestBase {
     } finally {
       current.setContextClassLoader(prev);
     }
-    return results.get(path + "_" + method + "." + lang.getExtension());
+    Result result = results.get(path + "_" + method + "." + lang.getExtension());
+    return ((Result.Source) result).getValue();
   }
 
   private Object unwrapJsonElement(ScriptObject obj) {

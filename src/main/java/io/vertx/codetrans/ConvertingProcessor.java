@@ -38,7 +38,7 @@ public class ConvertingProcessor extends AbstractProcessor {
   private static final Locale locale = Locale.getDefault();
   private static final Charset charset = Charset.forName("UTF-8");
 
-  public static Map<String, String> convert(ClassLoader loader, Lang lang, String... sources) throws Exception {
+  public static Map<String, Result> convert(ClassLoader loader, Lang lang, String... sources) throws Exception {
     DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
     StandardJavaFileManager manager = javac.getStandardFileManager(diagnostics, locale, charset);
     List<File> files = new ArrayList<>();
@@ -62,7 +62,7 @@ public class ConvertingProcessor extends AbstractProcessor {
     ConvertingProcessor processor = new ConvertingProcessor(lang);
     task.setProcessors(Collections.<Processor>singletonList(processor));
     if (task.call()) {
-      return processor.getResult();
+      return processor.getResults();
     } else {
       StringWriter message = new StringWriter();
       PrintWriter writer = new PrintWriter(message);
@@ -76,7 +76,7 @@ public class ConvertingProcessor extends AbstractProcessor {
     }
   }
 
-  private Map<String, String> result = new HashMap<>();
+  private Map<String, Result> results = new HashMap<>();
   private Lang lang;
   private CodeTranslator translator;
 
@@ -84,8 +84,8 @@ public class ConvertingProcessor extends AbstractProcessor {
     this.lang = lang;
   }
 
-  public Map<String, String> getResult() {
-    return result;
+  public Map<String, Result> getResults() {
+    return results;
   }
 
   @Override
@@ -104,8 +104,14 @@ public class ConvertingProcessor extends AbstractProcessor {
     for (Element annotatedElt : roundEnv.getElementsAnnotatedWith(CodeTranslate.class)) {
       ExecutableElement methodElt = (ExecutableElement) annotatedElt;
       TypeElement typeElt = (TypeElement) methodElt.getEnclosingElement();
-      String translation = translator.translate(methodElt, lang);
-      result.put(typeElt.toString().replace('.', '/') + "_" + methodElt.getSimpleName() + '.' + lang.getExtension(), translation);
+      Result result;
+      try {
+        String translation = translator.translate(methodElt, lang);
+        result = new Result.Source(translation);
+      } catch (Exception e) {
+        result = new Result.Failure(e);
+      }
+      results.put(typeElt.toString().replace('.', '/') + "_" + methodElt.getSimpleName() + '.' + lang.getExtension(), result);
     }
     return false;
   }
