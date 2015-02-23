@@ -1,5 +1,6 @@
 package fragment;
 
+import io.vertx.codetrans.FragmentTest;
 import io.vertx.codetrans.annotations.CodeTranslate;
 
 /**
@@ -34,5 +35,16 @@ public class Fragment {
     /*
      * a
      */
+  }
+
+  @CodeTranslate
+  public void lineCommentInLamba() throws Exception {
+    FragmentTest.someMethod(arg -> {
+      // foo
+      String t = null;
+      // bar
+      String s = null;
+      // juu
+    });
   }
 }

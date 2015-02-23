@@ -1,5 +1,6 @@
 package io.vertx.codetrans;
 
+import io.vertx.core.Handler;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -93,5 +94,21 @@ public class FragmentTest extends ConversionTestBase {
         "/*\n" +
         " * a\n" +
         " */\n", s.getValue());
+  }
+
+  public static void someMethod(Handler<String> handler) {
+  }
+
+  @Test
+  public void testLineCommentInLambda() {
+    Result.Source s = (Result.Source) convert(new GroovyLang(), "fragment/Fragment", "fragment/Fragment_lineCommentInLamba.groovy");
+    assertEquals("" +
+        "io.vertx.codetrans.FragmentTest.someMethod({ arg ->\n" +
+        "  // foo\n" +
+        "  def t = null\n" +
+        "  // bar\n" +
+        "  def s = null\n" +
+        "  // juu\n" +
+        "})\n", s.getValue());
   }
 }
