@@ -323,6 +323,9 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
 
   @Override
   public ExpressionModel visitMethodInvocation(MethodInvocationTree node, VisitContext p) {
+    if (node.getMethodSelect() instanceof IdentifierTree) {
+      throw new UnsupportedOperationException("Invoking a method of the same class is not supported");
+    }
     // Is there a case it would not be a member select expression ?
     MemberSelectTree memberSelect = (MemberSelectTree) node.getMethodSelect();
     ExpressionModel memberSelectExpression = scan(memberSelect.getExpression(), p);
