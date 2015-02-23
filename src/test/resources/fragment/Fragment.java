@@ -14,7 +14,7 @@ public class Fragment {
   }
 
   @CodeTranslate
-  public void lineComment() throws Exception {
+  public void lineComments() throws Exception {
     // foo
     String t = null;
     // bar
@@ -23,7 +23,7 @@ public class Fragment {
   }
 
   @CodeTranslate
-  public void multiLineComment() throws Exception {
+  public void multiLineComments() throws Exception {
     /*a
       b
      c
@@ -38,7 +38,7 @@ public class Fragment {
   }
 
   @CodeTranslate
-  public void lineCommentInLamba() throws Exception {
+  public void lineCommentsInLamba() throws Exception {
     FragmentTest.someMethod(arg -> {
       // foo
       String t = null;

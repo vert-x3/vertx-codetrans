@@ -69,8 +69,8 @@ public class FragmentTest extends ConversionTestBase {
   }
 
   @Test
-  public void testLine() {
-    Result.Source s = (Result.Source) convert(new GroovyLang(), "fragment/Fragment", "fragment/Fragment_lineComment.groovy");
+  public void testLineComments() {
+    Result.Source s = (Result.Source) convert(new GroovyLang(), "fragment/Fragment", "fragment/Fragment_lineComments.groovy");
     assertEquals("" +
         "// foo\n" +
         "def t = null\n" +
@@ -80,8 +80,8 @@ public class FragmentTest extends ConversionTestBase {
   }
 
   @Test
-  public void testMultiLine() {
-    Result.Source s = (Result.Source) convert(new GroovyLang(), "fragment/Fragment", "fragment/Fragment_multiLineComment.groovy");
+  public void testMultiLineComments() {
+    Result.Source s = (Result.Source) convert(new GroovyLang(), "fragment/Fragment", "fragment/Fragment_multiLineComments.groovy");
     assertEquals("" +
         "/*a\n" +
         "  b\n" +
@@ -100,8 +100,8 @@ public class FragmentTest extends ConversionTestBase {
   }
 
   @Test
-  public void testLineCommentInLambda() {
-    Result.Source s = (Result.Source) convert(new GroovyLang(), "fragment/Fragment", "fragment/Fragment_lineCommentInLamba.groovy");
+  public void testLineCommentsInLambda() {
+    Result.Source s = (Result.Source) convert(new GroovyLang(), "fragment/Fragment", "fragment/Fragment_lineCommentsInLamba.groovy");
     assertEquals("" +
         "io.vertx.codetrans.FragmentTest.someMethod({ arg ->\n" +
         "  // foo\n" +
