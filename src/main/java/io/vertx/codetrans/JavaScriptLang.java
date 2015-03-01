@@ -268,9 +268,9 @@ public class JavaScriptLang implements Lang {
     return StatementModel.render((renderer) -> {
       renderer.append("for (");
       initializer.render(renderer);
-      renderer.append(';');
+      renderer.append("; ");
       condition.render(renderer);
-      renderer.append(';');
+      renderer.append("; ");
       update.render(renderer);
       renderer.append(") {\n");
       renderer.indent();
@@ -285,13 +285,13 @@ public class JavaScriptLang implements Lang {
     return ExpressionModel.forMethodInvocation((member, args) -> {
       switch (member) {
         case "succeeded":
-          return ExpressionModel.render("(" + identifier + " != null)");
+          return ExpressionModel.render("(" + identifier + "_err == null)");
         case "result":
           return ExpressionModel.render(identifier);
         case "cause":
           return ExpressionModel.render(identifier + "_err");
         case "failed":
-          return ExpressionModel.render("(" + identifier + " == null)");
+          return ExpressionModel.render("(" + identifier + "_err != null)");
         default:
           throw new UnsupportedOperationException("Not implemented");
       }
