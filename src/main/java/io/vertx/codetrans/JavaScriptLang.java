@@ -285,13 +285,13 @@ public class JavaScriptLang implements Lang {
     return ExpressionModel.forMethodInvocation((member, args) -> {
       switch (member) {
         case "succeeded":
-          return ExpressionModel.render("(" + identifier + "_err == null)");
+          return ExpressionModel.render(identifier + "_err == null");
         case "result":
           return ExpressionModel.render(identifier);
         case "cause":
           return ExpressionModel.render(identifier + "_err");
         case "failed":
-          return ExpressionModel.render("(" + identifier + "_err != null)");
+          return ExpressionModel.render(identifier + "_err != null");
         default:
           throw new UnsupportedOperationException("Not implemented");
       }

@@ -17,10 +17,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class AsyncResultTest extends ConversionTestBase {
 
-  public static void callbackWithSuccess(Handler<AsyncResult> callback) {
-    callback.handle(Future.succeededFuture("hello"));
-  }
-
   public static void callbackWithFailure(Handler<AsyncResult> callback) {
     callback.handle(Future.failedFuture("oh no"));
   }
@@ -52,16 +48,16 @@ public class AsyncResultTest extends ConversionTestBase {
       resultLatch = new CountDownLatch(1);
       result = null;
       run(lang, "asyncresult/AsyncResultHandler", "succeeded");
-      resultLatch.await(10, TimeUnit.SECONDS);
+      Assert.assertTrue(resultLatch.await(10, TimeUnit.SECONDS));
       Assert.assertEquals("hello", result);
       Assert.assertEquals(Boolean.TRUE, succeeded);
     }
   }
 
   private static Boolean failed;
-  private static Object cause;
+  private static Throwable cause;
   private static CountDownLatch causeLatch;
-  public static void setCause(Object cause, Boolean failed) {
+  public static void setCause(Throwable cause, Boolean failed) {
     AsyncResultTest.cause = cause;
     AsyncResultTest.failed = failed;
     causeLatch.countDown();
@@ -75,6 +71,7 @@ public class AsyncResultTest extends ConversionTestBase {
       run(lang, "asyncresult/AsyncResultHandler", "failed");
       causeLatch.await(10, TimeUnit.SECONDS);
       Assert.assertNotNull(cause);
+      Assert.assertEquals("oh no", cause.getMessage());
       Assert.assertEquals(Boolean.TRUE, failed);
     }
   }

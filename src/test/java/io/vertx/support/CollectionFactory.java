@@ -8,9 +8,9 @@ import java.util.Map;
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 @VertxGen
-public class CollectionFactory {
+public interface CollectionFactory {
 
   public static Map createMap() {
-    throw new AssertionError();
+    throw new AssertionError("stub");
   }
 }
