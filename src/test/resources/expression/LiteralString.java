@@ -21,6 +21,6 @@ public class LiteralString {
 
   @CodeTranslate
   public void escape() throws Exception {
-    LiteralExpressionTest.result = "\n\"\\'";
+    LiteralExpressionTest.result = "\n\r\t\f\b\"\\'\u0000A\u007F";
   }
 }

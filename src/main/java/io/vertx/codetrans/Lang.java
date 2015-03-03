@@ -91,8 +91,20 @@ public interface Lang {
     for (int i = 0;i < value.length();i++) {
       char c = value.charAt(i);
       switch (c) {
+        case '\b':
+          writer.append("\\b");
+          break;
+        case '\f':
+          writer.append("\\f");
+          break;
         case '\n':
           writer.append("\\n");
+          break;
+        case '\t':
+          writer.append("\\t");
+          break;
+        case '\r':
+          writer.append("\\r");
           break;
         case '"':
           writer.append("\\\"");
@@ -101,7 +113,15 @@ public interface Lang {
           writer.append("\\\\");
           break;
         default:
-          writer.append(c);
+          if (c < 32 || c > 126) {
+            String s = Integer.toHexString(c).toUpperCase();
+            while (s.length() < 4) {
+              s = "0" + s;
+            }
+            writer.append("\\u").append(s);
+          } else {
+            writer.append(c);
+          }
       }
     }
   }

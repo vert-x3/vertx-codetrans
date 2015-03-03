@@ -13,6 +13,10 @@ public abstract class Result {
     public String getValue() {
       return value;
     }
+    @Override
+    public String toString() {
+      return "Source[" + value + "]";
+    }
   }
 
   public static class Failure extends Result {

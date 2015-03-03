@@ -18,7 +18,6 @@ public class LiteralExpressionTest extends ConversionTestBase {
     result = null;
   }
 
-
   @Test
   public void testLiteralString() throws Exception {
     runAll("expression/LiteralString", "value", () -> {
@@ -27,9 +26,16 @@ public class LiteralExpressionTest extends ConversionTestBase {
     runAll("expression/LiteralString", "concat", () -> {
       assertEquals("_3_", result.toString());
     });
+    String expected = "\n\r\t\f\b\"\\'\u0000\u0041\u007F";
     runAll("expression/LiteralString", "escape", () -> {
-      assertEquals("\n\"\\'", result.toString());
+      assertEquals(expected, result.toString());
     });
+    Lang[] langs = { new JavaScriptLang(), new GroovyLang() };
+    for (Lang lang : langs) {
+      CodeWriter writer = new CodeWriter(lang);
+      lang.renderCharacters(expected, writer);
+      assertEquals("\\n\\r\\t\\f\\b\\\"\\\\'\\u0000A\\u007F", writer.getBuffer().toString());
+    }
   }
 
   @Test
