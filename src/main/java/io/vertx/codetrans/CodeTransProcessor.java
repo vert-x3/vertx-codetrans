@@ -72,6 +72,35 @@ public class CodeTransProcessor extends AbstractProcessor {
     langs = Arrays.asList(new JavaScriptLang(), new GroovyLang());
   }
 
+  private void copyDirRec(File srcFolder, File dstFolder, PrintWriter log) throws Exception {
+    if (!folders.contains(dstFolder)) {
+      folders.add(dstFolder);
+      Path srcPath = srcFolder.toPath();
+      Path dstPath = dstFolder.toPath();
+      SimpleFileVisitor<Path> copyingVisitor = new SimpleFileVisitor<Path>() {
+        @Override
+        public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+          Path targetPath = dstPath.resolve(srcPath.relativize(dir));
+          if(!Files.exists(targetPath)){
+            log.println("Creating dir " + targetPath);
+            Files.createDirectory(targetPath);
+          }
+          return FileVisitResult.CONTINUE;
+        }
+        @Override
+        public FileVisitResult visitFile(Path srcFile, BasicFileAttributes attrs) throws IOException {
+          if (!srcFile.getFileName().toString().endsWith(".java")) {
+            log.println("Copying resource " + srcFile + " to " + dstPath);
+            Path dstFile = dstPath.resolve(srcPath.relativize(srcFile));
+            Files.copy(srcFile, dstFile, StandardCopyOption.REPLACE_EXISTING);
+          }
+          return FileVisitResult.CONTINUE;
+        }
+      };
+      Files.walkFileTree(srcPath, copyingVisitor);
+    }
+  }
+
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
     if (outputDir != null && (outputDir.exists() || outputDir.mkdirs())) {
@@ -84,59 +113,29 @@ public class CodeTransProcessor extends AbstractProcessor {
               modifiers.contains(Modifier.PUBLIC) &&
               processingEnv.getTypeUtils().isSubtype(rootElt.asType(), verticleType)) {
             TypeElement typeElt = (TypeElement) rootElt;
-
-            //
-            String folderName = processingEnv.getElementUtils().getPackageOf(typeElt).getSimpleName().toString();
-            File dstFolder = new File(outputDir, folderName);
-            if (!dstFolder.exists()) {
-              dstFolder.mkdirs();
-            }
-
-            // Copy files
             FileObject obj = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, "", typeElt.getQualifiedName().toString().replace('.', '/') + ".java");
             File srcFolder = new File(obj.toUri()).getParentFile();
-            if (!folders.contains(srcFolder)) {
-              folders.add(srcFolder);
-              Path srcPath = srcFolder.toPath();
-              Path dstPath = dstFolder.toPath();
-              SimpleFileVisitor copyingVisitor = new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                  Path targetPath = dstPath.resolve(srcPath.relativize(dir));
-                  if(!Files.exists(targetPath)){
-                    log.println("Creating dir " + targetPath);
-                    Files.createDirectory(targetPath);
-                  }
-                  return FileVisitResult.CONTINUE;
-                }
-                @Override
-                public FileVisitResult visitFile(Path srcFile, BasicFileAttributes attrs) throws IOException {
-                  if (!srcFile.getFileName().toString().endsWith(".java")) {
-                    log.println("Copying resource " + srcFile + " to " + dstPath);
-                    Path dstFile = dstPath.resolve(srcPath.relativize(srcFile));
-                    Files.copy(srcFile, dstFile, StandardCopyOption.REPLACE_EXISTING);
-                  }
-                  return FileVisitResult.CONTINUE;
-                }
-              };
-              Files.walkFileTree(srcPath, copyingVisitor);
-            }
-
-            // Generate code
             for (Element enclosedElt : typeElt.getEnclosedElements()) {
               if (enclosedElt.getKind() == ElementKind.METHOD) {
                 ExecutableElement methodElt = (ExecutableElement) enclosedElt;
                 if (methodElt.getSimpleName().toString().equals("start") && methodElt.getParameters().isEmpty()) {
                   String fileName = typeElt.getSimpleName().toString().toLowerCase();
                   for (Lang lang : langs) {
-                    try {
-                      String translation = translator.translate(methodElt, lang);
-                      File f = new File(dstFolder, fileName + "." + lang.getExtension());
-                      Files.write(f.toPath(), translation.getBytes(), StandardOpenOption.CREATE);
-                      log.println("Generated " + f.getAbsolutePath());
-                    } catch (Exception e) {
-                      log.println("Skipping generation of " + typeElt.getQualifiedName());
-                      e.printStackTrace(log);
+
+                    //
+                    String folderName = processingEnv.getElementUtils().getPackageOf(typeElt).getSimpleName().toString();
+                    File dstFolder = new File(new File(outputDir, lang.getExtension()), folderName);
+                    if (dstFolder.exists() || dstFolder.mkdirs()) {
+                      try {
+                        String translation = translator.translate(methodElt, lang);
+                        File f = new File(dstFolder, fileName + "." + lang.getExtension());
+                        Files.write(f.toPath(), translation.getBytes(), StandardOpenOption.CREATE);
+                        log.println("Generated " + f.getAbsolutePath());
+                        copyDirRec(srcFolder, dstFolder, log);
+                      } catch (Exception e) {
+                        log.println("Skipping generation of " + typeElt.getQualifiedName());
+                        e.printStackTrace(log);
+                      }
                     }
                   }
                 }
@@ -144,7 +143,7 @@ public class CodeTransProcessor extends AbstractProcessor {
             }
           }
         }
-      } catch (IOException e) {
+      } catch (Exception e) {
         e.printStackTrace();;
       }
       return true;
