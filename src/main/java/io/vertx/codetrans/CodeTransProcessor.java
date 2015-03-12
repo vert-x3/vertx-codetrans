@@ -135,7 +135,7 @@ public class CodeTransProcessor extends AbstractProcessor {
                       Files.write(f.toPath(), translation.getBytes(), StandardOpenOption.CREATE);
                       log.println("Generated " + f.getAbsolutePath());
                     } catch (Exception e) {
-                      log.print("Skipping generation of " + typeElt.getQualifiedName());
+                      log.println("Skipping generation of " + typeElt.getQualifiedName());
                       e.printStackTrace(log);
                     }
                   }
