@@ -44,6 +44,12 @@ public class ExpressionModel extends CodeModel {
     });
   }
 
+  public ExpressionModel onMethodReference(String methodName) {
+    return ExpressionModel.render((renderer) -> {
+      renderer.getLang().renderMethodReference(ExpressionModel.this, methodName, renderer);
+    });
+  }
+
   public ExpressionModel onNew(List<ExpressionModel> arguments) {
     throw unsupported(" with arguments " + arguments);
   }

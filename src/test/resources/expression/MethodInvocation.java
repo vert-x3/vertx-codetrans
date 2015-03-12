@@ -1,6 +1,6 @@
 package expression;
 
-import io.vertx.codetrans.MethodInvocationExpressionTest;
+import io.vertx.codetrans.MethodExpressionTest;
 import io.vertx.codetrans.annotations.CodeTranslate;
 
 /**
@@ -10,13 +10,13 @@ public class MethodInvocation {
 
   @CodeTranslate
   public void instanceSelectInvocation() throws Exception {
-    Runnable counter = MethodInvocationExpressionTest.counter;
+    Runnable counter = MethodExpressionTest.counter;
     counter.run();
   }
 
   @CodeTranslate
   public void classSelectInvocation() throws Exception {
-    MethodInvocationExpressionTest.count();
+    MethodExpressionTest.count();
   }
 
   @CodeTranslate

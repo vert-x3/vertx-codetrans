@@ -13,6 +13,7 @@ import com.sun.source.tree.IdentifierTree;
 import com.sun.source.tree.IfTree;
 import com.sun.source.tree.LambdaExpressionTree;
 import com.sun.source.tree.LiteralTree;
+import com.sun.source.tree.MemberReferenceTree;
 import com.sun.source.tree.MemberSelectTree;
 import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.MethodTree;
@@ -319,6 +320,18 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     TypeInfo fieldType = factory.create(((JCTree) node).type);
     ExpressionModel fieldExpression = expression.onField(node.getIdentifier().toString());
     return fieldExpression.as(fieldType);
+  }
+
+
+  @Override
+  public CodeModel visitMemberReference(MemberReferenceTree node, VisitContext p) {
+    if (node.getMode() == MemberReferenceTree.ReferenceMode.INVOKE) {
+      ExpressionModel expression = scan(node.getQualifierExpression(), p);
+      ExpressionModel methodReferenceExpression = expression.onMethodReference(node.getName().toString());
+      return methodReferenceExpression;
+    } else {
+      throw new UnsupportedOperationException("New reference not implemented yet");
+    }
   }
 
   @Override

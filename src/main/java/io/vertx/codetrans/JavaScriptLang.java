@@ -313,4 +313,10 @@ public class JavaScriptLang implements Lang {
     renderLambda(bodyKind, Arrays.asList(valueType, keyType), Arrays.asList(valueName, keyName), block, writer);
     writer.append(")");
   }
+
+  @Override
+  public void renderMethodReference(ExpressionModel expression, String methodName, CodeWriter writer) {
+    expression.render(writer);
+    writer.append('.').append(methodName);
+  }
 }

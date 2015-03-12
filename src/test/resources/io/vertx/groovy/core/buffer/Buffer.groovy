@@ -11,6 +11,10 @@ public class Buffer {
   public static Buffer buffer(String string) {
     return new Buffer(io.vertx.core.buffer.Buffer.buffer(string));
   }
+  public Buffer appendString(String str) {
+    delegate.appendString(str);
+    return this;
+  }
   public String toString(String enc) {
     return this.delegate.toString(enc);
   }

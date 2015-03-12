@@ -67,6 +67,8 @@ public interface Lang {
     writer.append('.').append(identifier);
   }
 
+  void renderMethodReference(ExpressionModel expression, String methodName, CodeWriter writer);
+
   default void renderMethodInvocation(ExpressionModel expression, String methodName, List<ExpressionModel> arguments, CodeWriter writer) {
     expression.render(writer);
     writer.append('.');

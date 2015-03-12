@@ -2,13 +2,16 @@ package io.vertx.codetrans;
 
 import org.junit.Test;
 
+import java.util.Map;
+import java.util.function.Consumer;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class MethodInvocationExpressionTest extends ConversionTestBase {
+public class MethodExpressionTest extends ConversionTestBase {
 
   private static int countValue = 0;
 
@@ -40,5 +43,19 @@ public class MethodInvocationExpressionTest extends ConversionTestBase {
     Throwable cause = result.getCause();
     assertTrue("Was expecting result to be an UnsupportedOperationException and not a " + cause.getClass().getName(),
         cause instanceof UnsupportedOperationException);
+  }
+
+  public static Object helloworld;
+
+  public static void consumer(Consumer<String> consumer) {
+    consumer.accept("world");
+  }
+
+  @Test
+  public void testMethodReference() throws Exception {
+    runAll("expression/MethodReference", "lambdaisation", () -> {
+      assertEquals("helloworld", helloworld);
+      helloworld = null;
+    });
   }
 }

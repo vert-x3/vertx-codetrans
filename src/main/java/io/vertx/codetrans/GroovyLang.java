@@ -350,4 +350,10 @@ public class GroovyLang implements Lang {
     writer.append(".each ");
     renderLambda(bodyKind, Arrays.asList(keyType, valueType), Arrays.asList(keyName, valueName), block, writer);
   }
+
+  @Override
+  public void renderMethodReference(ExpressionModel expression, String methodName, CodeWriter writer) {
+    expression.render(writer);
+    writer.append(".&").append(methodName);
+  }
 }
