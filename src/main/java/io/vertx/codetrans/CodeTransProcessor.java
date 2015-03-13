@@ -121,10 +121,8 @@ public class CodeTransProcessor extends AbstractProcessor {
                 if (methodElt.getSimpleName().toString().equals("start") && methodElt.getParameters().isEmpty()) {
                   String fileName = typeElt.getSimpleName().toString().toLowerCase();
                   for (Lang lang : langs) {
-
-                    //
-                    String folderName = processingEnv.getElementUtils().getPackageOf(typeElt).getSimpleName().toString();
-                    File dstFolder = new File(new File(outputDir, lang.getExtension()), folderName);
+                    String folderPath = processingEnv.getElementUtils().getPackageOf(typeElt).getQualifiedName().toString().replace('.', '/');
+                    File dstFolder = new File(new File(outputDir, lang.getExtension()), folderPath);
                     if (dstFolder.exists() || dstFolder.mkdirs()) {
                       try {
                         String translation = translator.translate(methodElt, lang);
