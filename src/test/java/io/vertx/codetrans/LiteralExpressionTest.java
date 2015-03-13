@@ -1,6 +1,7 @@
 package io.vertx.codetrans;
 
 import groovy.lang.GString;
+import io.vertx.support.TheEnum;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -104,10 +105,11 @@ public class LiteralExpressionTest extends ConversionTestBase {
 
   @Test
   public void testEnumConstant() {
-    runAll("expression/LiteralEnum", "enumConstant", () -> {
-      assertTrue(result instanceof String);
-      assertEquals("THE_CONSTANT", result);
-    });
+    runJavaScript("expression/LiteralEnum", "enumConstant");
+    assertTrue(result instanceof String);
+    assertEquals("THE_CONSTANT", result);
+    runGroovy("expression/LiteralEnum", "enumConstant");
+    assertEquals(TheEnum.THE_CONSTANT, result);
   }
 
   @Test

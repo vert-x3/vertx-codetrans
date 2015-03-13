@@ -57,7 +57,11 @@ public class GroovyLang implements Lang {
       GroovyRenderer langRenderer = new GroovyRenderer(this);
       Lang.super.renderBlock(block, langRenderer);
       for (TypeInfo.Class importedType : langRenderer.imports) {
-        writer.append("import ").append(importedType.getName().replace("io.vertx.", "io.vertx.groovy.")).append('\n');
+        String fqn = importedType.getName();
+        if (importedType instanceof TypeInfo.Class.Api) {
+          fqn = importedType.getName().replace("io.vertx.", "io.vertx.groovy.");
+        }
+        writer.append("import ").append(fqn).append('\n');
       }
       writer.append(langRenderer.getBuffer());
     }
@@ -170,7 +174,9 @@ public class GroovyLang implements Lang {
 
   @Override
   public void renderEnumConstant(TypeInfo.Class.Enum type, String constant, CodeWriter writer) {
-    writer.append('\'').append(constant).append('\'');
+    GroovyRenderer jsRenderer = (GroovyRenderer) writer;
+    jsRenderer.imports.add(type);
+    writer.append(type.getSimpleName()).append('.').append(constant);
   }
 
   @Override
