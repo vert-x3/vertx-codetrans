@@ -2,7 +2,7 @@ package io.vertx.codetrans;
 
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import jdk.nashorn.internal.runtime.ScriptObject;
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
 
 import java.util.List;
 import java.util.Map;
@@ -79,7 +79,7 @@ public abstract class ConversionTestBase {
     return ((Result.Source) result).getValue();
   }
 
-  private Object unwrapJsonElement(ScriptObject obj) {
+  private Object unwrapJsonElement(ScriptObjectMirror obj) {
     if (obj.isArray()) {
       return unwrapJsonArray(obj);
     } else {
@@ -87,25 +87,25 @@ public abstract class ConversionTestBase {
     }
   }
 
-  public JsonObject unwrapJsonObject(ScriptObject obj) {
+  public JsonObject unwrapJsonObject(ScriptObjectMirror obj) {
     JsonObject unwrapped = new JsonObject();
     for (String key : obj.getOwnKeys(true)) {
       Object value = obj.get(key);
-      if (value instanceof ScriptObject) {
-        value = unwrapJsonElement((ScriptObject) value);
+      if (value instanceof ScriptObjectMirror) {
+        value = unwrapJsonElement((ScriptObjectMirror) value);
       }
       unwrapped.put(key, value);
     }
     return unwrapped;
   }
 
-  public JsonArray unwrapJsonArray(ScriptObject obj) {
+  public JsonArray unwrapJsonArray(ScriptObjectMirror obj) {
     JsonArray unwrapped = new JsonArray();
-    long len = (long) obj.getLength();
+    long len = (long) obj.size();
     for (int i = 0;i < len;i++) {
       Object value = obj.get(i);
-      if (value instanceof ScriptObject) {
-        value = unwrapJsonElement((ScriptObject) value);
+      if (value instanceof ScriptObjectMirror) {
+        value = unwrapJsonElement((ScriptObjectMirror) value);
       }
       unwrapped.add(value);
     }
