@@ -35,6 +35,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -257,12 +258,17 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     if (ident.sym instanceof TypeElement) {
       if (ident.type.equals(SystemType)) {
         return ExpressionModel.forFieldSelect("out", () ->
-            ExpressionModel.forMethodInvocation("println", args -> lang.console(args.get(0))
-            ));
+            ExpressionModel.forMethodInvocation("println", args -> lang.console(args.get(0)))
+        );
       } else {
         TypeInfo.Class type = (TypeInfo.Class) factory.create(ident.type);
         if (type.getKind() == ClassKind.API) {
-          return ExpressionModel.forMethodInvocation((identifier, arguments) -> lang.staticFactory(type, identifier, arguments));
+          return new ExpressionModel() {
+            @Override
+            public ExpressionModel onMethodInvocation(String methodName, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
+              return lang.staticFactory(type, methodName, parameterTypes, argumentModels, argumenTypes);
+            }
+          };
         } else if (type.getKind() == ClassKind.JSON_OBJECT) {
           return ExpressionModel.forNew(args -> {
             switch (args.size()) {
@@ -340,12 +346,30 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
       throw new UnsupportedOperationException("Invoking a method of the same class is not supported");
     }
     // Is there a case it would not be a member select expression ?
-    MemberSelectTree memberSelect = (MemberSelectTree) node.getMethodSelect();
+    JCTree.JCFieldAccess memberSelect = (JCTree.JCFieldAccess) node.getMethodSelect();
     ExpressionModel memberSelectExpression = scan(memberSelect.getExpression(), p);
     String methodName = memberSelect.getIdentifier().toString();
-    List<ExpressionModel> arguments = node.getArguments().stream().map(argument -> scan(argument, p)).collect(Collectors.toList());
+    List<ExpressionModel> argumentModels = node.getArguments().stream().map(argument -> scan(argument, p)).collect(Collectors.toList());
     TypeInfo returnType = factory.create(((JCTree) node).type);
-    ExpressionModel expression = memberSelectExpression.onMethodInvocation(methodName, arguments);
+    JCTree.JCMethodInvocation abc = (JCTree.JCMethodInvocation) node;
+
+    // Compute the parameter types
+    Symbol.MethodSymbol sym = (Symbol.MethodSymbol) memberSelect.sym;
+    List<TypeInfo> parameterTypes = new ArrayList<>();
+    for (Symbol.VarSymbol var : sym.getParameters()) {
+      TypeInfo parameterType = factory.create(var.asType());
+      parameterTypes.add(parameterType);
+    }
+
+    // Compute the argument types
+    List<TypeInfo> argumentTypes = new ArrayList<>();
+    for (JCTree.JCExpression argument : abc.getArguments()) {
+      TypeInfo argumentType = factory.create(argument.type);
+      argumentTypes.add(argumentType);
+    }
+
+    ExpressionModel expression = memberSelectExpression.onMethodInvocation(methodName,
+        parameterTypes, argumentModels, argumentTypes);
     return expression.as(returnType);
   }
 

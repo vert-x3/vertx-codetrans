@@ -1,5 +1,7 @@
 package io.vertx.codetrans;
 
+import io.vertx.codegen.TypeInfo;
+
 import java.util.List;
 
 /**
@@ -14,14 +16,14 @@ public class MapModel extends ExpressionModel {
   }
 
   @Override
-  public ExpressionModel onMethodInvocation(String methodName, List<ExpressionModel> arguments) {
+  public ExpressionModel onMethodInvocation(String methodName, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
     switch (methodName) {
       case "get":
         return ExpressionModel.render(writer -> {
-          writer.getLang().renderMapGet(expression, arguments.get(0), writer);
+          writer.getLang().renderMapGet(expression, argumentModels.get(0), writer);
         });
       case "forEach":
-        LambdaExpressionModel lambda = (LambdaExpressionModel) arguments.get(0);
+        LambdaExpressionModel lambda = (LambdaExpressionModel) argumentModels.get(0);
         return ExpressionModel.render(writer -> {
           writer.getLang().renderMapForEach(
               expression,

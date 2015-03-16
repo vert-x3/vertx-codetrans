@@ -3,6 +3,7 @@ package io.vertx.codetrans;
 import com.sun.source.tree.LambdaExpressionTree;
 import io.vertx.codegen.Helper;
 import io.vertx.codegen.TypeInfo;
+import io.vertx.core.Handler;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -222,20 +223,12 @@ public class JavaScriptLang implements Lang {
   }
 
   @Override
-  public ExpressionModel staticFactory(TypeInfo.Class type, String methodName, List<ExpressionModel> arguments) {
+  public ExpressionModel staticFactory(TypeInfo.Class type, String methodName, List<TypeInfo> parameterTypes, List<ExpressionModel> arguments, List<TypeInfo> argumentTypes) {
     return ExpressionModel.render(writer -> {
       JavaScriptRenderer jsRenderer = (JavaScriptRenderer) writer;
       jsRenderer.modules.add(type);
-      writer.append(type.getSimpleName()).append('.').append(methodName);
-      writer.append('(');
-      for (int i = 0;i < arguments.size();i++) {
-        ExpressionModel argument = arguments.get(i);
-        if (i > 0) {
-          writer.append(", ");
-        }
-        argument.render(writer);
-      }
-      writer.append(')');
+      ExpressionModel expr = ExpressionModel.render(type.getSimpleName());
+      renderMethodInvocation(expr, methodName, parameterTypes, arguments, argumentTypes, writer);
     });
   }
 
@@ -318,5 +311,27 @@ public class JavaScriptLang implements Lang {
   public void renderMethodReference(ExpressionModel expression, String methodName, CodeWriter writer) {
     expression.render(writer);
     writer.append('.').append(methodName);
+  }
+
+  @Override
+  public void renderMethodInvocation(ExpressionModel expression, String methodName, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes, CodeWriter writer) {
+    for (int i = 0;i < parameterTypes.size();i++) {
+      TypeInfo parameterType = parameterTypes.get(i);
+      TypeInfo argumentType = argumentTypes.get(i);
+      if (parameterType instanceof TypeInfo.Parameterized && argumentType instanceof TypeInfo.Class.Api) {
+        TypeInfo.Class.Api aaa = (TypeInfo.Class.Api) argumentType;
+        if (aaa.isHandler()) {
+          TypeInfo.Parameterized apiType = (TypeInfo.Parameterized) parameterType;
+          if (apiType.getRaw().getName().equals(Handler.class.getName())) {
+            ExpressionModel expressionModel = argumentModels.get(i);
+            argumentModels.set(i, ExpressionModel.render(cw -> {
+              expressionModel.render(cw);
+              cw.append(".handle");
+            }));
+          }
+        }
+      }
+    }
+    Lang.super.renderMethodInvocation(expression, methodName, parameterTypes, argumentModels, argumentTypes, writer);
   }
 }

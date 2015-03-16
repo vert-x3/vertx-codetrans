@@ -15,6 +15,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.WildcardType;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -31,7 +32,13 @@ public class CodeTranslator {
     this.SystemType = (DeclaredType) processingEnv.getElementUtils().getTypeElement(System.class.getName()).asType();
     Context context = ((JavacProcessingEnvironment)processingEnv).getContext();
     this.attr = Attr.instance(context);
-    this.factory = new TypeInfo.Factory(processingEnv.getElementUtils(), processingEnv.getTypeUtils());
+    this.factory = new TypeInfo.Factory(processingEnv.getElementUtils(), processingEnv.getTypeUtils()) {
+      @Override
+      public TypeInfo.Wildcard create(WildcardType type) {
+        // Tolerate wildcard bounds for unit tests, for instance we interrop with Map that uses bound wildcards
+        return new TypeInfo.Wildcard();
+      }
+    };
   }
 
   public String translate(ExecutableElement methodElt, Lang lang) {

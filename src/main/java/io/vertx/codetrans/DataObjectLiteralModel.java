@@ -30,7 +30,7 @@ public class DataObjectLiteralModel extends ExpressionModel {
   }
 
   @Override
-  public ExpressionModel onMethodInvocation(String methodName, List<ExpressionModel> arguments) {
+  public ExpressionModel onMethodInvocation(String methodName, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
     String name;
     Function<String, Member> memberFactory;
     if (isSet(methodName)) {
@@ -42,9 +42,9 @@ public class DataObjectLiteralModel extends ExpressionModel {
     } else {
       throw unsupported();
     }
-    if (arguments.size() == 1) {
+    if (argumentModels.size() == 1) {
       Map<String, Member> copy = new LinkedHashMap<>(members);
-      ExpressionModel value = arguments.get(0);
+      ExpressionModel value = argumentModels.get(0);
       Member member = copy.computeIfAbsent(name, memberFactory);
       member.append(value);
       copy.put(name, member);

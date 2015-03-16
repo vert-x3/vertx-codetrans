@@ -1,5 +1,7 @@
 package io.vertx.codetrans;
 
+import io.vertx.codegen.TypeInfo;
+
 import java.util.List;
 
 /**
@@ -14,11 +16,11 @@ public class JsonObjectModel extends ExpressionModel {
   }
 
   @Override
-  public ExpressionModel onMethodInvocation(String methodName, List<ExpressionModel> arguments) {
+  public ExpressionModel onMethodInvocation(String methodName, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
     switch (methodName) {
       case "put":
         return ExpressionModel.render(writer -> {
-          writer.getLang().renderJsonObjectAssign(expression, arguments.get(0), arguments.get(1), writer);
+          writer.getLang().renderJsonObjectAssign(expression, argumentModels.get(0), argumentModels.get(1), writer);
         });
       case "encodePrettily": {
         return ExpressionModel.render(writer -> {
@@ -34,12 +36,12 @@ public class JsonObjectModel extends ExpressionModel {
       case "getBoolean":
       case "getJsonArray":
       case "getValue":
-        if (arguments.size() == 1) {
+        if (argumentModels.size() == 1) {
           return ExpressionModel.render( writer -> {
-            writer.getLang().renderJsonObjectMemberSelect(expression, arguments.get(0), writer);
+            writer.getLang().renderJsonObjectMemberSelect(expression, argumentModels.get(0), writer);
           });
         } else {
-          throw unsupported("Invalid arguments " + arguments);
+          throw unsupported("Invalid arguments " + argumentModels);
         }
       default:
         throw unsupported("Method " + methodName);

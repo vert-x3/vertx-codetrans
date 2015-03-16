@@ -1,5 +1,7 @@
 package io.vertx.codetrans;
 
+import io.vertx.codegen.TypeInfo;
+
 import java.util.List;
 
 /**
@@ -14,12 +16,12 @@ public class DataObjectModel extends ExpressionModel {
   }
 
   @Override
-  public ExpressionModel onMethodInvocation(String methodName, List<ExpressionModel> arguments) {
+  public ExpressionModel onMethodInvocation(String methodName, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
     if (DataObjectLiteralModel.isSet(methodName)) {
       return ExpressionModel.render( writer -> {
         writer.getLang().renderDataObjectAssign(expression,
             ExpressionModel.render(DataObjectLiteralModel.unwrapSet(methodName)),
-            arguments.get(0), writer);
+            argumentModels.get(0), writer);
       });
     }
     if (DataObjectLiteralModel.isGet(methodName)) {

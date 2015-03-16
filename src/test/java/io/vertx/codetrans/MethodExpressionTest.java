@@ -2,7 +2,6 @@ package io.vertx.codetrans;
 
 import org.junit.Test;
 
-import java.util.Map;
 import java.util.function.Consumer;
 
 import static org.junit.Assert.assertEquals;
@@ -56,6 +55,24 @@ public class MethodExpressionTest extends ConversionTestBase {
     runAll("expression/MethodReference", "lambdaisation", () -> {
       assertEquals("helloworld", helloworld);
       helloworld = null;
+    });
+  }
+
+  public static Object event;
+
+  @Test
+  public void testInstanceHandlerSubtypeArgument() throws Exception {
+    runAll("expression/MethodInvocation", "instanceHandlerSubtypeArgument", () -> {
+      assertEquals("hello_instance", event);
+      event = null;
+    });
+  }
+
+  @Test
+  public void testClassHandlerSubtypeArgument() throws Exception {
+    runAll("expression/MethodInvocation", "classHandlerSubtypeArgument", () -> {
+      assertEquals("hello_class", event);
+      event = null;
     });
   }
 }
