@@ -35,7 +35,7 @@ public class LoadingClassLoader extends ClassLoader {
             files.put(name, file = tmp);
           }
         } else if (result instanceof Result.Failure) {
-          NoClassDefFoundError err = new NoClassDefFoundError("Could not load " + name);
+          RuntimeException err = new RuntimeException("Could not load " + name);
           err.initCause(((Result.Failure) result).getCause());
           throw err;
         }

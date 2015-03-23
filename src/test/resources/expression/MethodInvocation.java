@@ -39,4 +39,11 @@ public class MethodInvocation {
     SubHandler handler = SubHandler.create();
     SubHandler.classHandler(handler);
   }
+
+  //
+
+  @CodeTranslate
+  public void invokeNullArgument() throws Exception {
+    MethodExpressionTest.checkNull(null);
+  }
 }

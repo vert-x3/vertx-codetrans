@@ -33,6 +33,7 @@ import io.vertx.codegen.TypeInfo;
 
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -364,7 +365,10 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     // Compute the argument types
     List<TypeInfo> argumentTypes = new ArrayList<>();
     for (JCTree.JCExpression argument : abc.getArguments()) {
-      TypeInfo argumentType = factory.create(argument.type);
+      TypeInfo argumentType = null;
+      if (argument.type.getKind() != TypeKind.NULL) {
+        argumentType = factory.create(argument.type);
+      }
       argumentTypes.add(argumentType);
     }
 

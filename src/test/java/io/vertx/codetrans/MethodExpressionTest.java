@@ -75,4 +75,20 @@ public class MethodExpressionTest extends ConversionTestBase {
       event = null;
     });
   }
+
+  private static int nullCount = 0;
+
+  public static void checkNull(String arg) {
+    if (arg == null) {
+      nullCount++;
+    }
+  }
+
+  @Test
+  public void testInvokeNullArgument() throws Exception {
+    runAll("expression/MethodInvocation", "invokeNullArgument", () -> {
+      assertEquals(1, nullCount);
+      nullCount = 0;
+    });
+  }
 }
