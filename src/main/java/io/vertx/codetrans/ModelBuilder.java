@@ -20,6 +20,7 @@ import com.sun.source.tree.MethodTree;
 import com.sun.source.tree.NewClassTree;
 import com.sun.source.tree.ParenthesizedTree;
 import com.sun.source.tree.StatementTree;
+import com.sun.source.tree.ThrowTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.UnaryTree;
 import com.sun.source.tree.VariableTree;
@@ -34,6 +35,7 @@ import io.vertx.codegen.TypeInfo;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
+import javax.lang.model.util.Types;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -50,15 +52,19 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
 
   private final Trees trees;
   private final TreePath path;
-  private final DeclaredType SystemType;
+  private final DeclaredType systemType;
+  private final DeclaredType throwableType;
+  private final Types typeUtils;
   private final TypeInfo.Factory factory;
   private final Lang lang;
 
-  public ModelBuilder(Trees trees, TreePath path, DeclaredType systemType, TypeInfo.Factory factory, Lang lang) {
+  public ModelBuilder(Trees trees, TreePath path, DeclaredType systemType, DeclaredType throwableType, TypeInfo.Factory factory, Types typeUtils, Lang lang) {
     this.path = path;
     this.trees = trees;
-    SystemType = systemType;
+    this.systemType = systemType;
+    this.throwableType = throwableType;
     this.factory = factory;
+    this.typeUtils = typeUtils;
     this.lang = lang;
   }
 
@@ -257,11 +263,21 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
   public ExpressionModel visitIdentifier(IdentifierTree node, VisitContext context) {
     JCTree.JCIdent ident = (JCTree.JCIdent) node;
     if (ident.sym instanceof TypeElement) {
-      if (ident.type.equals(SystemType)) {
+      if (ident.type.equals(systemType)) {
         return ExpressionModel.forFieldSelect("out", () ->
             ExpressionModel.forMethodInvocation("println", args -> lang.console(args.get(0)))
         );
       } else {
+        if (typeUtils.isSubtype(ident.type, throwableType)) {
+          return ExpressionModel.forNew(args -> {
+            if (args.size() == 0) {
+              return new ThrowableModel(ident.type.toString(), null);
+            } else if (args.size() == 1) {
+              return new ThrowableModel(ident.type.toString(), args.get(0));
+            }
+            throw new UnsupportedOperationException("Only empty or String throwable constructor are accepted");
+          });
+        }
         TypeInfo.Class type = (TypeInfo.Class) factory.create(ident.type);
         if (type.getKind() == ClassKind.API) {
           return new ExpressionModel() {
@@ -292,7 +308,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
           return ExpressionModel.forNew(args -> new DataObjectLiteralModel(type));
         } else if (type.getKind() == ClassKind.ENUM) {
           return new EnumExpressionModel((TypeInfo.Class.Enum) type);
-        }else {
+        } else {
           return lang.classExpression(type);
         }
       }
@@ -313,6 +329,14 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     ExpressionModel identifier = scan(node.getIdentifier(), visitContext);
     List<ExpressionModel> arguments = node.getArguments().stream().map(arg -> scan(arg, visitContext)).collect(Collectors.toList());
     return identifier.onNew(arguments);
+  }
+
+  @Override
+  public CodeModel visitThrow(ThrowTree node, VisitContext visitContext) {
+    ThrowableModel throwableExpression = (ThrowableModel) scan(node.getExpression(), visitContext);
+    return StatementModel.render(writer -> {
+      writer.getLang().renderThrow(throwableExpression.getType(), throwableExpression.getReason(), writer);
+    });
   }
 
   @Override

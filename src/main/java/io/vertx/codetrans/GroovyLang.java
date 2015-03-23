@@ -180,6 +180,17 @@ public class GroovyLang implements Lang {
   }
 
   @Override
+  public void renderThrow(String throwableType, ExpressionModel reason, CodeWriter writer) {
+    if (reason == null) {
+      writer.append("throw new ").append(throwableType).append("()");
+    } else {
+      writer.append("throw new ").append(throwableType).append("(");
+      reason.render(writer);
+      writer.append(")");
+    }
+  }
+
+  @Override
   public ExpressionModel asyncResult(String identifier) {
     return ExpressionModel.render(renderer -> renderer.append(identifier));
   }

@@ -16,6 +16,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.WildcardType;
+import javax.lang.model.util.Types;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -24,14 +25,18 @@ public class CodeTranslator {
 
   private final Trees trees;
   private final DeclaredType SystemType;
+  private final DeclaredType ThrowableType;
   private final Attr attr;
   private final TypeInfo.Factory factory;
+  private final Types typeUtils;
 
   public CodeTranslator(ProcessingEnvironment processingEnv) {
     this.trees = Trees.instance(processingEnv);
     this.SystemType = (DeclaredType) processingEnv.getElementUtils().getTypeElement(System.class.getName()).asType();
+    this.ThrowableType = (DeclaredType) processingEnv.getElementUtils().getTypeElement(Throwable.class.getName()).asType();
     Context context = ((JavacProcessingEnvironment)processingEnv).getContext();
     this.attr = Attr.instance(context);
+    this.typeUtils = processingEnv.getTypeUtils();
     this.factory = new TypeInfo.Factory(processingEnv.getElementUtils(), processingEnv.getTypeUtils()) {
       @Override
       public TypeInfo.Wildcard create(WildcardType type) {
@@ -45,7 +50,7 @@ public class CodeTranslator {
     TypeElement typeElt = (TypeElement) methodElt.getEnclosingElement();
     attributeClass(typeElt);
     TreePath path = trees.getPath(methodElt);
-    ModelBuilder builder = new ModelBuilder(trees, path, SystemType, factory, lang);
+    ModelBuilder builder = new ModelBuilder(trees, path, SystemType, ThrowableType, factory, typeUtils, lang);
     CodeModel model = builder.build(path);
     CodeWriter writer = new CodeWriter(lang);
     model.render(writer);

@@ -223,6 +223,16 @@ public class JavaScriptLang implements Lang {
   }
 
   @Override
+  public void renderThrow(String throwableType, ExpressionModel reason, CodeWriter writer) {
+    if (reason == null) {
+      writer.append("throw ").append("\"an error occured\"");
+    } else {
+      writer.append("throw ");
+      reason.render(writer);
+    }
+  }
+
+  @Override
   public ExpressionModel staticFactory(TypeInfo.Class type, String methodName, List<TypeInfo> parameterTypes, List<ExpressionModel> arguments, List<TypeInfo> argumentTypes) {
     return ExpressionModel.render(writer -> {
       JavaScriptRenderer jsRenderer = (JavaScriptRenderer) writer;

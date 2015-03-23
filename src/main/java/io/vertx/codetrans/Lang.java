@@ -227,6 +227,8 @@ public interface Lang {
 
   void renderEnumConstant(TypeInfo.Class.Enum type, String constant, CodeWriter writer);
 
+  void renderThrow(String throwableType, ExpressionModel reason, CodeWriter writer);
+
   default void renderFragment(String fragment, CodeWriter writer) {
     FragmentParser renderer = new FragmentParser() {
       @Override

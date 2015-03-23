@@ -7,6 +7,7 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.function.Consumer;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -15,20 +16,20 @@ public abstract class ConversionTestBase {
 
   public static Lang[] langs() { return new Lang[] { new GroovyLang(), new JavaScriptLang() }; }
 
-  public String runJavaScript(String path) {
-    return run(new JavaScriptLang(), path);
+  public void runJavaScript(String path) {
+    run(new JavaScriptLang(), path);
   }
 
-  public String runJavaScript(String path, String method) {
-    return run(new JavaScriptLang(), path, method);
+  public void runJavaScript(String path, String method) {
+    run(new JavaScriptLang(), path, method);
   }
 
-  public String runGroovy(String path) {
-    return run(new GroovyLang(), path);
+  public void runGroovy(String path) {
+    run(new GroovyLang(), path);
   }
 
-  public String runGroovy(String path, String method) {
-    return run(new GroovyLang(), path, method);
+  public void runGroovy(String path, String method) {
+    run(new GroovyLang(), path, method);
   }
 
   public void runAll(String path, Runnable after) {
@@ -45,8 +46,8 @@ public abstract class ConversionTestBase {
     }
   }
 
-  public String run(Lang lang, String path) {
-    return run(lang, path, "start");
+  public void run(Lang lang, String path) {
+    run(lang, path, "start");
   }
 
   public Result convert(Lang lang, String path, String method) {
@@ -61,22 +62,28 @@ public abstract class ConversionTestBase {
     }
   }
 
-  public String run(Lang lang, String path, String method) {
+  public Callable<?> callable(Lang lang, String path, String method) {
     Map<String, Result> results = convert(lang, path);
     Thread current = Thread.currentThread();
     ClassLoader prev = current.getContextClassLoader();
     LoadingClassLoader loader = new LoadingClassLoader(current.getContextClassLoader(), results);
     current.setContextClassLoader(loader);
     try {
-      Callable<?> callable = lang.compile(loader, path + "_" + method);
-      callable.call();
+      return lang.compile(loader, path + "_" + method);
     } catch (Exception e) {
       throw new AssertionError(e);
     } finally {
       current.setContextClassLoader(prev);
     }
-    Result result = results.get(path + "_" + method + "." + lang.getExtension());
-    return ((Result.Source) result).getValue();
+  }
+
+  public void run(Lang lang, String path, String method) {
+    Callable<?> callable = callable(lang, path, method);
+    try {
+      callable.call();
+    } catch (Exception e) {
+      throw new AssertionError(e);
+    }
   }
 
   private Object unwrapJsonElement(ScriptObjectMirror obj) {
