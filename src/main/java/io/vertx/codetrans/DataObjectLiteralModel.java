@@ -40,7 +40,7 @@ public class DataObjectLiteralModel extends ExpressionModel {
       name = unwrapAdd(methodName);
       memberFactory = $ -> new Member.Array(render(name));
     } else {
-      throw unsupported();
+      throw unsupported("Method " + methodName);
     }
     if (argumentModels.size() == 1) {
       Map<String, Member> copy = new LinkedHashMap<>(members);
@@ -50,7 +50,7 @@ public class DataObjectLiteralModel extends ExpressionModel {
       copy.put(name, member);
       return new DataObjectLiteralModel(type, copy);
     } else {
-      throw unsupported();
+      throw unsupported("Method " + methodName + " must be invoked with a single argument");
     }
   }
 
