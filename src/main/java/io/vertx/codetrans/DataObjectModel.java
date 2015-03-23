@@ -30,7 +30,7 @@ public class DataObjectModel extends ExpressionModel {
             ExpressionModel.render(DataObjectLiteralModel.unwrapSet(methodName)), writer);
       });
     }
-    throw new UnsupportedOperationException("TODO");
+    throw new UnsupportedOperationException("Unsupported method " + methodName + " on object model");
   }
   @Override
   public void render(CodeWriter writer) {
