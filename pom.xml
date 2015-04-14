@@ -48,6 +48,12 @@
       <version>2.3.3</version>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>org.jruby</groupId>
+      <artifactId>jruby</artifactId>
+      <version>1.7.18</version>
+      <optional>true</optional>
+    </dependency>
 
     <dependency>
       <groupId>com.sun</groupId>

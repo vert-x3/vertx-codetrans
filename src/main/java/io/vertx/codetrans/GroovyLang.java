@@ -7,12 +7,11 @@ import groovy.lang.Script;
 import io.vertx.codegen.TypeInfo;
 
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.concurrent.Callable;
+import java.util.Scanner;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -23,17 +22,24 @@ public class GroovyLang implements Lang {
   }
 
   @Override
-  public Callable<?> compile(ClassLoader loader, String path) throws Exception {
-    InputStream resource = loader.getResourceAsStream(path + ".groovy");
-    if (resource != null) {
-      try (InputStreamReader reader = new InputStreamReader(resource)) {
-        GroovyClassLoader compiler = new GroovyClassLoader(loader);
-        Class clazz = compiler.parseClass(new GroovyCodeSource(reader, path.replace('/', '.'), "/"));
-        return () -> {
+  public io.vertx.codetrans.Script loadScript(ClassLoader loader, String path) throws Exception {
+    InputStream in = loader.getResourceAsStream(path + ".groovy");
+    if (in != null) {
+      String source = new Scanner(in,"UTF-8").useDelimiter("\\A").next();
+      GroovyClassLoader compiler = new GroovyClassLoader(loader);
+      Class clazz = compiler.parseClass(new GroovyCodeSource(source, path.replace('/', '.'), "/"));
+      return new io.vertx.codetrans.Script() {
+        @Override
+        public String getSource() {
+          return source;
+        }
+        @Override
+        public Void call() throws Exception {
           Script script = (Script) clazz.newInstance();
-          return script.run();
-        };
-      }
+          script.run();
+          return null;
+        }
+      };
     }
     throw new Exception("Could not compile " + path);
   }

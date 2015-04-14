@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.Callable;
 
 /**
@@ -50,7 +51,7 @@ public class JavaScriptLang implements Lang {
   }
 
   @Override
-  public Callable<?> compile(ClassLoader loader, String path) throws Exception {
+  public Script loadScript(ClassLoader loader, String path) throws Exception {
     ScriptEngineManager mgr = new ScriptEngineManager();
     ScriptEngine engine = mgr.getEngineByName("nashorn");
     engine.put("__engine", engine);
@@ -61,11 +62,22 @@ public class JavaScriptLang implements Lang {
     engine.put(ScriptEngine.FILENAME, "require.js");
     engine.eval(new InputStreamReader(require));
     engine.eval("var console = require('vertx-js/util/console')");
-    InputStream source = loader.getResourceAsStream(path + ".js");
-    if (source == null) {
+    InputStream in = loader.getResourceAsStream(path + ".js");
+    if (in == null) {
       throw new Exception("Could not find " + path + ".js");
     }
-    return () -> engine.eval(new InputStreamReader(source));
+    String source = new Scanner(in,"UTF-8").useDelimiter("\\A").next();
+    return new Script() {
+      @Override
+      public String getSource() {
+        return source;
+      }
+      @Override
+      public Void call() throws Exception {
+        engine.eval(source);
+        return null;
+      }
+    };
   }
 
   static class JavaScriptRenderer extends CodeWriter {

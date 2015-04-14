@@ -7,14 +7,13 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.function.Consumer;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 public abstract class ConversionTestBase {
 
-  public static Lang[] langs() { return new Lang[] { new GroovyLang(), new JavaScriptLang() }; }
+  public static Lang[] langs() { return new Lang[] { new GroovyLang(), new JavaScriptLang(), new RubyLang() }; }
 
   public void runJavaScript(String path) {
     run(new JavaScriptLang(), path);
@@ -62,14 +61,14 @@ public abstract class ConversionTestBase {
     }
   }
 
-  public Callable<?> callable(Lang lang, String path, String method) {
+  public Script callable(Lang lang, String path, String method) {
     Map<String, Result> results = convert(lang, path);
     Thread current = Thread.currentThread();
     ClassLoader prev = current.getContextClassLoader();
     LoadingClassLoader loader = new LoadingClassLoader(current.getContextClassLoader(), results);
     current.setContextClassLoader(loader);
     try {
-      return lang.compile(loader, path + "_" + method);
+      return lang.loadScript(loader, path + "_" + method);
     } catch (Exception e) {
       throw new AssertionError(e);
     } finally {
@@ -78,10 +77,12 @@ public abstract class ConversionTestBase {
   }
 
   public void run(Lang lang, String path, String method) {
-    Callable<?> callable = callable(lang, path, method);
+    Script script = callable(lang, path, method);
     try {
-      callable.call();
+      script.call();
     } catch (Exception e) {
+      System.out.println("Script evaluation failed");
+      System.out.println(script.getSource());
       throw new AssertionError(e);
     }
   }
