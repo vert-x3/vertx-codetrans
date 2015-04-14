@@ -27,6 +27,33 @@ public class LiteralExpressionTest extends ConversionTestBase {
     runAll("expression/LiteralString", "concat", () -> {
       assertEquals("_3_", result.toString());
     });
+    runAll("expression/LiteralString", "concat1", () -> {
+      assertEquals("1_", result.toString());
+    });
+    runAll("expression/LiteralString", "concat2", () -> {
+      assertEquals("3_", result.toString());
+    });
+    runAll("expression/LiteralString", "concat3", () -> {
+      assertEquals("3_", result.toString());
+    });
+    runAll("expression/LiteralString", "concat4", () -> {
+      assertEquals("12_", result.toString());
+    });
+    runAll("expression/LiteralString", "concat5", () -> {
+      assertEquals("_1", result.toString());
+    });
+    runAll("expression/LiteralString", "concat6", () -> {
+      assertEquals("_12", result.toString());
+    });
+    runAll("expression/LiteralString", "concat7", () -> {
+      assertEquals("_12", result.toString());
+    });
+    runAll("expression/LiteralString", "concat8", () -> {
+      assertEquals("_3", result.toString());
+    });
+    runAll("expression/LiteralString", "concat9", () -> {
+      assertEquals("_2_", result.toString());
+    });
     String expected = "\n\r\t\f\b\"\\'\u0000\u0041\u007F";
     runAll("expression/LiteralString", "escape", () -> {
       assertEquals(expected, result.toString());

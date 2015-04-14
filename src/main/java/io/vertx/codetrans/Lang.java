@@ -84,10 +84,10 @@ public interface Lang {
     writer.append(')');
   }
 
-  default void renderBinary(ExpressionModel left, String op, ExpressionModel right, CodeWriter writer) {
-    left.render(writer);
-    writer.append(" ").append(op).append(" ");
-    right.render(writer);
+  default void renderBinary(BinaryExpressionModel expression, CodeWriter writer) {
+    expression.left.render(writer);
+    writer.append(" ").append(expression.op).append(" ");
+    expression.right.render(writer);
   }
 
   default void renderCharacters(String value, CodeWriter writer) {
@@ -260,11 +260,11 @@ public interface Lang {
   }
 
   default ExpressionModel stringLiteral(String value) {
-    return ExpressionModel.render(renderer -> renderer.getLang().renderStringLiteral(value, renderer));
+    return new StringLiteralModel(value);
   }
 
   default ExpressionModel combine(ExpressionModel left, String op, ExpressionModel right) {
-    return ExpressionModel.render(renderer -> renderer.getLang().renderBinary(left, op, right, renderer));
+    return new BinaryExpressionModel(left, op, right);
   }
 
   ExpressionModel classExpression(TypeInfo.Class type);

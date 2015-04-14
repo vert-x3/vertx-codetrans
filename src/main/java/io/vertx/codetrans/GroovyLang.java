@@ -13,7 +13,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.function.Consumer;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -47,6 +46,15 @@ public class GroovyLang implements Lang {
   }
 
   @Override
+  public void renderBinary(BinaryExpressionModel expression, CodeWriter writer) {
+    if (Helper.isString(expression)) {
+      Helper.renderInterpolatedString(expression, writer, "${", "}");
+    } else {
+      Lang.super.renderBinary(expression, writer);
+    }
+  }
+
+  @Override
   public void renderStatement(StatementModel statement, CodeWriter writer) {
     statement.render(writer);
     writer.append("\n");
@@ -75,33 +83,6 @@ public class GroovyLang implements Lang {
     return "groovy";
   }
 
-  // Marker class for Groovy Strings
-  static abstract class GStringLiteralModel extends ExpressionModel {
-
-    @Override
-    public final void render(CodeWriter writer) {
-      writer.append('"');
-      renderCharacters(writer);
-      writer.append('"');
-    }
-
-    protected abstract void renderCharacters(CodeWriter writer);
-  }
-
-  private static GStringLiteralModel gstring(Consumer<CodeWriter> characters) {
-    return new GStringLiteralModel() {
-      @Override
-      protected void renderCharacters(CodeWriter writer) {
-        characters.accept(writer);
-      }
-    };
-  }
-
-  @Override
-  public ExpressionModel stringLiteral(String value) {
-    return gstring(renderer -> Lang.super.renderCharacters(value, renderer));
-  }
-
   @Override
   public void renderLongLiteral(String value, CodeWriter writer) {
     renderCharacters(value, writer);
@@ -118,38 +99,6 @@ public class GroovyLang implements Lang {
   public void renderDoubleLiteral(String value, CodeWriter writer) {
     renderCharacters(value, writer);
     writer.append('d');
-  }
-
-  @Override
-  public ExpressionModel combine(ExpressionModel left, String op, ExpressionModel right) {
-    if (op.equals("+")) {
-      if (left instanceof GStringLiteralModel) {
-        GStringLiteralModel gleft = (GStringLiteralModel) left;
-        if (right instanceof GStringLiteralModel) {
-          GStringLiteralModel gright = (GStringLiteralModel) right;
-          return gstring(renderer -> {
-            gleft.renderCharacters(renderer);
-            gright.renderCharacters(renderer);
-          });
-        } else {
-          return gstring(renderer -> {
-            gleft.renderCharacters(renderer);
-            renderer.append("${");
-            right.render(renderer);
-            renderer.append("}");
-          });
-        }
-      } else if (right instanceof GStringLiteralModel) {
-        GStringLiteralModel gright = (GStringLiteralModel) right;
-        return gstring(renderer -> {
-          renderer.append("${");
-          left.render(renderer);
-          renderer.append("}");
-          gright.renderCharacters(renderer);
-        });
-      }
-    }
-    return Lang.super.combine(left, op, right);
   }
 
   @Override

@@ -36,7 +36,8 @@ public class JavaScriptLang implements Lang {
   }
 
   @Override
-  public void renderBinary(ExpressionModel left, String op, ExpressionModel right, CodeWriter writer) {
+  public void renderBinary(BinaryExpressionModel expression, CodeWriter writer) {
+    String op = expression.op;
     switch (op) {
       case "==":
         op = "===";
@@ -45,7 +46,7 @@ public class JavaScriptLang implements Lang {
         op = "!==";
         break;
     }
-    Lang.super.renderBinary(left, op, right, writer);
+    Lang.super.renderBinary(new BinaryExpressionModel(expression.left, op, expression.right), writer);
   }
 
   @Override

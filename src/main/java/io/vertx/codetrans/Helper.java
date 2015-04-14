@@ -22,4 +22,59 @@ public class Helper {
     copy.add(last);
     return copy;
   }
+
+  static boolean isString(ExpressionModel expression) {
+    if (expression instanceof StringLiteralModel) {
+      return true;
+    } else if (expression instanceof BinaryExpressionModel) {
+      BinaryExpressionModel binary = (BinaryExpressionModel) expression;
+      return binary.op.equals("+") && (isString(binary.left) || isString(binary.right));
+    }
+    return false;
+  }
+
+  private static boolean string;
+
+  /**
+   * Render an interpolated string.
+   *
+   * @param expression the binary string expression
+   * @param writer the writer
+   */
+  static void renderInterpolatedString(BinaryExpressionModel expression, CodeWriter writer,
+                                       String beginInterpolation, String endInterpolation) {
+    boolean prev = string;
+    if (!string) {
+      string = true;
+      writer.append('"');
+    }
+
+    renderInterpolatedString(expression.left, writer, beginInterpolation, endInterpolation);
+    renderInterpolatedString(expression.right, writer, beginInterpolation, endInterpolation);
+    if (!prev) {
+      writer.append('"');
+    }
+    string = prev;
+  }
+
+  private static void renderInterpolatedString(ExpressionModel expression, CodeWriter writer,
+                                               String beginInterpolation, String endInterpolation) {
+    if (expression instanceof StringLiteralModel) {
+      StringLiteralModel string = (StringLiteralModel) expression;
+      writer.append(string.value);
+    } else if (Helper.isString(expression)) {
+      expression.render(writer);
+    } else {
+      boolean prev = string;
+      if (string) {
+        string = false;
+        writer.append(beginInterpolation);
+      }
+      expression.render(writer);
+      if (prev) {
+        writer.append(endInterpolation);
+      }
+      string = prev;
+    }
+  }
 }
