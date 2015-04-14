@@ -31,8 +31,7 @@ public class LiteralExpressionTest extends ConversionTestBase {
     runAll("expression/LiteralString", "escape", () -> {
       assertEquals(expected, result.toString());
     });
-    Lang[] langs = { new JavaScriptLang(), new GroovyLang() };
-    for (Lang lang : langs) {
+    for (Lang lang : langs()) {
       CodeWriter writer = new CodeWriter(lang);
       lang.renderCharacters(expected, writer);
       assertEquals("\\n\\r\\t\\f\\b\\\"\\\\'\\u0000A\\u007F", writer.getBuffer().toString());

@@ -20,6 +20,9 @@ import java.util.function.Consumer;
  */
 public class GroovyLang implements Lang {
 
+  public GroovyLang() {
+  }
+
   @Override
   public Callable<?> compile(ClassLoader loader, String path) throws Exception {
     InputStream resource = loader.getResourceAsStream(path + ".groovy");
