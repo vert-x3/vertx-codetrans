@@ -54,30 +54,18 @@ public class ControlTest extends ConversionTestBase {
   }
 
   @Test
-  public void tesForEachJavaScript() throws Exception {
-    collected.clear();
-    runJavaScript("control/ForEach");
-    Assert.assertEquals(list, collected);
+  public void testForEach() throws Exception {
+    runAll("control/ForEach", () -> {
+      Assert.assertEquals(list, collected);
+      collected.clear();
+    });
   }
 
   @Test
-  public void tesForEachGroovy() throws Exception {
-    collected.clear();
-    runGroovy("control/ForEach");
-    Assert.assertEquals(list, collected);
-  }
-
-  @Test
-  public void testForLoopJavaScript() throws Exception {
-    collected.clear();
-    runJavaScript("control/ForLoop");
-    Assert.assertEquals(Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7", "8", "9"), collected);
-  }
-
-  @Test
-  public void testForLoopgroovy() throws Exception {
-    collected.clear();
-    runGroovy("control/ForLoop");
-    Assert.assertEquals(Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7", "8", "9"), collected);
+  public void testForLoop() throws Exception {
+    runAll("control/ForLoop", () -> {
+      Assert.assertEquals(Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7", "8", "9"), collected);
+      collected.clear();
+    });
   }
 }

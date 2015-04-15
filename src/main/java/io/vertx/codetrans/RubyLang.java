@@ -226,12 +226,31 @@ public class RubyLang implements Lang {
 
   @Override
   public StatementModel enhancedForLoop(String variableName, ExpressionModel expression, StatementModel body) {
-    throw new UnsupportedOperationException("todo");
+    return StatementModel.render(renderer -> {
+      expression.render(renderer);
+      renderer.append(".each do |").append(variableName).append("|\n");
+      renderer.indent();
+      body.render(renderer);
+      renderer.unindent();
+      renderer.append("end");
+    });
   }
 
   @Override
   public StatementModel forLoop(StatementModel initializer, ExpressionModel condition, ExpressionModel update, StatementModel body) {
-    throw new UnsupportedOperationException("todo");
+    return StatementModel.render(writer -> {
+      initializer.render(writer);
+      writer.append('\n');
+      writer.append("while (");
+      condition.render(writer);
+      writer.append(")\n");
+      writer.indent();
+      body.render(writer);
+      update.render(writer);
+      writer.append('\n');
+      writer.unindent();
+      writer.append("end");
+    });
   }
 
   @Override
