@@ -39,6 +39,30 @@ public class RubyLang implements Lang {
   }
 
   @Override
+  public void renderPrefixIncrement(ExpressionModel expression, CodeWriter writer) {
+    expression.render(writer);
+    writer.append("+=1");
+  }
+
+  @Override
+  public void renderPostfixIncrement(ExpressionModel expression, CodeWriter writer) {
+    expression.render(writer);
+    writer.append("+=1");
+  }
+
+  @Override
+  public void renderPostfixDecrement(ExpressionModel expression, CodeWriter writer) {
+    expression.render(writer);
+    writer.append("-=1");
+  }
+
+  @Override
+  public void renderPrefixDecrement(ExpressionModel expression, CodeWriter writer) {
+    expression.render(writer);
+    writer.append("-=1");
+  }
+
+  @Override
   public void renderNullLiteral(CodeWriter writer) {
     writer.append("nil");
   }

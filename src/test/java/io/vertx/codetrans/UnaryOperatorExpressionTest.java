@@ -4,6 +4,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Map;
+
 import static org.junit.Assert.*;
 
 /**
@@ -29,31 +31,41 @@ public class UnaryOperatorExpressionTest extends ConversionTestBase {
   @Test
   public void testUnaryMinus() throws Exception {
     runAll("expression/UnaryMinus", () -> {
-      assertEquals(-4, result);
+      assertEquals(-4, ((Number) result).intValue());
     });
   }
 
   @Test
   public void testUnaryPlus() throws Exception {
     runAll("expression/UnaryPlus", () -> {
-      assertEquals(4, result);
+      assertEquals(4, ((Number) result).intValue());
     });
   }
 
   @Test
   public void testPostfixIncrement() throws Exception {
-    runAll("expression/PostfixIncrement", () -> {
-      assertEquals(3, ((Number) result).intValue());
-      assertEquals(4, ((Number) result2).intValue());
-    });
+    run(new GroovyLang(), "expression/PostfixIncrement");
+    assertEquals(3, ((Number) result).intValue());
+    assertEquals(4, ((Number) result2).intValue());
+    run(new JavaScriptLang(), "expression/PostfixIncrement");
+    assertEquals(3, ((Number) result).intValue());
+    assertEquals(4, ((Number) result2).intValue());
+    run(new RubyLang(), "expression/PostfixIncrement");
+    assertEquals(4, ((Number) result).intValue()); // YEAH!
+    assertEquals(4, ((Number) result2).intValue());
   }
 
   @Test
   public void testPostfixDecrement() throws Exception {
-    runAll("expression/PostfixDecrement", () -> {
-      assertEquals(3, ((Number) result).intValue());
-      assertEquals(2, ((Number) result2).intValue());
-    });
+    run(new GroovyLang(), "expression/PostfixDecrement");
+    assertEquals(3, ((Number) result).intValue());
+    assertEquals(2, ((Number) result2).intValue());
+    run(new JavaScriptLang(), "expression/PostfixDecrement");
+    assertEquals(3, ((Number) result).intValue());
+    assertEquals(2, ((Number) result2).intValue());
+    run(new RubyLang(), "expression/PostfixDecrement");
+    assertEquals(2, ((Number) result).intValue()); // YEAH
+    assertEquals(2, ((Number) result2).intValue());
   }
 
   @Test
