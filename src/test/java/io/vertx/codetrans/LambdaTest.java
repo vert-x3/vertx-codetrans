@@ -26,21 +26,17 @@ public class LambdaTest extends ConversionTestBase {
 
   @Test
   public void testNoArg() throws Exception {
-    invoked = 0;
-    runJavaScript("lambda/Lambda", "noArg");
-    Assert.assertEquals(1, invoked);
-    invoked = 0;
-    runGroovy("lambda/Lambda", "noArg");
-    Assert.assertEquals(1, invoked);
+    runAll("lambda/Lambda", "noArg", () -> {
+      Assert.assertEquals(1, invoked);
+      invoked = 0;
+    });
   }
 
   @Test
   public void testOneArg() throws Exception {
-    o = null;
-    runJavaScript("lambda/Lambda", "oneArg");
-    Assert.assertEquals("foo", o);
-    o = null;
-    runGroovy("lambda/Lambda", "oneArg");
-    Assert.assertEquals("foo", o);
+    runAll("lambda/Lambda", "oneArg", () -> {
+      Assert.assertEquals("foo", o);
+      o = null;
+    });
   }
 }

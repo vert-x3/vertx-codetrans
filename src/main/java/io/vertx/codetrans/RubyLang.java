@@ -178,7 +178,24 @@ public class RubyLang implements Lang {
 
   @Override
   public void renderLambda(LambdaExpressionTree.BodyKind bodyKind, List<TypeInfo> parameterTypes, List<String> parameterNames, CodeModel body, CodeWriter writer) {
-    throw new UnsupportedOperationException("todo");
+    writer.append("lambda {");
+    if (parameterNames.size() > 0) {
+      writer.append(" |");
+      for (int i = 0; i < parameterNames.size(); i++) {
+        if (i == 0) {
+          writer.append(" ");
+        } else {
+          writer.append(", ");
+        }
+        writer.append(parameterNames.get(i));
+      }
+      writer.append("|");
+    }
+    writer.append("\n");
+    writer.indent();
+    body.render(writer);
+    writer.unindent();
+    writer.append("}");
   }
 
   @Override
