@@ -197,8 +197,8 @@ public class RubyLang implements Lang {
   @Override
   public StatementModel variable(TypeInfo type, String name, ExpressionModel initializer) {
     return StatementModel.render(renderer -> {
-      renderer.append(name);
       if (initializer != null) {
+        renderer.append(name);
         renderer.append(" = ");
         initializer.render(renderer);
       }

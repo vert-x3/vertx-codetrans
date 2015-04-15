@@ -31,6 +31,15 @@ public abstract class ConversionTestBase {
     run(new GroovyLang(), path, method);
   }
 
+  public void runRuby(String path) {
+    run(new RubyLang(), path);
+  }
+
+  public void runRuby(String path, String method) {
+    run(new RubyLang(), path, method);
+  }
+
+
   public void runAll(String path, Runnable after) {
     for (Lang lang : langs()) {
       run(lang, path);

@@ -24,4 +24,11 @@ public class VariableTest extends ConversionTestBase {
     runGroovy("variable/Variable");
     Assert.assertEquals("foo", o);
   }
+
+  @Test
+  public void testVariableRuby() throws Exception {
+    o = null;
+    runRuby("variable/Variable");
+    Assert.assertEquals("foo", o);
+  }
 }
