@@ -12,23 +12,10 @@ public class VariableTest extends ConversionTestBase {
   public static String o;
 
   @Test
-  public void testVariableJavaScript() throws Exception {
-    o = null;
-    runJavaScript("variable/Variable");
-    Assert.assertEquals("foo", o);
-  }
-
-  @Test
-  public void testVariableGroovy() throws Exception {
-    o = null;
-    runGroovy("variable/Variable");
-    Assert.assertEquals("foo", o);
-  }
-
-  @Test
-  public void testVariableRuby() throws Exception {
-    o = null;
-    runRuby("variable/Variable");
-    Assert.assertEquals("foo", o);
+  public void testDeclareVariable() throws Exception {
+    runAll("variable/Variable", "declare", () -> {
+      Assert.assertEquals("foo", o);
+      o = null;
+    });
   }
 }

@@ -9,7 +9,7 @@ import io.vertx.codetrans.VariableTest;
 public class Variable {
 
   @CodeTranslate
-  public void start() throws Exception {
+  public void declare() throws Exception {
     String o = VariableTest.constant;
     String b;
     b = o;
