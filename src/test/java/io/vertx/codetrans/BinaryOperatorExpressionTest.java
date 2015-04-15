@@ -76,7 +76,7 @@ public class BinaryOperatorExpressionTest extends ConversionTestBase {
   @Test
   public void testAnd() throws Exception {
     runAll("expression/And", () -> {
-      assertEquals(2, result);
+      assertEquals(2, ((Number) result).intValue());
     });
   }
 
@@ -84,35 +84,35 @@ public class BinaryOperatorExpressionTest extends ConversionTestBase {
   @Test
   public void testOr() throws Exception {
     runAll("expression/Or", () -> {
-      assertEquals(7, result);
+      assertEquals(7, ((Number) result).intValue());
     });
   }
 
   @Test
   public void testXor() throws Exception {
     runAll("expression/Xor", () -> {
-      assertEquals(5, result);
+      assertEquals(5, ((Number) result).intValue());
     });
   }
 
   @Test
   public void testPlus() throws Exception {
     runAll("expression/Plus", () -> {
-      assertEquals(5, result);
+      assertEquals(5, ((Number) result).intValue());
     });
   }
 
   @Test
   public void testMinus() throws Exception {
     runAll("expression/Minus", () -> {
-      assertEquals(-1, result);
+      assertEquals(-1, ((Number) result).intValue());
     });
   }
 
   @Test
   public void testMultiply() throws Exception {
     runAll("expression/Multiply", () -> {
-      assertEquals(6, result);
+      assertEquals(6, ((Number) result).intValue());
     });
   }
 
@@ -126,7 +126,7 @@ public class BinaryOperatorExpressionTest extends ConversionTestBase {
   @Test
   public void testRemainder() throws Exception {
     runAll("expression/Remainder", () -> {
-      assertEquals(1, result);
+      assertEquals(1, ((Number) result).intValue());
     });
   }
 
