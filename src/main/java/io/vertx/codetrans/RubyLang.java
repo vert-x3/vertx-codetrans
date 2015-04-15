@@ -39,6 +39,25 @@ public class RubyLang implements Lang {
   }
 
   @Override
+  public void renderIfThenElse(ExpressionModel condition, StatementModel thenBody, StatementModel elseBody, CodeWriter writer) {
+    writer.append("if ");
+    condition.render(writer);
+    writer.append("\n");
+    writer.indent();
+    thenBody.render(writer);
+    writer.unindent();
+    if (elseBody != null) {
+      writer.append("else\n");
+      writer.indent();
+      elseBody.render(writer);
+      writer.unindent();
+      writer.append("end");
+    } else {
+      writer.append("end");
+    }
+  }
+
+  @Override
   public void renderPrefixIncrement(ExpressionModel expression, CodeWriter writer) {
     expression.render(writer);
     writer.append("+=1");
