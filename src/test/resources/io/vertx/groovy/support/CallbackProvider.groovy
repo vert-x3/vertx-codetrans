@@ -16,4 +16,8 @@ class CallbackProvider {
   static void callbackWithFailure(Handler<AsyncResult<String>> callback) {
     callback.handle(Future.failedFuture("oh no"));
   }
+
+  static void callbackWithString(Handler<String> callback) {
+    callback.handle("world");
+  }
 }

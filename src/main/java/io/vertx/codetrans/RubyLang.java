@@ -7,14 +7,21 @@ import org.jruby.embed.LocalContextScope;
 import org.jruby.embed.ScriptingContainer;
 
 import java.io.InputStream;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.Callable;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 public class RubyLang implements Lang {
+
+  static class RubyRenderer extends CodeWriter {
+    LinkedHashSet<TypeInfo.Class> imports = new LinkedHashSet<>();
+    RubyRenderer(Lang lang) {
+      super(lang);
+    }
+  }
 
   @Override
   public Script loadScript(ClassLoader loader, String path) throws Exception {
@@ -36,6 +43,24 @@ public class RubyLang implements Lang {
         return null;
       }
     };
+  }
+
+  @Override
+  public void renderBlock(BlockModel block, CodeWriter writer) {
+    if (writer instanceof RubyRenderer) {
+      Lang.super.renderBlock(block, writer);
+    } else {
+      RubyRenderer langRenderer = new RubyRenderer(this);
+      Lang.super.renderBlock(block, langRenderer);
+      for (TypeInfo.Class type : langRenderer.imports) {
+        writer.append("require '").
+            append(type.getModuleName()).
+            append('/').
+            append(Case.SNAKE.format(Case.CAMEL.parse(type.getSimpleName()))).
+            append("'\n");
+      }
+      writer.append(langRenderer.getBuffer());
+    }
   }
 
   @Override
@@ -103,7 +128,15 @@ public class RubyLang implements Lang {
 
   @Override
   public void renderMethodReference(ExpressionModel expression, String methodName, CodeWriter writer) {
-    throw new UnsupportedOperationException("todo");
+    // That works only for &block, not PROC!!!!
+    writer.append("&");
+    expression.render(writer);
+    writer.append(".method(:").append(Case.SNAKE.format(Case.CAMEL.parse(methodName))).append(")");
+  }
+
+  @Override
+  public void renderMethodInvocation(ExpressionModel expression, String methodName, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes, CodeWriter writer) {
+    Lang.super.renderMethodInvocation(expression, Case.SNAKE.format(Case.CAMEL.parse(methodName)), parameterTypes, argumentModels, argumentTypes, writer);
   }
 
   @Override
@@ -227,7 +260,12 @@ public class RubyLang implements Lang {
 
   @Override
   public ExpressionModel staticFactory(TypeInfo.Class type, String methodName, List<TypeInfo> parameterTypes, List<ExpressionModel> arguments, List<TypeInfo> argumentTypes) {
-    throw new UnsupportedOperationException("todo");
+    return ExpressionModel.render(writer -> {
+      RubyRenderer jsRenderer = (RubyRenderer) writer;
+      jsRenderer.imports.add(type);
+      String expr = Case.CAMEL.format(Case.KEBAB.parse(type.getModule().getName())) + "::" + type.getSimpleName();
+      renderMethodInvocation(ExpressionModel.render(expr), methodName, parameterTypes, arguments, argumentTypes, writer);
+    });
   }
 
   @Override

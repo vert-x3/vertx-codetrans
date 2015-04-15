@@ -46,10 +46,6 @@ public class MethodExpressionTest extends ConversionTestBase {
 
   public static Object helloworld;
 
-  public static void consumer(Consumer<String> consumer) {
-    consumer.accept("world");
-  }
-
   @Test
   public void testMethodReference() throws Exception {
     runAll("expression/MethodReference", "lambdaisation", () -> {

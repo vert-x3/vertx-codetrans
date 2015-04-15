@@ -15,7 +15,11 @@ public interface CallbackProvider {
     throw new AssertionError("stub");
   }
 
-  public static void callbackWithFailure(Handler<AsyncResult<String>> callback) {
+  static void callbackWithFailure(Handler<AsyncResult<String>> callback) {
+    throw new AssertionError("stub");
+  }
+
+  static void callbackWithString(Handler<String> callback) {
     throw new AssertionError("stub");
   }
 }
