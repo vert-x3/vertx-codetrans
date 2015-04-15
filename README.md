@@ -11,6 +11,7 @@ Supported languages:
 
 ## Todo
 
+- codegen propeties for projection
 - handle case for handlers that are not the last parameter (MUST)
 - handle parenthesized expression in String concat : `1 + (2 + "_")` is rewritten as `1 + ("${2}_")` instead of ???
 - try to find something for Ruby postfix increment/decrement (is that even possible?)
