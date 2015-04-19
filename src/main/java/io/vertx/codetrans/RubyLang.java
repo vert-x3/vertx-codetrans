@@ -2,7 +2,6 @@ package io.vertx.codetrans;
 
 import com.sun.source.tree.LambdaExpressionTree;
 import io.vertx.codegen.Case;
-import io.vertx.codegen.ClassKind;
 import io.vertx.codegen.TypeInfo;
 import org.jruby.embed.LocalContextScope;
 import org.jruby.embed.ScriptingContainer;
@@ -10,6 +9,7 @@ import org.jruby.embed.ScriptingContainer;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Scanner;
@@ -19,9 +19,10 @@ import java.util.Scanner;
  */
 public class RubyLang implements Lang {
 
-  static class RubyRenderer extends CodeWriter {
+  static class RubyWriter extends CodeWriter {
     LinkedHashSet<TypeInfo.Class> imports = new LinkedHashSet<>();
-    RubyRenderer(Lang lang) {
+    LinkedHashSet<String> requires = new LinkedHashSet<>();
+    RubyWriter(Lang lang) {
       super(lang);
     }
   }
@@ -50,17 +51,17 @@ public class RubyLang implements Lang {
 
   @Override
   public void renderBlock(BlockModel block, CodeWriter writer) {
-    if (writer instanceof RubyRenderer) {
+    if (writer instanceof RubyWriter) {
       Lang.super.renderBlock(block, writer);
     } else {
-      RubyRenderer langRenderer = new RubyRenderer(this);
+      RubyWriter langRenderer = new RubyWriter(this);
       Lang.super.renderBlock(block, langRenderer);
+      LinkedHashSet<String> requires = new LinkedHashSet<>(langRenderer.requires);
       for (TypeInfo.Class type : langRenderer.imports) {
-        writer.append("require '").
-            append(type.getModuleName()).
-            append('/').
-            append(Case.SNAKE.format(Case.CAMEL.parse(type.getSimpleName()))).
-            append("'\n");
+        requires.add(type.getModuleName() + "/" + Case.SNAKE.format(Case.CAMEL.parse(type.getSimpleName())));
+      }
+      for (String require : requires) {
+        writer.append("require '").append(require).append("'\n");
       }
       writer.append(langRenderer.getBuffer());
     }
@@ -218,12 +219,47 @@ public class RubyLang implements Lang {
 
   @Override
   public void renderJsonObject(JsonObjectLiteralModel jsonObject, CodeWriter writer) {
-    throw new UnsupportedOperationException("todo");
+    renderJsonObject(jsonObject.getMembers(), writer, true);
+  }
+
+  private void renderJsonObject(Iterable<Member> members, CodeWriter writer, boolean unquote) {
+    writer.append("{\n");
+    writer.indent();
+    for (Iterator<Member> iterator = members.iterator();iterator.hasNext();) {
+      Member member = iterator.next();
+      String name = member.name.render(writer.getLang());
+      if (unquote) {
+        name = io.vertx.codetrans.Helper.unwrapQuotedString(name);
+      }
+      writer.append("'").append(name).append("' => ");
+      if (member instanceof Member.Single) {
+        ((Member.Single) member).value.render(writer);
+      } else {
+        renderJsonArray(((Member.Array) member).values, writer);
+      }
+      if (iterator.hasNext()) {
+        writer.append(',');
+      }
+      writer.append('\n');
+    }
+    writer.unindent().append("}");
+  }
+
+  private void renderJsonArray(List<ExpressionModel> values, CodeWriter writer) {
+    writer.append("[\n").indent();
+    for (int i = 0;i < values.size();i++) {
+      values.get(i).render(writer);
+      if (i < values.size() - 1) {
+        writer.append(',');
+      }
+      writer.append('\n');
+    }
+    writer.unindent().append(']');
   }
 
   @Override
   public void renderJsonArray(JsonArrayLiteralModel jsonArray, CodeWriter writer) {
-    throw new UnsupportedOperationException("todo");
+    renderJsonArray(jsonArray.getValues(), writer);
   }
 
   @Override
@@ -233,7 +269,11 @@ public class RubyLang implements Lang {
 
   @Override
   public void renderJsonObjectAssign(ExpressionModel expression, ExpressionModel name, ExpressionModel value, CodeWriter writer) {
-    throw new UnsupportedOperationException("todo");
+    expression.render(writer);
+    writer.append('[');
+    name.render(writer);
+    writer.append("] = ");
+    value.render(writer);
   }
 
   @Override
@@ -243,12 +283,19 @@ public class RubyLang implements Lang {
 
   @Override
   public void renderJsonObjectToString(ExpressionModel expression, CodeWriter writer) {
-    throw new UnsupportedOperationException("todo");
+    RubyWriter rubyWriter = (RubyWriter) writer;
+    rubyWriter.requires.add("json");
+    writer.append("JSON.generate(");
+    expression.render(writer);
+    writer.append(")");
   }
 
   @Override
   public void renderJsonObjectMemberSelect(ExpressionModel expression, ExpressionModel name, CodeWriter writer) {
-    throw new UnsupportedOperationException("todo");
+    expression.render(writer);
+    writer.append('[');
+    name.render(writer);
+    writer.append(']');
   }
 
   @Override
@@ -327,7 +374,7 @@ public class RubyLang implements Lang {
   @Override
   public ExpressionModel staticFactory(TypeInfo.Class type, String methodName, List<TypeInfo> parameterTypes, List<ExpressionModel> arguments, List<TypeInfo> argumentTypes) {
     return ExpressionModel.render(writer -> {
-      RubyRenderer jsRenderer = (RubyRenderer) writer;
+      RubyWriter jsRenderer = (RubyWriter) writer;
       jsRenderer.imports.add(type);
       String expr = Case.CAMEL.format(Case.KEBAB.parse(type.getModule().getName())) + "::" + type.getSimpleName();
       renderMethodInvocation(ExpressionModel.render(expr), methodName, parameterTypes, arguments, argumentTypes, writer);

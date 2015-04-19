@@ -22,6 +22,8 @@ public class JsonTest extends ConversionTestBase {
     Assert.assertEquals(new JsonObject(), unwrapJsonObject((ScriptObjectMirror) o));
     runGroovy("json/JsObject", "instantiate");
     Assert.assertEquals(new JsonObject(), unwrapJsonObject((Map<String, Object>) o));
+    runRuby("json/JsObject", "instantiate");
+    Assert.assertEquals(new JsonObject(), unwrapJsonObject((Map<String, Object>) o));
   }
 
   @Test
@@ -29,6 +31,8 @@ public class JsonTest extends ConversionTestBase {
     runJavaScript("json/JsObject", "putStringFromConstructor");
     Assert.assertEquals(new JsonObject().put("foo", "foo_value"), unwrapJsonObject((ScriptObjectMirror) o));
     runGroovy("json/JsObject", "putStringFromConstructor");
+    Assert.assertEquals(new JsonObject().put("foo", "foo_value"), unwrapJsonObject((Map<String, Object>) o));
+    runRuby("json/JsObject", "putStringFromConstructor");
     Assert.assertEquals(new JsonObject().put("foo", "foo_value"), unwrapJsonObject((Map<String, Object>) o));
   }
 
@@ -38,6 +42,8 @@ public class JsonTest extends ConversionTestBase {
     Assert.assertEquals(new JsonObject().put("foo", "foo_value"), unwrapJsonObject((ScriptObjectMirror) o));
     runGroovy("json/JsObject", "putStringFromIdentifier");
     Assert.assertEquals(new JsonObject().put("foo", "foo_value"), unwrapJsonObject((Map<String, Object>) o));
+    runRuby("json/JsObject", "putStringFromIdentifier");
+    Assert.assertEquals(new JsonObject().put("foo", "foo_value"), unwrapJsonObject((Map<String, Object>) o));
   }
 
   @Test
@@ -45,6 +51,8 @@ public class JsonTest extends ConversionTestBase {
     runJavaScript("json/JsObject", "getStringFromIdentifier");
     Assert.assertEquals("foo_value", o);
     runGroovy("json/JsObject", "getStringFromIdentifier");
+    Assert.assertEquals("foo_value", o);
+    runRuby("json/JsObject", "getStringFromIdentifier");
     Assert.assertEquals("foo_value", o);
   }
 
@@ -54,6 +62,8 @@ public class JsonTest extends ConversionTestBase {
     Assert.assertEquals(new JsonObject().put("_true", true).put("_false", false), unwrapJsonObject((ScriptObjectMirror) o));
     runGroovy("json/JsObject", "putBooleanFromConstructor");
     Assert.assertEquals(new JsonObject().put("_true", true).put("_false", false), unwrapJsonObject((Map<String, Object>) o));
+    runRuby("json/JsObject", "putBooleanFromConstructor");
+    Assert.assertEquals(new JsonObject().put("_true", true).put("_false", false), unwrapJsonObject((Map<String, Object>) o));
   }
 
   @Test
@@ -61,6 +71,8 @@ public class JsonTest extends ConversionTestBase {
     runJavaScript("json/JsObject", "putBooleanFromIdentifier");
     Assert.assertEquals(new JsonObject().put("_true", true).put("_false", false), unwrapJsonObject((ScriptObjectMirror) o));
     runGroovy("json/JsObject", "putBooleanFromIdentifier");
+    Assert.assertEquals(new JsonObject().put("_true", true).put("_false", false), unwrapJsonObject((Map<String, Object>) o));
+    runRuby("json/JsObject", "putBooleanFromIdentifier");
     Assert.assertEquals(new JsonObject().put("_true", true).put("_false", false), unwrapJsonObject((Map<String, Object>) o));
   }
 
@@ -70,6 +82,8 @@ public class JsonTest extends ConversionTestBase {
     Assert.assertEquals(true, o);
     runGroovy("json/JsObject", "getBooleanFromIdentifier");
     Assert.assertEquals(true, o);
+    runRuby("json/JsObject", "getBooleanFromIdentifier");
+    Assert.assertEquals(true, o);
   }
 
   @Test
@@ -78,6 +92,8 @@ public class JsonTest extends ConversionTestBase {
     Assert.assertEquals(new JsonObject().put("port", 8080), unwrapJsonObject((ScriptObjectMirror) o));
     runGroovy("json/JsObject", "putNumberFromConstructor");
     Assert.assertEquals(new JsonObject().put("port", 8080), unwrapJsonObject((Map<String, Object>) o));
+    runRuby("json/JsObject", "putNumberFromConstructor");
+    Assert.assertEquals(new JsonObject().put("port", 8080), unwrapJsonObject((Map<String, Object>) o));
   }
 
   @Test
@@ -85,6 +101,8 @@ public class JsonTest extends ConversionTestBase {
     runJavaScript("json/JsObject", "putNumberFromIdentifier");
     Assert.assertEquals(new JsonObject().put("port", 8080), unwrapJsonObject((ScriptObjectMirror) o));
     runGroovy("json/JsObject", "putNumberFromIdentifier");
+    Assert.assertEquals(new JsonObject().put("port", 8080), unwrapJsonObject((Map<String, Object>) o));
+    runRuby("json/JsObject", "putNumberFromIdentifier");
     Assert.assertEquals(new JsonObject().put("port", 8080), unwrapJsonObject((Map<String, Object>) o));
   }
 
@@ -106,6 +124,14 @@ public class JsonTest extends ConversionTestBase {
     Assert.assertEquals(8080f, o);
     runGroovy("json/JsObject", "getDoubleFromIdentifier");
     Assert.assertEquals(8080d, o);
+    runRuby("json/JsObject", "getIntegerFromIdentifier");
+    Assert.assertEquals(8080l, o);
+    runRuby("json/JsObject", "getLongFromIdentifier");
+    Assert.assertEquals(8080l, o);
+    runRuby("json/JsObject", "getFloatFromIdentifier");
+    Assert.assertEquals(8080d, o);
+    runRuby("json/JsObject", "getDoubleFromIdentifier");
+    Assert.assertEquals(8080d, o);
   }
 
   @Test
@@ -113,6 +139,8 @@ public class JsonTest extends ConversionTestBase {
     runJavaScript("json/JsObject", "putObjectFromConstructor");
     Assert.assertEquals(new JsonObject().put("nested", new JsonObject().put("foo", "bar")), unwrapJsonObject((ScriptObjectMirror) o));
     runGroovy("json/JsObject", "putObjectFromConstructor");
+    Assert.assertEquals(new JsonObject().put("nested", new JsonObject().put("foo", "bar")), unwrapJsonObject((Map<String, Object>) o));
+    runRuby("json/JsObject", "putObjectFromConstructor");
     Assert.assertEquals(new JsonObject().put("nested", new JsonObject().put("foo", "bar")), unwrapJsonObject((Map<String, Object>) o));
   }
 
@@ -122,6 +150,8 @@ public class JsonTest extends ConversionTestBase {
     Assert.assertEquals(new JsonObject().put("nested", new JsonObject().put("foo", "bar")), unwrapJsonObject((ScriptObjectMirror) o));
     runGroovy("json/JsObject", "putObjectFromIdentifier");
     Assert.assertEquals(new JsonObject().put("nested", new JsonObject().put("foo", "bar")), unwrapJsonObject((Map<String, Object>) o));
+    runRuby("json/JsObject", "putObjectFromIdentifier");
+    Assert.assertEquals(new JsonObject().put("nested", new JsonObject().put("foo", "bar")), unwrapJsonObject((Map<String, Object>) o));
   }
 
   @Test
@@ -129,6 +159,8 @@ public class JsonTest extends ConversionTestBase {
     runJavaScript("json/JsObject", "getObjectFromIdentifier");
     Assert.assertEquals(new JsonObject().put("foo", "bar"), unwrapJsonObject((ScriptObjectMirror) o));
     runGroovy("json/JsObject", "getObjectFromIdentifier");
+    Assert.assertEquals(new JsonObject().put("foo", "bar"), unwrapJsonObject((Map<String, Object>) o));
+    runRuby("json/JsObject", "getObjectFromIdentifier");
     Assert.assertEquals(new JsonObject().put("foo", "bar"), unwrapJsonObject((Map<String, Object>) o));
   }
 
@@ -138,6 +170,8 @@ public class JsonTest extends ConversionTestBase {
     Assert.assertEquals(new JsonObject().put("nested", new JsonArray().add("foo")), unwrapJsonObject((ScriptObjectMirror) o));
     runGroovy("json/JsObject", "putArrayFromConstructor");
     Assert.assertEquals(new JsonObject().put("nested", new JsonArray().add("foo")), unwrapJsonObject((Map<String, Object>) o));
+    runRuby("json/JsObject", "putArrayFromConstructor");
+    Assert.assertEquals(new JsonObject().put("nested", new JsonArray().add("foo")), unwrapJsonObject((Map<String, Object>) o));
   }
 
   @Test
@@ -146,6 +180,8 @@ public class JsonTest extends ConversionTestBase {
     Assert.assertEquals(new JsonObject().put("nested", new JsonArray().add("foo")), unwrapJsonObject((ScriptObjectMirror) o));
     runGroovy("json/JsObject", "putArrayFromIdentifier");
     Assert.assertEquals(new JsonObject().put("nested", new JsonArray().add("foo")), unwrapJsonObject((Map<String, Object>) o));
+    runRuby("json/JsObject", "putArrayFromIdentifier");
+    Assert.assertEquals(new JsonObject().put("nested", new JsonArray().add("foo")), unwrapJsonObject((Map<String, Object>) o));
   }
 
   @Test
@@ -153,6 +189,8 @@ public class JsonTest extends ConversionTestBase {
     runJavaScript("json/JsObject", "getArrayFromIdentifier");
     Assert.assertEquals(new JsonArray().add("foo"), unwrapJsonArray((ScriptObjectMirror) o));
     runGroovy("json/JsObject", "getArrayFromIdentifier");
+    Assert.assertEquals(new JsonArray().add("foo"), unwrapJsonArray((List<String>) o));
+    runRuby("json/JsObject", "getArrayFromIdentifier");
     Assert.assertEquals(new JsonArray().add("foo"), unwrapJsonArray((List<String>) o));
   }
 
@@ -170,6 +208,8 @@ public class JsonTest extends ConversionTestBase {
     Assert.assertEquals("{\"foo\":\"foo_value\"}", o);
     runGroovy("json/JsObject", "encodePrettily");
     Assert.assertEquals("[foo:foo_value]", o);
+    runRuby("json/JsObject", "encodePrettily");
+    Assert.assertEquals("{\"foo\":\"foo_value\"}", o);
   }
 
   // **
@@ -180,6 +220,8 @@ public class JsonTest extends ConversionTestBase {
     Assert.assertEquals(new JsonArray(), unwrapJsonArray((ScriptObjectMirror) o));
     runGroovy("json/JsArray", "instantiate");
     Assert.assertEquals(new JsonArray(), unwrapJsonArray((List<Object>) o));
+    runRuby("json/JsArray", "instantiate");
+    Assert.assertEquals(new JsonArray(), unwrapJsonArray((List<Object>) o));
   }
 
   @Test
@@ -187,6 +229,8 @@ public class JsonTest extends ConversionTestBase {
     runJavaScript("json/JsArray", "addString");
     Assert.assertEquals(new JsonArray().add("foo"), unwrapJsonArray((ScriptObjectMirror) o));
     runGroovy("json/JsArray", "addString");
+    Assert.assertEquals(new JsonArray().add("foo"), unwrapJsonArray((List<Object>) o));
+    runRuby("json/JsArray", "addString");
     Assert.assertEquals(new JsonArray().add("foo"), unwrapJsonArray((List<Object>) o));
   }
 
@@ -196,6 +240,8 @@ public class JsonTest extends ConversionTestBase {
     Assert.assertEquals(new JsonArray().add(true).add(false), unwrapJsonArray((ScriptObjectMirror) o));
     runGroovy("json/JsArray", "addBoolean");
     Assert.assertEquals(new JsonArray().add(true).add(false), unwrapJsonArray((List<Object>) o));
+    runRuby("json/JsArray", "addBoolean");
+    Assert.assertEquals(new JsonArray().add(true).add(false), unwrapJsonArray((List<Object>) o));
   }
 
   @Test
@@ -203,6 +249,8 @@ public class JsonTest extends ConversionTestBase {
     runJavaScript("json/JsArray", "addNumber");
     Assert.assertEquals(new JsonArray().add(8080), unwrapJsonArray((ScriptObjectMirror) o));
     runGroovy("json/JsArray", "addNumber");
+    Assert.assertEquals(new JsonArray().add(8080), unwrapJsonArray((List<Object>) o));
+    runRuby("json/JsArray", "addNumber");
     Assert.assertEquals(new JsonArray().add(8080), unwrapJsonArray((List<Object>) o));
   }
 
@@ -212,6 +260,8 @@ public class JsonTest extends ConversionTestBase {
     Assert.assertEquals(new JsonArray().add(new JsonArray().add("foo")), unwrapJsonArray((ScriptObjectMirror) o));
     runGroovy("json/JsArray", "addArray");
     Assert.assertEquals(new JsonArray().add(new JsonArray().add("foo")), unwrapJsonArray((List<Object>) o));
+    runRuby("json/JsArray", "addArray");
+    Assert.assertEquals(new JsonArray().add(new JsonArray().add("foo")), unwrapJsonArray((List<Object>) o));
   }
 
   @Test
@@ -219,6 +269,8 @@ public class JsonTest extends ConversionTestBase {
     runJavaScript("json/JsArray", "addObject");
     Assert.assertEquals(new JsonArray().add(new JsonObject().put("foo", "foo_value")), unwrapJsonArray((ScriptObjectMirror) o));
     runGroovy("json/JsArray", "addObject");
+    Assert.assertEquals(new JsonArray().add(new JsonObject().put("foo", "foo_value")), unwrapJsonArray((List<Object>) o));
+    runRuby("json/JsArray", "addObject");
     Assert.assertEquals(new JsonArray().add(new JsonObject().put("foo", "foo_value")), unwrapJsonArray((List<Object>) o));
   }
 }
