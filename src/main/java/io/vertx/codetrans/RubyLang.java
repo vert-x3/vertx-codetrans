@@ -2,11 +2,14 @@ package io.vertx.codetrans;
 
 import com.sun.source.tree.LambdaExpressionTree;
 import io.vertx.codegen.Case;
+import io.vertx.codegen.ClassKind;
 import io.vertx.codegen.TypeInfo;
 import org.jruby.embed.LocalContextScope;
 import org.jruby.embed.ScriptingContainer;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Scanner;
@@ -128,15 +131,54 @@ public class RubyLang implements Lang {
 
   @Override
   public void renderMethodReference(ExpressionModel expression, String methodName, CodeWriter writer) {
-    // That works only for &block, not PROC!!!!
-    writer.append("&");
     expression.render(writer);
     writer.append(".method(:").append(Case.SNAKE.format(Case.CAMEL.parse(methodName))).append(")");
   }
 
   @Override
   public void renderMethodInvocation(ExpressionModel expression, String methodName, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes, CodeWriter writer) {
+    int size = parameterTypes.size();
+    int index = size - 1;
+
+    LambdaExpressionModel lambda = null;
+
+    for (int i = 0;i < size;i++) {
+      if (Helper.isHandler(parameterTypes.get(index))) {
+        if (i == size - 1) {
+          ExpressionModel lastExpr = argumentModels.get(index);
+          if (lastExpr instanceof LambdaExpressionModel) {
+            lambda = (LambdaExpressionModel) lastExpr;
+            parameterTypes = parameterTypes.subList(0, size - 1);
+            argumentModels = argumentModels.subList(0, size - 1);
+            argumentTypes = argumentTypes.subList(0, size - 1);
+          } else {
+            if (Helper.isInstanceOfHandler(argumentTypes.get(i))) {
+              argumentModels = new ArrayList<>(argumentModels);
+              argumentModels.set(index, ExpressionModel.render(writer2 -> {
+                writer.append("&");
+                lastExpr.render(writer);
+                writer.append(".method(:handle)");
+              }));
+            } else {
+              argumentModels = new ArrayList<>(argumentModels);
+              argumentModels.set(index, ExpressionModel.render(writer2 -> {
+                writer.append("&");
+                lastExpr.render(writer);
+              }));
+            }
+          }
+        } else {
+          // Do nothing for now
+        }
+      }
+    }
     Lang.super.renderMethodInvocation(expression, Case.SNAKE.format(Case.CAMEL.parse(methodName)), parameterTypes, argumentModels, argumentTypes, writer);
+
+    //
+    if (lambda != null) {
+      writer.append(" ");
+      renderBlock(lambda.getBodyKind(), lambda.getParameterTypes(), lambda.getParameterNames(), lambda.getBody(), writer);
+    }
   }
 
   @Override
@@ -156,12 +198,17 @@ public class RubyLang implements Lang {
 
   @Override
   public void renderMapGet(ExpressionModel map, ExpressionModel arg, CodeWriter writer) {
-    throw new UnsupportedOperationException("todo");
+    map.render(writer);
+    writer.append('[');
+    arg.render(writer);
+    writer.append(']');
   }
 
   @Override
   public void renderMapForEach(ExpressionModel map, String keyName, TypeInfo keyType, String valueName, TypeInfo valueType, LambdaExpressionTree.BodyKind bodyKind, CodeModel block, CodeWriter writer) {
-    throw new UnsupportedOperationException("todo");
+    map.render(writer);
+    writer.append(".each_pair ");
+    renderBlock(bodyKind, Arrays.asList(keyType, valueType), Arrays.asList(keyName, valueName), block, writer);
   }
 
   @Override
@@ -209,16 +256,16 @@ public class RubyLang implements Lang {
     throw new UnsupportedOperationException("todo");
   }
 
-  @Override
-  public void renderLambda(LambdaExpressionTree.BodyKind bodyKind, List<TypeInfo> parameterTypes, List<String> parameterNames, CodeModel body, CodeWriter writer) {
-    writer.append("lambda {");
+  /**
+   * Renders a ruby block with curly brace syntax.
+   */
+  private void renderBlock(LambdaExpressionTree.BodyKind bodyKind, List<TypeInfo> parameterTypes, List<String> parameterNames, CodeModel body, CodeWriter writer) {
+    writer.append("{");
     if (parameterNames.size() > 0) {
       writer.append(" |");
       for (int i = 0; i < parameterNames.size(); i++) {
-        if (i == 0) {
-          writer.append(" ");
-        } else {
-          writer.append(", ");
+        if (i > 0) {
+          writer.append(",");
         }
         writer.append(parameterNames.get(i));
       }
@@ -229,6 +276,12 @@ public class RubyLang implements Lang {
     body.render(writer);
     writer.unindent();
     writer.append("}");
+  }
+
+  @Override
+  public void renderLambda(LambdaExpressionTree.BodyKind bodyKind, List<TypeInfo> parameterTypes, List<String> parameterNames, CodeModel body, CodeWriter writer) {
+    writer.append("lambda ");
+    renderBlock(bodyKind, parameterTypes, parameterNames, body, writer);
   }
 
   @Override
@@ -250,12 +303,25 @@ public class RubyLang implements Lang {
 
   @Override
   public ExpressionModel asyncResult(String identifier) {
-    throw new UnsupportedOperationException("todo");
+    return ExpressionModel.forMethodInvocation((member, args) -> {
+      switch (member) {
+        case "succeeded":
+          return ExpressionModel.render(identifier + "_err == nil");
+        case "result":
+          return ExpressionModel.render(identifier);
+        case "cause":
+          return ExpressionModel.render(identifier + "_err");
+        case "failed":
+          return ExpressionModel.render(identifier + "_err != nil");
+        default:
+          throw new UnsupportedOperationException("Not implemented");
+      }
+    });
   }
 
   @Override
-  public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, String resultName, CodeModel body) {
-    throw new UnsupportedOperationException("todo");
+  public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, TypeInfo.Parameterized resultType, String resultName, CodeModel body) {
+    return new LambdaExpressionModel(bodyKind, Arrays.asList(resultType.getArgs().get(0), TypeInfo.create(Throwable.class)), Arrays.asList(resultName, resultName + "_err"), body);
   }
 
   @Override
@@ -310,6 +376,9 @@ public class RubyLang implements Lang {
 
   @Override
   public ExpressionModel console(ExpressionModel expression) {
-    throw new UnsupportedOperationException("todo");
+    return ExpressionModel.render(renderer -> {
+      renderer.append("puts ");
+      expression.render(renderer);
+    });
   }
 }

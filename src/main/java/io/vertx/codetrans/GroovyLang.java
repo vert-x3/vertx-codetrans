@@ -8,6 +8,7 @@ import io.vertx.codegen.TypeInfo;
 
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -154,10 +155,8 @@ public class GroovyLang implements Lang {
   }
 
   @Override
-  public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, String resultName, CodeModel body) {
-    return ExpressionModel.render(writer -> {
-      renderLambda(null, null, Arrays.asList(resultName), body, writer);
-    });
+  public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, TypeInfo.Parameterized resultType, String resultName, CodeModel body) {
+    return new LambdaExpressionModel(bodyKind, Collections.singletonList(resultType), Collections.singletonList(resultName), body);
   }
 
   @Override

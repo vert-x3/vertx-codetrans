@@ -21,8 +21,8 @@ public class ParenthesizedExpressionTest extends ConversionTestBase {
   @Test
   public void testParenthesized() throws Exception {
     runAll("expression/Parenthesized", () -> {
-      assertEquals(15, result);
-      assertEquals(9, result2);
+      assertEquals(15, ((Number) result).intValue());
+      assertEquals(9, ((Number) result2).intValue());
     });
   }
 }

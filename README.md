@@ -8,10 +8,11 @@ Supported languages:
 * Groovy
 * JavaScript
 
-
 ## Todo
 
 - codegen propeties for projection
 - handle case for handlers that are not the last parameter (MUST)
 - handle parenthesized expression in String concat : `1 + (2 + "_")` is rewritten as `1 + ("${2}_")` instead of ???
 - try to find something for Ruby postfix increment/decrement (is that even possible?)
+- test lambda/proc non last arg
+- groovy -> have last lambda to be like in ruby syntax

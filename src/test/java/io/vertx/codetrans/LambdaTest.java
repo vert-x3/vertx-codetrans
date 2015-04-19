@@ -39,4 +39,28 @@ public class LambdaTest extends ConversionTestBase {
       o = null;
     });
   }
+
+  @Test
+  public void testInvokeStringHandler() throws Exception {
+    runAll("lambda/Lambda", "invokeStringHandler", () -> {
+      Assert.assertEquals("callback_value", o);
+      o = null;
+    });
+  }
+
+  @Test
+  public void testInvokeStringHandlerFirstParam() throws Exception {
+    runAll("lambda/Lambda", "invokeStringHandlerFirstParam", () -> {
+      Assert.assertEquals("the_other_value", o);
+      o = null;
+    });
+  }
+
+  @Test
+  public void testInvokeStringHandlerLastParam() throws Exception {
+    runAll("lambda/Lambda", "invokeStringHandlerLastParam", () -> {
+      Assert.assertEquals("the_other_value", o);
+      o = null;
+    });
+  }
 }

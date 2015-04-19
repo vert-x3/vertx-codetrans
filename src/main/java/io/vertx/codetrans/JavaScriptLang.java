@@ -14,7 +14,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.Callable;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -208,10 +207,8 @@ public class JavaScriptLang implements Lang {
   }
 
   @Override
-  public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, String resultName, CodeModel body) {
-    return ExpressionModel.render(writer -> {
-      renderLambda(null, null, Arrays.asList(resultName, resultName + "_err"), body, writer);
-    });
+  public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, TypeInfo.Parameterized resultType, String resultName, CodeModel body) {
+    return new LambdaExpressionModel(bodyKind, Arrays.asList(resultType.getArgs().get(0), TypeInfo.create(Throwable.class)), Arrays.asList(resultName, resultName + "_err"), body);
   }
 
   @Override
@@ -341,18 +338,12 @@ public class JavaScriptLang implements Lang {
     for (int i = 0;i < parameterTypes.size();i++) {
       TypeInfo parameterType = parameterTypes.get(i);
       TypeInfo argumentType = argumentTypes.get(i);
-      if (parameterType instanceof TypeInfo.Parameterized && argumentType instanceof TypeInfo.Class.Api) {
-        TypeInfo.Class.Api aaa = (TypeInfo.Class.Api) argumentType;
-        if (aaa.isHandler()) {
-          TypeInfo.Parameterized apiType = (TypeInfo.Parameterized) parameterType;
-          if (apiType.getRaw().getName().equals(Handler.class.getName())) {
-            ExpressionModel expressionModel = argumentModels.get(i);
-            argumentModels.set(i, ExpressionModel.render(cw -> {
-              expressionModel.render(cw);
-              cw.append(".handle");
-            }));
-          }
-        }
+      if (io.vertx.codetrans.Helper.isHandler(parameterType) && io.vertx.codetrans.Helper.isInstanceOfHandler(argumentType)) {
+        ExpressionModel expressionModel = argumentModels.get(i);
+        argumentModels.set(i, ExpressionModel.render(cw -> {
+          expressionModel.render(cw);
+          cw.append(".handle");
+        }));
       }
     }
     Lang.super.renderMethodInvocation(expression, methodName, parameterTypes, argumentModels, argumentTypes, writer);

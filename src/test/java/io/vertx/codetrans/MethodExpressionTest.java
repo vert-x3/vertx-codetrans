@@ -49,7 +49,7 @@ public class MethodExpressionTest extends ConversionTestBase {
   @Test
   public void testMethodReference() throws Exception {
     runAll("expression/MethodReference", "lambdaisation", () -> {
-      assertEquals("helloworld", helloworld);
+      assertEquals("hellocallback_value", helloworld);
       helloworld = null;
     });
   }

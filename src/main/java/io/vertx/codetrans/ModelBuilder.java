@@ -486,7 +486,8 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
           if (type.getKind() == ClassKind.ASYNC_RESULT) {
             ExpressionModel result = lang.asyncResult(last.name.toString());
             CodeModel body = scan(node.getBody(), p.putAlias(last.sym, result));
-            return lang.asyncResultHandler(node.getBodyKind(), last.name.toString(), body);
+            TypeInfo.Parameterized parameterized = (TypeInfo.Parameterized) type;
+            return lang.asyncResultHandler(node.getBodyKind(), parameterized, last.name.toString(), body);
           }
         }
       }
