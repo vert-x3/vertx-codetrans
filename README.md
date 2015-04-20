@@ -10,6 +10,7 @@ Supported languages:
 
 ## Todo
 
+- ruby : nail out the {} versus do/begin syntax
 - codegen propeties for projection
 - handle case for handlers that are not the last parameter (MUST)
 - handle parenthesized expression in String concat : `1 + (2 + "_")` is rewritten as `1 + ("${2}_")` instead of ???

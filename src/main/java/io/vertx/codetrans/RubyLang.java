@@ -50,6 +50,31 @@ public class RubyLang implements Lang {
   }
 
   @Override
+  public void renderFragment(String fragment, CodeWriter writer) {
+    FragmentParser renderer = new FragmentParser() {
+      @Override
+      public void onNewline() {
+        writer.append('\n');
+      }
+      @Override
+      public void onComment(char c) {
+        writer.append(c);
+      }
+      @Override
+      public void onBeginComment(boolean multiline) {
+        writer.append(multiline ? "=begin" : "#");
+      }
+      @Override
+      public void onEndComment(boolean multiline) {
+        if (multiline) {
+          writer.append("=end");
+        }
+      }
+    };
+    renderer.parse(fragment);
+  }
+
+  @Override
   public void renderBlock(BlockModel block, CodeWriter writer) {
     if (writer instanceof RubyWriter) {
       Lang.super.renderBlock(block, writer);
