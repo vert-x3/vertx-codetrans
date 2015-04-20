@@ -4,6 +4,7 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.codetrans.annotations.CodeTranslate;
 import io.vertx.codetrans.JsonTest;
+import io.vertx.support.JsonConverter;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -12,30 +13,34 @@ public class JsObject {
 
   @CodeTranslate
   public void instantiate() throws Exception {
-    JsonTest.o = new JsonObject();
+    JsonObject obj = new JsonObject();
+    JsonTest.o = JsonConverter.toJsonObject(obj);
   }
 
   @CodeTranslate
   public void putArrayFromConstructor() throws Exception {
-    JsonTest.o = new JsonObject().put("nested", new JsonArray().add("foo"));
+    JsonObject obj = new JsonObject().put("nested", new JsonArray().add("foo"));
+    JsonTest.o = JsonConverter.toJsonObject(obj);
   }
 
   @CodeTranslate
   public void putArrayFromIdentifier() throws Exception {
     JsonObject obj = new JsonObject();
     obj.put("nested", new JsonArray().add("foo"));
-    JsonTest.o = obj;
+    JsonTest.o = JsonConverter.toJsonObject(obj);
   }
 
   @CodeTranslate
   public void getArrayFromIdentifier() throws Exception {
     JsonObject obj = new JsonObject().put("nested", new JsonArray().add("foo"));
-    JsonTest.o = obj.getDouble("nested");
+    JsonArray arr = obj.getJsonArray("nested");
+    JsonTest.o = JsonConverter.toJsonArray(arr);
   }
 
   @CodeTranslate
   public void putBooleanFromConstructor() throws Exception {
-    JsonTest.o = new JsonObject().put("_true", true).put("_false", false);
+    JsonObject obj = new JsonObject().put("_true", true).put("_false", false);
+    JsonTest.o = JsonConverter.toJsonObject(obj);
   }
 
   @CodeTranslate
@@ -43,7 +48,7 @@ public class JsObject {
     JsonObject obj = new JsonObject();
     obj.put("_true", true);
     obj.put("_false", false);
-    JsonTest.o = obj;
+    JsonTest.o = JsonConverter.toJsonObject(obj);
   }
 
   @CodeTranslate
@@ -54,14 +59,15 @@ public class JsObject {
 
   @CodeTranslate
   public void putNumberFromConstructor() throws Exception {
-    JsonTest.o = new JsonObject().put("port", 8080);
+    JsonObject obj = new JsonObject().put("port", 8080);
+    JsonTest.o = JsonConverter.toJsonObject(obj);
   }
 
   @CodeTranslate
   public void putNumberFromIdentifier() throws Exception {
     JsonObject obj = new JsonObject();
     obj.put("port", 8080);
-    JsonTest.o = obj;
+    JsonTest.o = JsonConverter.toJsonObject(obj);
   }
 
   @CodeTranslate
@@ -90,32 +96,35 @@ public class JsObject {
 
   @CodeTranslate
   public void putObjectFromConstructor() throws Exception {
-    JsonTest.o = new JsonObject().put("nested", new JsonObject().put("foo", "bar"));
+    JsonObject obj = new JsonObject().put("nested", new JsonObject().put("foo", "bar"));
+    JsonTest.o = JsonConverter.toJsonObject(obj);
   }
 
   @CodeTranslate
   public void putObjectFromIdentifier() throws Exception {
     JsonObject obj = new JsonObject();
     obj.put("nested", new JsonObject().put("foo", "bar"));
-    JsonTest.o = obj;
+    JsonTest.o = JsonConverter.toJsonObject(obj);
   }
 
   @CodeTranslate
   public void getObjectFromIdentifier() throws Exception {
     JsonObject obj = new JsonObject().put("nested", new JsonObject().put("foo", "bar"));
-    JsonTest.o = obj.getJsonObject("nested");
+    JsonObject nested = obj.getJsonObject("nested");
+    JsonTest.o = JsonConverter.toJsonObject(nested);
   }
 
   @CodeTranslate
   public void putStringFromConstructor() throws Exception {
-    JsonTest.o = new JsonObject().put("foo", "foo_value");
+    JsonObject obj = new JsonObject().put("foo", "foo_value");
+    JsonTest.o = JsonConverter.toJsonObject(obj);
   }
 
   @CodeTranslate
   public void putStringFromIdentifier() throws Exception {
     JsonObject obj = new JsonObject();
     obj.put("foo", "foo_value");
-    JsonTest.o = obj;
+    JsonTest.o = JsonConverter.toJsonObject(obj);
   }
 
   @CodeTranslate
