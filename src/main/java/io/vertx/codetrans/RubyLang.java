@@ -49,6 +49,13 @@ public class RubyLang implements Lang {
     };
   }
 
+  public void renderEquals(ExpressionModel expression, ExpressionModel arg, CodeWriter writer) {
+    expression.render(writer);
+    writer.append(".equals(");
+    arg.render(writer);
+    writer.append(")");
+  }
+
   @Override
   public void renderFragment(String fragment, CodeWriter writer) {
     FragmentParser renderer = new FragmentParser() {

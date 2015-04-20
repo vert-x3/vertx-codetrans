@@ -19,6 +19,15 @@ public class ObjectTest extends ConversionTestBase {
   };
 
   @Test
+  public void testEqualsGroovy() throws Exception {
+    isEquals = null;
+    called = false;
+    runGroovy("object/Equals");
+    Assert.assertEquals(true, isEquals);
+    Assert.assertFalse(called);
+  }
+
+  @Test
   public void testEqualsJavaScript() throws Exception {
     isEquals = null;
     called = false;
@@ -28,11 +37,11 @@ public class ObjectTest extends ConversionTestBase {
   }
 
   @Test
-  public void testEqualsGroovy() throws Exception {
+  public void testEqualsRuby() throws Exception {
     isEquals = null;
     called = false;
-    runGroovy("object/Equals");
+    runRuby("object/Equals");
     Assert.assertEquals(true, isEquals);
-    Assert.assertFalse(called);
+    Assert.assertTrue(called);
   }
 }
