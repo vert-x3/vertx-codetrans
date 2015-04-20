@@ -12,6 +12,13 @@ public class ModuleTest extends ConversionTestBase {
   public static Object toString;
 
   @Test
+  public void testGroovyModule() throws Throwable {
+    runGroovy("module/Module");
+//    Assert.assertTrue("Was expecting buffer " + buffer.getClass().getName() + "  instance of " + io.vertx.groovy.core.buffer.Buffer.class.getName(), buffer instanceof io.vertx.groovy.core.buffer.Buffer);
+    Assert.assertEquals("the_buffer", toString);
+  }
+
+  @Test
   public void testJavaScriptModule() throws Throwable {
     runJavaScript("module/Module");
     Assert.assertNotNull(buffer);
@@ -19,9 +26,9 @@ public class ModuleTest extends ConversionTestBase {
   }
 
   @Test
-  public void testGroovytModule() throws Throwable {
-    runGroovy("module/Module");
-//    Assert.assertTrue("Was expecting buffer " + buffer.getClass().getName() + "  instance of " + io.vertx.groovy.core.buffer.Buffer.class.getName(), buffer instanceof io.vertx.groovy.core.buffer.Buffer);
+  public void testRubyModule() throws Throwable {
+    runRuby("module/Module");
+    Assert.assertNotNull(buffer);
     Assert.assertEquals("the_buffer", toString);
   }
 }
