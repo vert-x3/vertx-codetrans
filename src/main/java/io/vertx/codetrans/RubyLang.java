@@ -264,13 +264,13 @@ public class RubyLang implements Lang {
 
   @Override
   public void renderDataObject(DataObjectLiteralModel model, CodeWriter writer) {
-    throw new UnsupportedOperationException("todo");
+    renderJsonObject(model.getMembers(), writer, false);
   }
 
   @Override
   public void renderJsonObjectAssign(ExpressionModel expression, ExpressionModel name, ExpressionModel value, CodeWriter writer) {
     expression.render(writer);
-    writer.append('[');
+    writer.append("[");
     name.render(writer);
     writer.append("] = ");
     value.render(writer);
@@ -278,7 +278,11 @@ public class RubyLang implements Lang {
 
   @Override
   public void renderDataObjectAssign(ExpressionModel expression, ExpressionModel name, ExpressionModel value, CodeWriter writer) {
-    throw new UnsupportedOperationException("todo");
+    renderJsonObjectAssign(expression, ExpressionModel.render(writer2 -> {
+      writer2.append("'");
+      name.render(writer2);
+      writer2.append("'");
+    }), value, writer);
   }
 
   @Override
@@ -293,14 +297,18 @@ public class RubyLang implements Lang {
   @Override
   public void renderJsonObjectMemberSelect(ExpressionModel expression, ExpressionModel name, CodeWriter writer) {
     expression.render(writer);
-    writer.append('[');
+    writer.append("[");
     name.render(writer);
-    writer.append(']');
+    writer.append("]");
   }
 
   @Override
   public void renderDataObjectMemberSelect(ExpressionModel expression, ExpressionModel name, CodeWriter writer) {
-    throw new UnsupportedOperationException("todo");
+    renderJsonObjectMemberSelect(expression, ExpressionModel.render(writer2 -> {
+      writer2.append("'");
+      name.render(writer2);
+      writer2.append("'");
+    }), writer);
   }
 
   /**
@@ -333,12 +341,17 @@ public class RubyLang implements Lang {
 
   @Override
   public void renderEnumConstant(TypeInfo.Class.Enum type, String constant, CodeWriter writer) {
-    throw new UnsupportedOperationException("todo");
+    writer.append(':').append(constant);
   }
 
   @Override
   public void renderThrow(String throwableType, ExpressionModel reason, CodeWriter writer) {
-    throw new UnsupportedOperationException("todo");
+    if (reason == null) {
+      writer.append("raise ").append("\"an error occured\"");
+    } else {
+      writer.append("raise ");
+      reason.render(writer);
+    }
   }
 
   @Override

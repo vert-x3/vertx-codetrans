@@ -25,6 +25,9 @@ public class DataObjectTest extends ConversionTestBase {
     o = null;
     runGroovy("dataobject/DataObject", "empty");
     Assert.assertEquals(new JsonObject(), unwrapJsonObject((Map<String, Object>) o));
+    o = null;
+    runRuby("dataobject/DataObject", "empty");
+    Assert.assertEquals(new JsonObject(), unwrapJsonObject((Map<String, Object>) o));
   }
 
   @Test
@@ -34,6 +37,9 @@ public class DataObjectTest extends ConversionTestBase {
     Assert.assertEquals(new JsonObject().put("host", "localhost").put("port", 8080), unwrapJsonObject((ScriptObjectMirror) o));
     o = null;
     runGroovy("dataobject/DataObject", "setFromConstructor");
+    Assert.assertEquals(new JsonObject().put("host", "localhost").put("port", 8080), unwrapJsonObject((Map<String, Object>) o));
+    o = null;
+    runRuby("dataobject/DataObject", "setFromConstructor");
     Assert.assertEquals(new JsonObject().put("host", "localhost").put("port", 8080), unwrapJsonObject((Map<String, Object>) o));
   }
 
@@ -45,6 +51,9 @@ public class DataObjectTest extends ConversionTestBase {
     o = null;
     runGroovy("dataobject/DataObject", "setFromIdentifier");
     Assert.assertEquals(new JsonObject().put("host", "localhost").put("port", 8080), unwrapJsonObject((Map<String, Object>) o));
+    o = null;
+    runRuby("dataobject/DataObject", "setFromIdentifier");
+    Assert.assertEquals(new JsonObject().put("host", "localhost").put("port", 8080), unwrapJsonObject((Map<String, Object>) o));
   }
 
   @Test
@@ -55,6 +64,9 @@ public class DataObjectTest extends ConversionTestBase {
     o = null;
     runGroovy("dataobject/DataObject", "getFromIdentifier");
     Assert.assertEquals("localhost", o);
+    o = null;
+    runRuby("dataobject/DataObject", "getFromIdentifier");
+    Assert.assertEquals("localhost", o);
   }
 
   @Test
@@ -64,6 +76,9 @@ public class DataObjectTest extends ConversionTestBase {
     Assert.assertEquals(new JsonObject().put("keyStoreOptions", new JsonObject().put("path", "/mystore.jks").put("password", "secret")), unwrapJsonObject((ScriptObjectMirror) o));
     o = null;
     runGroovy("dataobject/DataObject", "nested");
+    Assert.assertEquals(new JsonObject().put("keyStoreOptions", new JsonObject().put("path", "/mystore.jks").put("password", "secret")), unwrapJsonObject((Map<String, Object>) o));
+    o = null;
+    runRuby("dataobject/DataObject", "nested");
     Assert.assertEquals(new JsonObject().put("keyStoreOptions", new JsonObject().put("path", "/mystore.jks").put("password", "secret")), unwrapJsonObject((Map<String, Object>) o));
   }
 
@@ -78,6 +93,13 @@ public class DataObjectTest extends ConversionTestBase {
     Assert.assertEquals(expected, actual.getEnabledCipherSuites());
     o = null;
     runGroovy("dataobject/DataObject", "add");
+    actual = new HttpServerOptions(unwrapJsonObject((Map<String, Object>) o));
+    expected = new HashSet<>();
+    expected.add("foo");
+    expected.add("bar");
+    Assert.assertEquals(expected, actual.getEnabledCipherSuites());
+    o = null;
+    runRuby("dataobject/DataObject", "add");
     actual = new HttpServerOptions(unwrapJsonObject((Map<String, Object>) o));
     expected = new HashSet<>();
     expected.add("foo");

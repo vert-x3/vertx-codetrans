@@ -2,6 +2,7 @@ package io.vertx.codetrans;
 
 import groovy.lang.GString;
 import io.vertx.support.TheEnum;
+import org.jruby.RubySymbol;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -142,6 +143,8 @@ public class LiteralExpressionTest extends ConversionTestBase {
     assertEquals("THE_CONSTANT", result);
     runGroovy("expression/LiteralEnum", "enumConstant");
     assertEquals(TheEnum.THE_CONSTANT, result);
+    runRuby("expression/LiteralEnum", "enumConstant");
+    assertEquals("THE_CONSTANT", ((RubySymbol) result).asJavaString());
   }
 
   @Test
@@ -152,5 +155,8 @@ public class LiteralExpressionTest extends ConversionTestBase {
     runGroovy("expression/LiteralEnum", "enumConstantInString");
     assertTrue(result instanceof GString);
     assertEquals("->THE_CONSTANT<-", result.toString());
+    runRuby("expression/LiteralEnum", "enumConstantInString");
+    assertTrue(result instanceof String);
+    assertEquals("->THE_CONSTANT<-", result);
   }
 }

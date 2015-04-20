@@ -1,5 +1,6 @@
 package io.vertx.codetrans;
 
+import org.jruby.embed.EvalFailedException;
 import org.junit.Test;
 
 import javax.script.ScriptException;
@@ -24,6 +25,11 @@ public class ThrowingTest extends ConversionTestBase {
       fail();
     } catch (ScriptException e) {
     }
+    try {
+      callable(new RubyLang(), "throwing/Throwing", "throwRuntimeExceptionNoArg").call();
+      fail();
+    } catch (EvalFailedException e) {
+    }
   }
 
   @Test
@@ -38,6 +44,12 @@ public class ThrowingTest extends ConversionTestBase {
       callable(new JavaScriptLang(), "throwing/Throwing", "throwRuntimeExceptionStringArg").call();
       fail();
     } catch (ScriptException e) {
+      assertTrue(e.getMessage().contains("foobar"));
+    }
+    try {
+      callable(new RubyLang(), "throwing/Throwing", "throwRuntimeExceptionStringArg").call();
+      fail();
+    } catch (EvalFailedException e) {
       assertTrue(e.getMessage().contains("foobar"));
     }
   }
