@@ -24,17 +24,17 @@ public class JavaScriptLang implements Lang {
 
   @Override
   public void renderLongLiteral(String value, CodeWriter writer) {
-    renderCharacters(value, writer);
+    writer.renderChars(value);
   }
 
   @Override
   public void renderFloatLiteral(String value, CodeWriter writer) {
-    renderCharacters(value, writer);
+    writer.renderChars(value);
   }
 
   @Override
   public void renderDoubleLiteral(String value, CodeWriter writer) {
-    renderCharacters(value, writer);
+    writer.renderChars(value);
   }
 
   @Override

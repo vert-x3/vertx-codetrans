@@ -95,19 +95,19 @@ public class GroovyLang implements Lang {
 
   @Override
   public void renderLongLiteral(String value, CodeWriter writer) {
-    renderCharacters(value, writer);
+    writer.renderChars(value);
     writer.append('L');
   }
 
   @Override
   public void renderFloatLiteral(String value, CodeWriter writer) {
-    renderCharacters(value, writer);
+    writer.renderChars(value);
     writer.append('f');
   }
 
   @Override
   public void renderDoubleLiteral(String value, CodeWriter writer) {
-    renderCharacters(value, writer);
+    writer.renderChars(value);
     writer.append('d');
   }
 

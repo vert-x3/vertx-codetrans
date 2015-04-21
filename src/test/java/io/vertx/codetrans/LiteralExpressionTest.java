@@ -67,7 +67,7 @@ public class LiteralExpressionTest extends ConversionTestBase {
     });
     for (Lang lang : langs()) {
       CodeWriter writer = new CodeWriter(lang);
-      lang.renderCharacters(expected, writer);
+      writer.renderChars(expected);
       assertEquals("\\n\\r\\t\\f\\b\\\"\\\\'\\u0000A\\u007F", writer.getBuffer().toString());
     }
   }

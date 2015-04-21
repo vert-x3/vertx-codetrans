@@ -64,7 +64,7 @@ public class Helper {
                                                String beginInterpolation, String endInterpolation) {
     if (expression instanceof StringLiteralModel) {
       StringLiteralModel string = (StringLiteralModel) expression;
-      writer.append(string.value);
+      writer.renderChars(string.value);
     } else if (Helper.isString(expression)) {
       expression.render(writer);
     } else {
