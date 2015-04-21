@@ -1,6 +1,7 @@
 package io.vertx.codetrans;
 
 import com.sun.source.tree.LambdaExpressionTree;
+import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyCodeSource;
 import groovy.lang.Script;
@@ -12,6 +13,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -34,11 +36,12 @@ public class GroovyLang implements Lang {
         public String getSource() {
           return source;
         }
+
         @Override
-        public Void call() throws Exception {
+        public void run(Map<String, Object> globals) throws Exception {
           Script script = (Script) clazz.newInstance();
+          script.setBinding(new Binding(globals));
           script.run();
-          return null;
         }
       };
     }
@@ -178,7 +181,7 @@ public class GroovyLang implements Lang {
   }
 
   @Override
-  public StatementModel variable(TypeInfo type, String name, ExpressionModel initializer) {
+  public StatementModel variableDecl(TypeInfo type, String name, ExpressionModel initializer) {
     return StatementModel.render(renderer -> {
       renderer.append("def ").append(name);
       if (initializer != null) {

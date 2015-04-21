@@ -4,16 +4,16 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 public abstract class ConversionTestBase {
 
-  public static Lang[] langs() { return new Lang[] { new GroovyLang(), new JavaScriptLang(), new RubyLang() }; }
+  public static Lang[] langs() { return new Lang[] { /*new GroovyLang(), new JavaScriptLang(),*/ new RubyLang() }; }
 
   public void runJavaScript(String path) {
     run(new JavaScriptLang(), path);
@@ -54,6 +54,13 @@ public abstract class ConversionTestBase {
     }
   }
 
+  public void runAll(String path, String method, Map<String, Object> globals, Runnable after) {
+    for (Lang lang : langs()) {
+      run(lang, path, method, globals);
+      after.run();
+    }
+  }
+
   public void run(Lang lang, String path) {
     run(lang, path, "start");
   }
@@ -70,7 +77,7 @@ public abstract class ConversionTestBase {
     }
   }
 
-  public Script callable(Lang lang, String path, String method) {
+  public Script script(Lang lang, String path, String method) {
     Map<String, Result> results = convert(lang, path);
     Thread current = Thread.currentThread();
     ClassLoader prev = current.getContextClassLoader();
@@ -86,9 +93,13 @@ public abstract class ConversionTestBase {
   }
 
   public void run(Lang lang, String path, String method) {
-    Script script = callable(lang, path, method);
+    run(lang, path, method, Collections.emptyMap());
+  }
+
+  public void run(Lang lang, String path, String method, Map<String, Object> globals) {
+    Script script = script(lang, path, method);
     try {
-      script.call();
+      script.run(globals);
     } catch (Exception e) {
       System.out.println("Script evaluation failed");
       System.out.println(script.getSource());

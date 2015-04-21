@@ -274,7 +274,11 @@ public interface Lang {
 
   ExpressionModel staticFactory(TypeInfo.Class type, String methodName, List<TypeInfo> parameterTypes, List<ExpressionModel> arguments, List<TypeInfo> argumentTypes);
 
-  StatementModel variable(TypeInfo type, String name, ExpressionModel initializer);
+  default ExpressionModel variable(TypeInfo type, boolean local, String name) {
+    return ExpressionModel.render(name).as(type);
+  }
+
+  StatementModel variableDecl(TypeInfo type, String name, ExpressionModel initializer);
 
   StatementModel enhancedForLoop(String variableName, ExpressionModel expression, StatementModel body);
 

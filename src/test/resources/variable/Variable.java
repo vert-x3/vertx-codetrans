@@ -15,4 +15,11 @@ public class Variable {
     b = o;
     VariableTest.o = b;
   }
+
+  private String global;
+
+  @CodeTranslate
+  public void globalExpression() throws Exception {
+    VariableTest.o = global;
+  }
 }

@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -41,10 +42,13 @@ public class RubyLang implements Lang {
       public String getSource() {
         return source;
       }
+
       @Override
-      public Void call() throws Exception {
+      public void run(Map<String, Object> globals) {
+        for (Map.Entry<String, Object> global : globals.entrySet()) {
+          container.put("$" + global.getKey(), global.getValue());
+        }
         container.runScriptlet(source);
-        return null;
       }
     };
   }
@@ -427,7 +431,7 @@ public class RubyLang implements Lang {
   }
 
   @Override
-  public StatementModel variable(TypeInfo type, String name, ExpressionModel initializer) {
+  public StatementModel variableDecl(TypeInfo type, String name, ExpressionModel initializer) {
     return StatementModel.render(renderer -> {
       if (initializer != null) {
         renderer.append(name);
@@ -472,5 +476,13 @@ public class RubyLang implements Lang {
       renderer.append("puts ");
       expression.render(renderer);
     });
+  }
+
+  @Override
+  public ExpressionModel variable(TypeInfo type, boolean local, String name) {
+    if (!local) {
+      name = "$" + name;
+    }
+    return Lang.super.variable(type, true, name);
   }
 }

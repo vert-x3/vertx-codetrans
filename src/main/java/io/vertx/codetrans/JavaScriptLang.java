@@ -3,16 +3,18 @@ package io.vertx.codetrans;
 import com.sun.source.tree.LambdaExpressionTree;
 import io.vertx.codegen.Helper;
 import io.vertx.codegen.TypeInfo;
-import io.vertx.core.Handler;
 
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import javax.script.SimpleBindings;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -71,10 +73,11 @@ public class JavaScriptLang implements Lang {
       public String getSource() {
         return source;
       }
+
       @Override
-      public Void call() throws Exception {
+      public void run(Map<String, Object> globals) throws Exception {
+        engine.setBindings(new SimpleBindings(globals), ScriptContext.GLOBAL_SCOPE);
         engine.eval(source);
-        return null;
       }
     };
   }
@@ -253,7 +256,7 @@ public class JavaScriptLang implements Lang {
   }
 
   @Override
-  public StatementModel variable(TypeInfo type, String name, ExpressionModel initializer) {
+  public StatementModel variableDecl(TypeInfo type, String name, ExpressionModel initializer) {
     return StatementModel.render(renderer -> {
       renderer.append("var ").append(name);
       if (initializer != null) {

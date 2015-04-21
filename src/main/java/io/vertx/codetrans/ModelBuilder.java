@@ -32,6 +32,7 @@ import com.sun.tools.javac.tree.JCTree;
 import io.vertx.codegen.ClassKind;
 import io.vertx.codegen.TypeInfo;
 
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
@@ -119,7 +120,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
       initializer = null;
     }
     TypeInfo type = factory.create(decl.type);
-    return lang.variable(
+    return lang.variableDecl(
         type,
         decl.name.toString(),
         initializer
@@ -317,9 +318,18 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
       if (alias != null) {
         return alias;
       } else {
-        String identifier = node.getName().toString();
+        ElementKind kind = ident.sym.getKind();
+        String name = node.getName().toString();
         TypeInfo type = factory.create(ident.type);
-        return ExpressionModel.render(identifier).as(type);
+        switch (kind) {
+          case LOCAL_VARIABLE:
+          case PARAMETER:
+            return lang.variable(type, true, name);
+          case FIELD:
+            return lang.variable(type, false, name);
+          default:
+            throw new UnsupportedOperationException("Unsupported kind " + kind);
+        }
       }
     }
   }
