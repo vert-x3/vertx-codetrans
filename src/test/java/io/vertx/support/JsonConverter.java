@@ -12,11 +12,16 @@ import java.util.Map;
 @VertxGen
 public interface JsonConverter {
 
-  public static JsonObject toJsonObject(JsonObject obj) {
+  static JsonObject toJsonObject(JsonObject obj) {
     throw new AssertionError("stub");
   }
 
-  public static JsonArray toJsonArray(JsonArray arr) {
+  static JsonArray toJsonArray(JsonArray arr) {
     throw new AssertionError("stub");
   }
+
+  static JsonArray fromJsonArray(JsonArray arr) {
+    throw new AssertionError("stub");
+  }
+
 }

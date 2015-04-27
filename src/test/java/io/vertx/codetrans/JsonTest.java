@@ -192,4 +192,72 @@ public class JsonTest extends ConversionTestBase {
       Assert.assertEquals(new JsonArray().add(new JsonObject().put("foo", "foo_value")), o);
     });
   }
+
+  public static JsonArray array;
+
+  @Test
+  public void testJsonArrayGetString() {
+    array = new JsonArray().add("string_value");
+    runAll("json/JsArray", "getString", () -> {
+      Assert.assertEquals("string_value", o);
+    });
+  }
+
+  @Test
+  public void testJsonArrayGetBoolean() {
+    array = new JsonArray().add(true);
+    runAll("json/JsArray", "getBoolean", () -> {
+      Assert.assertEquals(true, o);
+    });
+  }
+
+  @Test
+  public void testJsonArrayGetDouble() {
+    array = new JsonArray().add(0.5D);
+    runAll("json/JsArray", "getDouble", () -> {
+      Assert.assertEquals(0.5D, ((Number)o).doubleValue(), 0);
+    });
+  }
+
+  @Test
+  public void testJsonArrayGetFloat() {
+    array = new JsonArray().add(0.5F);
+    runAll("json/JsArray", "getFloat", () -> {
+      Assert.assertEquals(0.5F, ((Number)o).floatValue(), 0);
+    });
+  }
+
+  @Test
+  public void testJsonArrayGetInteger() {
+    array = new JsonArray().add(1234);
+    runAll("json/JsArray", "getInteger", () -> {
+      Assert.assertEquals(1234, ((Number) o).intValue());
+    });
+  }
+
+  @Test
+  public void testJsonArrayGetLong() {
+    array = new JsonArray().add(12345L);
+    runAll("json/JsArray", "getLong", () -> {
+      Assert.assertEquals(12345L, ((Number) o).longValue());
+    });
+  }
+
+  @Test
+  public void testJsonArrayGetJsonObject() {
+    JsonObject expected = new JsonObject().put("foo", "bar");
+    array = new JsonArray().add(expected);
+    runAll("json/JsArray", "getJsonObject", () -> {
+      Assert.assertEquals(expected, new JsonObject((String) o));
+    });
+  }
+
+  @Test
+  public void testJsonArrayGetJsonArray() {
+    JsonArray expected = new JsonArray().add(1).add(2).add(3);
+    array = new JsonArray().add(expected);
+    runAll("json/JsArray", "getJsonArray", () -> {
+      Assert.assertEquals(expected, new JsonArray((String) o));
+    });
+  }
 }

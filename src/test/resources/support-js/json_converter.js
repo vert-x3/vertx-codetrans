@@ -6,5 +6,8 @@ module.exports = {
     },
     toJsonArray: function(obj) {
         return new JsonArray(JSON.stringify(obj));
+    },
+    fromJsonArray: function(arr) {
+        return JSON.parse(arr.encode());
     }
 };

@@ -17,6 +17,8 @@ public class ExpressionModel extends CodeModel {
     switch (type.getKind()) {
       case JSON_OBJECT:
         return new JsonObjectModel(this);
+      case JSON_ARRAY:
+        return new JsonArrayModel(this);
       case DATA_OBJECT:
         return new DataObjectModel(this);
       case MAP:

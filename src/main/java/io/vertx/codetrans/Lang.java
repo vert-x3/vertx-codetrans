@@ -183,6 +183,13 @@ public interface Lang {
 
   void renderDataObjectMemberSelect(ExpressionModel expression, ExpressionModel name, CodeWriter writer);
 
+  default void renderJsonArrayGet(ExpressionModel expression, ExpressionModel index, CodeWriter writer) {
+    expression.render(writer);
+    writer.append('[');
+    index.render(writer);
+    writer.append(']');
+  }
+
   void renderLambda(LambdaExpressionTree.BodyKind bodyKind, List<TypeInfo> parameterTypes, List<String> parameterNames, CodeModel body, CodeWriter writer);
 
   void renderEnumConstant(TypeInfo.Class.Enum type, String constant, CodeWriter writer);

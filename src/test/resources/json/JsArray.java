@@ -46,4 +46,60 @@ public class JsArray {
     JsonArray arr = new JsonArray().add("foo");
     JsonTest.o = JsonConverter.toJsonArray(arr);
   }
+
+  @CodeTranslate
+  public void getString() throws Exception {
+    JsonArray arr = JsonTest.array;
+    arr = JsonConverter.fromJsonArray(arr);
+    JsonTest.o = arr.getString(0);
+  }
+
+  @CodeTranslate
+  public void getBoolean() throws Exception {
+    JsonArray arr = JsonTest.array;
+    arr = JsonConverter.fromJsonArray(arr);
+    JsonTest.o = arr.getBoolean(0);
+  }
+
+  @CodeTranslate
+  public void getDouble() throws Exception {
+    JsonArray arr = JsonTest.array;
+    arr = JsonConverter.fromJsonArray(arr);
+    JsonTest.o = arr.getDouble(0);
+  }
+
+  @CodeTranslate
+  public void getFloat() throws Exception {
+    JsonArray arr = JsonTest.array;
+    arr = JsonConverter.fromJsonArray(arr);
+    JsonTest.o = arr.getFloat(0);
+  }
+
+  @CodeTranslate
+  public void getInteger() throws Exception {
+    JsonArray arr = JsonTest.array;
+    arr = JsonConverter.fromJsonArray(arr);
+    JsonTest.o = arr.getInteger(0);
+  }
+
+  @CodeTranslate
+  public void getLong() throws Exception {
+    JsonArray arr = JsonTest.array;
+    arr = JsonConverter.fromJsonArray(arr);
+    JsonTest.o = arr.getLong(0);
+  }
+
+  @CodeTranslate
+  public void getJsonArray() throws Exception {
+    JsonArray arr = JsonTest.array;
+    arr = JsonConverter.fromJsonArray(arr);
+    JsonTest.o = arr.getJsonArray(0).encodePrettily();
+  }
+
+  @CodeTranslate
+  public void getJsonObject() throws Exception {
+    JsonArray arr = JsonTest.array;
+    arr = JsonConverter.fromJsonArray(arr);
+    JsonTest.o = arr.getJsonObject(0).encodePrettily();
+  }
 }
