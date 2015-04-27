@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public abstract class ConversionTestBase {
 
-  public static Lang[] langs() { return new Lang[] { /*new GroovyLang(), new JavaScriptLang(),*/ new RubyLang() }; }
+  public static Lang[] langs() { return new Lang[] { new GroovyLang(), new JavaScriptLang(), new RubyLang() }; }
 
   public void runJavaScript(String path) {
     run(new JavaScriptLang(), path);
