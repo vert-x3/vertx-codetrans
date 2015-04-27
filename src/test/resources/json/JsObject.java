@@ -144,4 +144,18 @@ public class JsObject {
     JsonObject obj = new JsonObject().put("foo", "foo_value");
     JsonTest.o = obj.encodePrettily();
   }
+
+  @CodeTranslate
+  public void getJsonObject() {
+    JsonObject obj = JsonTest.object;
+    obj = JsonConverter.fromJsonObject(obj);
+    JsonTest.o = obj.getJsonObject("foo").encodePrettily();
+  }
+
+  @CodeTranslate
+  public void getJsonArray() {
+    JsonObject obj = JsonTest.object;
+    obj = JsonConverter.fromJsonObject(obj);
+    JsonTest.o = obj.getJsonArray("foo").encodePrettily();
+  }
 }

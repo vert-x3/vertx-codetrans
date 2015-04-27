@@ -179,6 +179,8 @@ public interface Lang {
 
   void renderJsonObjectToString(ExpressionModel expression, CodeWriter writer);
 
+  void renderJsonArrayToString(ExpressionModel expression, CodeWriter writer);
+
   void renderJsonObjectMemberSelect(ExpressionModel expression, ExpressionModel name, CodeWriter writer);
 
   void renderDataObjectMemberSelect(ExpressionModel expression, ExpressionModel name, CodeWriter writer);

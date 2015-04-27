@@ -39,6 +39,11 @@ public class JsonArrayModel extends ExpressionModel {
         return new JsonObjectModel(ExpressionModel.render( writer -> {
           writer.getLang().renderJsonArrayGet(expression, argumentModels.get(0), writer);
         }));
+      case "encodePrettily": {
+        return ExpressionModel.render(writer -> {
+          writer.getLang().renderJsonArrayToString(expression, writer);
+        });
+      }
       default:
         throw unsupported("Method " + methodName);
     }

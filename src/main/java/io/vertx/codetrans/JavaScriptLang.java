@@ -205,6 +205,13 @@ public class JavaScriptLang implements Lang {
   }
 
   @Override
+  public void renderJsonArrayToString(ExpressionModel expression, CodeWriter writer) {
+    writer.append("JSON.stringify(");
+    expression.render(writer);
+    writer.append(")");
+  }
+
+  @Override
   public void renderDataObjectMemberSelect(ExpressionModel expression, ExpressionModel name, CodeWriter writer) {
     renderJsonObjectMemberSelect(expression, name, writer);
   }

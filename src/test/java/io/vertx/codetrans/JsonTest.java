@@ -111,6 +111,26 @@ public class JsonTest extends ConversionTestBase {
     });
   }
 
+  public static JsonObject object;
+
+  @Test
+  public void testGetJsonObject() {
+    JsonObject expected = new JsonObject().put("bar", "juu");
+    object = new JsonObject().put("foo", expected);
+    runAll("json/JsObject", "getJsonObject", () -> {
+      Assert.assertEquals(expected, new JsonObject((String) o));
+    });
+  }
+
+  @Test
+  public void testGetJsonArray() {
+    JsonArray expected = new JsonArray().add(4).add(5).add(6);
+    object = new JsonObject().put("foo", expected);
+    runAll("json/JsObject", "getJsonArray", () -> {
+      Assert.assertEquals(expected, new JsonArray((String) o));
+    });
+  }
+
   @Test
   public void testJsonObjectPutArrayFromConstructor() {
     runAll("json/JsObject", "putArrayFromConstructor", () -> {

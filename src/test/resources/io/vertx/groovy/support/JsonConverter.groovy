@@ -12,8 +12,12 @@ class JsonConverter {
     return new JsonObject(obj);
   }
 
-  public static JsonArray toJsonArray(List<Object> obj) {
-    return new JsonArray(obj);
+  public static JsonArray toJsonArray(List<Object> arr) {
+    return new JsonArray(arr);
+  }
+
+  public static Map<String, Object> fromJsonObject(JsonObject obj) {
+    return obj.map;
   }
 
   public static List<Object> fromJsonArray(JsonArray arr) {

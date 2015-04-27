@@ -331,6 +331,15 @@ public class RubyLang implements Lang {
   }
 
   @Override
+  public void renderJsonArrayToString(ExpressionModel expression, CodeWriter writer) {
+    RubyWriter rubyWriter = (RubyWriter) writer;
+    rubyWriter.requires.add("json");
+    writer.append("JSON.generate(");
+    expression.render(writer);
+    writer.append(")");
+  }
+
+  @Override
   public void renderJsonObjectMemberSelect(ExpressionModel expression, ExpressionModel name, CodeWriter writer) {
     expression.render(writer);
     writer.append("[");

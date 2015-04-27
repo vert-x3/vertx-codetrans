@@ -300,6 +300,12 @@ public class GroovyLang implements Lang {
   }
 
   @Override
+  public void renderJsonArrayToString(ExpressionModel expression, CodeWriter writer) {
+    expression.render(writer);
+    writer.append(".toString()");
+  }
+
+  @Override
   public void renderDataObjectMemberSelect(ExpressionModel expression, ExpressionModel name, CodeWriter writer) {
     renderJsonObjectMemberSelect(expression, name, writer);
   }

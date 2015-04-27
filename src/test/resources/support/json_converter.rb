@@ -9,6 +9,9 @@ module Support
     def self.to_json_array arr
       return JsonArray.new(JSON.generate(arr))
     end
+    def self.from_json_object obj
+      return JSON.parse(obj.encode)
+    end
     def self.from_json_array arr
       return JSON.parse(arr.encode)
     end

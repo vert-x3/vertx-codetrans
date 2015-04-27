@@ -20,6 +20,10 @@ public interface JsonConverter {
     throw new AssertionError("stub");
   }
 
+  static JsonObject fromJsonObject(JsonObject obj) {
+    throw new AssertionError("stub");
+  }
+
   static JsonArray fromJsonArray(JsonArray arr) {
     throw new AssertionError("stub");
   }
