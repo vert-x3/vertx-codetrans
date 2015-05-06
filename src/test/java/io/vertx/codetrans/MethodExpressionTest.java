@@ -87,4 +87,16 @@ public class MethodExpressionTest extends ConversionTestBase {
       nullCount = 0;
     });
   }
+
+  @Test
+  public void testBooleanApiGetter() throws Exception {
+    runAll("expression/MethodNaming", "booleanApiGetter", () -> {
+    });
+  }
+
+  @Test
+  public void testBooleanApiMethod() throws Exception {
+    runAll("expression/MethodNaming", "booleanApiMethod", () -> {
+    });
+  }
 }
