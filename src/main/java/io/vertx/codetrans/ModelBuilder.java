@@ -129,10 +129,25 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
 
   @Override
   public StatementModel visitIf(IfTree node, VisitContext visitContext) {
+    List<ConditionalBlockModel> conditionals = new ArrayList<>();
+    StatementModel otherwise = build(conditionals, node, visitContext);
+    return StatementModel.conditionals(conditionals, otherwise);
+  }
+
+  private StatementModel build(List<ConditionalBlockModel> conditionals, IfTree node, VisitContext visitContext) {
     ExpressionModel condition = scan(node.getCondition(), visitContext);
-    StatementModel thenBody = scan(node.getThenStatement(), visitContext);
-    StatementModel elseBody = node.getElseStatement() != null ? scan(node.getElseStatement(), visitContext) : null;
-    return StatementModel.ifThenElse(condition, thenBody, elseBody);
+    StatementModel body = scan(node.getThenStatement(), visitContext);
+    conditionals.add(new ConditionalBlockModel(condition, body));
+    StatementTree elseStatement = node.getElseStatement();
+    if (elseStatement != null) {
+      if (elseStatement instanceof IfTree) {
+        IfTree next = (IfTree) elseStatement;
+        return build(conditionals, next, visitContext);
+      } else {
+        return scan(node.getElseStatement(), visitContext);
+      }
+    }
+    return null;
   }
 
   @Override

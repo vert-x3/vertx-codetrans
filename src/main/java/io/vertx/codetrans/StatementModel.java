@@ -1,5 +1,6 @@
 package io.vertx.codetrans;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -7,9 +8,9 @@ import java.util.function.Consumer;
  */
 public class StatementModel extends CodeModel {
 
-  public static StatementModel ifThenElse(ExpressionModel condition, StatementModel thenBody, StatementModel elseBody) {
-    return StatementModel.render((renderer) -> {
-      renderer.getLang().renderIfThenElse(condition, thenBody, elseBody, renderer);
+  public static StatementModel conditionals(List<ConditionalBlockModel> conditionals, StatementModel otherwise) {
+    return StatementModel.render((writer) -> {
+      writer.getLang().renderConditionals(conditionals, otherwise, writer);
     });
   }
 

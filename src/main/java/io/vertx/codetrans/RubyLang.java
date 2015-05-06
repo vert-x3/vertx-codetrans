@@ -104,17 +104,20 @@ public class RubyLang implements Lang {
   }
 
   @Override
-  public void renderIfThenElse(ExpressionModel condition, StatementModel thenBody, StatementModel elseBody, CodeWriter writer) {
-    writer.append("if ");
-    condition.render(writer);
-    writer.append("\n");
-    writer.indent();
-    thenBody.render(writer);
-    writer.unindent();
-    if (elseBody != null) {
+  public void renderConditionals(List<ConditionalBlockModel> conditionals, StatementModel otherwise, CodeWriter writer) {
+    for (int i = 0;i < conditionals.size();i++) {
+      ConditionalBlockModel conditional = conditionals.get(i);
+      writer.append(i == 0 ? "if " : "elsif ");
+      conditional.condition.render(writer);
+      writer.append("\n");
+      writer.indent();
+      conditional.body.render(writer);
+      writer.unindent();
+    }
+    if (otherwise != null) {
       writer.append("else\n");
       writer.indent();
-      elseBody.render(writer);
+      otherwise.render(writer);
       writer.unindent();
       writer.append("end");
     } else {

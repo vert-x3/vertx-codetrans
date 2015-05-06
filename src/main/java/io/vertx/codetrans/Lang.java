@@ -12,18 +12,21 @@ public interface Lang {
 
   Script loadScript(ClassLoader loader, String path) throws Exception;
 
-  default void renderIfThenElse(ExpressionModel condition, StatementModel thenBody, StatementModel elseBody, CodeWriter writer) {
-    writer.append("if ");
-    condition.render(writer);
-    writer.append(" {\n");
-    writer.indent();
-    thenBody.render(writer);
-    writer.unindent();
-    writer.append("}");
-    if (elseBody != null) {
+  default void renderConditionals(List<ConditionalBlockModel> conditionals, StatementModel otherwise, CodeWriter writer) {
+    for (int i = 0;i < conditionals.size();i++) {
+      ConditionalBlockModel conditional = conditionals.get(i);
+      writer.append(i == 0 ? "if " : " else if ");
+      conditional.condition.render(writer);
+      writer.append(" {\n");
+      writer.indent();
+      conditional.body.render(writer);
+      writer.unindent();
+      writer.append("}");
+    }
+    if (otherwise != null) {
       writer.append(" else {\n");
       writer.indent();
-      elseBody.render(writer);
+      otherwise.render(writer);
       writer.unindent();
       writer.append("}");
     }

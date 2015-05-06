@@ -47,6 +47,30 @@ public class ControlTest extends ConversionTestBase {
     });
   }
 
+  @Test
+  public void testEvalThenSkipElseIfSkipElse() throws Exception {
+    runAll("control/Conditional", "evalThenSkipElseIfSkipElse", () -> {
+      Assert.assertEquals("inThen", o);
+      o = null;
+    });
+  }
+
+  @Test
+  public void testSkipThenEvalElseIfSkipElse() throws Exception {
+    runAll("control/Conditional", "skipThenEvalElseIfSkipElse", () -> {
+      Assert.assertEquals("inElseIf", o);
+      o = null;
+    });
+  }
+
+  @Test
+  public void testSkipThenSkipElseIfEvalElse() throws Exception {
+    runAll("control/Conditional", "skipThenSkipElseIfEvalElse", () -> {
+      Assert.assertEquals("inElse", o);
+      o = null;
+    });
+  }
+
   public static List<String> list = Collections.unmodifiableList(Arrays.asList("foo", "bar", "juu"));
   private static List<String> collected = new ArrayList<>();
   public static void invoke(String s) {
