@@ -283,8 +283,8 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
         if (type.getKind() == ClassKind.API) {
           return new ExpressionModel() {
             @Override
-            public ExpressionModel onMethodInvocation(String methodName, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
-              return lang.staticFactory(type, methodName, parameterTypes, argumentModels, argumenTypes);
+            public ExpressionModel onMethodInvocation(String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
+              return lang.staticFactory(type, methodName, returnType, parameterTypes, argumentModels, argumenTypes);
             }
           };
         } else if (type.getKind() == ClassKind.JSON_OBJECT) {
@@ -407,7 +407,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     }
 
     ExpressionModel expression = memberSelectExpression.onMethodInvocation(methodName,
-        parameterTypes, argumentModels, argumentTypes);
+        returnType, parameterTypes, argumentModels, argumentTypes);
     return expression.as(returnType);
   }
 

@@ -28,7 +28,7 @@ public class ExpressionModel extends CodeModel {
     }
   }
 
-  public ExpressionModel onMethodInvocation(String methodName, List<TypeInfo> parameterTypes,
+  public ExpressionModel onMethodInvocation(String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes,
                                             List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
     if (methodName.equals("equals") && argumentModels.size() == 1) {
       return ExpressionModel.render(writer -> {
@@ -36,7 +36,7 @@ public class ExpressionModel extends CodeModel {
       });
     } else {
       return ExpressionModel.render(writer -> {
-        writer.getLang().renderMethodInvocation(ExpressionModel.this, methodName, parameterTypes,
+        writer.getLang().renderMethodInvocation(ExpressionModel.this, methodName, returnType, parameterTypes,
             argumentModels, argumenTypes, writer);
       });
     }
@@ -144,11 +144,11 @@ public class ExpressionModel extends CodeModel {
     String s = methodName;
     return new ExpressionModel() {
       @Override
-      public ExpressionModel onMethodInvocation(String methodName, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
+      public ExpressionModel onMethodInvocation(String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
         if (s.equals(methodName)) {
           return f.apply(argumentModels);
         } else {
-          return super.onMethodInvocation(methodName, parameterTypes, argumentModels, argumenTypes);
+          return super.onMethodInvocation(methodName, returnType, parameterTypes, argumentModels, argumenTypes);
         }
       }
     };
@@ -157,7 +157,7 @@ public class ExpressionModel extends CodeModel {
   public static ExpressionModel forMethodInvocation(BiFunction<String, List<ExpressionModel>, ExpressionModel> f) {
     return new ExpressionModel() {
       @Override
-      public ExpressionModel onMethodInvocation(String methodName, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
+      public ExpressionModel onMethodInvocation(String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
         return f.apply(methodName, argumentModels);
       }
     };
