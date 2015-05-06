@@ -16,32 +16,32 @@ public class ControlTest extends ConversionTestBase {
   public static String o;
 
   @Test
-  public void testIfElseEvalElse() throws Exception {
-    runAll("control/IfElse", "evalElse", () -> {
+  public void testConditionalSkipThenEvalElse() throws Exception {
+    runAll("control/Conditional", "skipThenEvalElse", () -> {
       Assert.assertEquals("inElse", o);
       o = null;
     });
   }
 
   @Test
-  public void testIfElseEvalThen() throws Exception {
-    runAll("control/IfElse", "evalThen", () -> {
+  public void testConditionalEvalThenSkipElse() throws Exception {
+    runAll("control/Conditional", "evalThenSkipElse", () -> {
       Assert.assertEquals("inThen", o);
       o = null;
     });
   }
 
   @Test
-  public void testIfEvalThen() throws Exception {
-    runAll("control/If", "evalThen", () -> {
+  public void testConditionalEvalThen() throws Exception {
+    runAll("control/Conditional", "evalThen", () -> {
       Assert.assertEquals("inThen", o);
       o = null;
     });
   }
 
   @Test
-  public void testIfSkipThen() throws Exception {
-    runAll("control/If", "skipThen", () -> {
+  public void testConditionalSkipThen() throws Exception {
+    runAll("control/Conditional", "skipThen", () -> {
       Assert.assertEquals(null, o);
       o = null;
     });
