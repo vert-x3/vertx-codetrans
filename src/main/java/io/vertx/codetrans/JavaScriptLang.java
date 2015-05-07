@@ -253,12 +253,12 @@ public class JavaScriptLang implements Lang {
   }
 
   @Override
-  public ExpressionModel staticFactory(TypeInfo.Class type, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> arguments, List<TypeInfo> argumentTypes) {
+  public ExpressionModel staticFactory(TypeInfo.Class receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> arguments, List<TypeInfo> argumentTypes) {
     return ExpressionModel.render(writer -> {
       JavaScriptRenderer jsRenderer = (JavaScriptRenderer) writer;
-      jsRenderer.modules.add(type);
-      ExpressionModel expr = ExpressionModel.render(type.getSimpleName());
-      renderMethodInvocation(expr, methodName, returnType, parameterTypes, arguments, argumentTypes, writer);
+      jsRenderer.modules.add(receiverType);
+      ExpressionModel expr = ExpressionModel.render(receiverType.getSimpleName());
+      renderMethodInvocation(expr, receiverType, methodName, returnType, parameterTypes, arguments, argumentTypes, writer);
     });
   }
 
@@ -344,7 +344,7 @@ public class JavaScriptLang implements Lang {
   }
 
   @Override
-  public void renderMethodInvocation(ExpressionModel expression, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes, CodeWriter writer) {
+  public void renderMethodInvocation(ExpressionModel expression, TypeInfo receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes, CodeWriter writer) {
     for (int i = 0;i < parameterTypes.size();i++) {
       TypeInfo parameterType = parameterTypes.get(i);
       TypeInfo argumentType = argumentTypes.get(i);
@@ -356,6 +356,6 @@ public class JavaScriptLang implements Lang {
         }));
       }
     }
-    Lang.super.renderMethodInvocation(expression, methodName, returnType, parameterTypes, argumentModels, argumentTypes, writer);
+    Lang.super.renderMethodInvocation(expression, receiverType, methodName, returnType, parameterTypes, argumentModels, argumentTypes, writer);
   }
 }

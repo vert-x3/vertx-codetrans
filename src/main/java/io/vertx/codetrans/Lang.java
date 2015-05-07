@@ -71,7 +71,7 @@ public interface Lang {
 
   void renderMethodReference(ExpressionModel expression, String methodName, CodeWriter writer);
 
-  default void renderMethodInvocation(ExpressionModel expression, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes,
+  default void renderMethodInvocation(ExpressionModel expression, TypeInfo receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes,
                                       List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes, CodeWriter writer) {
     expression.render(writer);
     writer.append('.');
@@ -245,7 +245,7 @@ public interface Lang {
 
   ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, TypeInfo.Parameterized resultType, String resultName, CodeModel body);
 
-  ExpressionModel staticFactory(TypeInfo.Class type, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> arguments, List<TypeInfo> argumentTypes);
+  ExpressionModel staticFactory(TypeInfo.Class receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> arguments, List<TypeInfo> argumentTypes);
 
   default ExpressionModel variable(TypeInfo type, boolean local, String name) {
     return ExpressionModel.render(name).as(type);

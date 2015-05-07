@@ -298,7 +298,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
         if (type.getKind() == ClassKind.API) {
           return new ExpressionModel() {
             @Override
-            public ExpressionModel onMethodInvocation(String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
+            public ExpressionModel onMethodInvocation(TypeInfo receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
               return lang.staticFactory(type, methodName, returnType, parameterTypes, argumentModels, argumenTypes);
             }
           };
@@ -421,7 +421,8 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
       argumentTypes.add(argumentType);
     }
 
-    ExpressionModel expression = memberSelectExpression.onMethodInvocation(methodName,
+    TypeInfo type = factory.create(sym.owner.type);
+    ExpressionModel expression = memberSelectExpression.onMethodInvocation(type, methodName,
         returnType, parameterTypes, argumentModels, argumentTypes);
     return expression.as(returnType);
   }

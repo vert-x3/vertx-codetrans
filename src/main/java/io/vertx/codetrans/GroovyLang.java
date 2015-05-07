@@ -163,11 +163,11 @@ public class GroovyLang implements Lang {
   }
 
   @Override
-  public ExpressionModel staticFactory(TypeInfo.Class type, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> arguments, List<TypeInfo> argumentTypes) {
+  public ExpressionModel staticFactory(TypeInfo.Class receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> arguments, List<TypeInfo> argumentTypes) {
     return ExpressionModel.render(writer -> {
       GroovyRenderer jsRenderer = (GroovyRenderer) writer;
-      jsRenderer.imports.add(type);
-      writer.append(type.getSimpleName()).append('.').append(methodName);
+      jsRenderer.imports.add(receiverType);
+      writer.append(receiverType.getSimpleName()).append('.').append(methodName);
       writer.append('(');
       for (int i = 0;i < arguments.size();i++) {
         ExpressionModel argument = arguments.get(i);

@@ -176,7 +176,7 @@ public class RubyLang implements Lang {
   }
 
   @Override
-  public void renderMethodInvocation(ExpressionModel expression, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes, CodeWriter writer) {
+  public void renderMethodInvocation(ExpressionModel expression, TypeInfo receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes, CodeWriter writer) {
     int size = parameterTypes.size();
     int index = size - 1;
 
@@ -221,7 +221,7 @@ public class RubyLang implements Lang {
       methodName += "?";
     }
 
-    Lang.super.renderMethodInvocation(expression, methodName, returnType, parameterTypes, argumentModels, argumentTypes, writer);
+    Lang.super.renderMethodInvocation(expression, receiverType, methodName, returnType, parameterTypes, argumentModels, argumentTypes, writer);
 
     //
     if (lambda != null) {
@@ -442,12 +442,12 @@ public class RubyLang implements Lang {
   }
 
   @Override
-  public ExpressionModel staticFactory(TypeInfo.Class type, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> arguments, List<TypeInfo> argumentTypes) {
+  public ExpressionModel staticFactory(TypeInfo.Class receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> arguments, List<TypeInfo> argumentTypes) {
     return ExpressionModel.render(writer -> {
       RubyWriter jsRenderer = (RubyWriter) writer;
-      jsRenderer.imports.add(type);
-      String expr = Case.CAMEL.format(Case.KEBAB.parse(type.getModule().getName())) + "::" + type.getSimpleName();
-      renderMethodInvocation(ExpressionModel.render(expr), methodName, returnType, parameterTypes, arguments, argumentTypes, writer);
+      jsRenderer.imports.add(receiverType);
+      String expr = Case.CAMEL.format(Case.KEBAB.parse(receiverType.getModule().getName())) + "::" + receiverType.getSimpleName();
+      renderMethodInvocation(ExpressionModel.render(expr), receiverType, methodName, returnType, parameterTypes, arguments, argumentTypes, writer);
     });
   }
 

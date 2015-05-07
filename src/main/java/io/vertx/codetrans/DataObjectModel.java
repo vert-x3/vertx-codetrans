@@ -16,7 +16,7 @@ public class DataObjectModel extends ExpressionModel {
   }
 
   @Override
-  public ExpressionModel onMethodInvocation(String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
+  public ExpressionModel onMethodInvocation(TypeInfo receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
     if (DataObjectLiteralModel.isSet(methodName)) {
       return ExpressionModel.render( writer -> {
         writer.getLang().renderDataObjectAssign(expression,
