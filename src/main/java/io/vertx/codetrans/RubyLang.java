@@ -2,6 +2,7 @@ package io.vertx.codetrans;
 
 import com.sun.source.tree.LambdaExpressionTree;
 import io.vertx.codegen.Case;
+import io.vertx.codegen.ClassKind;
 import io.vertx.codegen.TypeInfo;
 import org.jruby.embed.LocalContextScope;
 import org.jruby.embed.ScriptingContainer;
@@ -179,6 +180,13 @@ public class RubyLang implements Lang {
   public void renderMethodInvocation(ExpressionModel expression, TypeInfo receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes, CodeWriter writer) {
     int size = parameterTypes.size();
     int index = size - 1;
+
+    // Api patching
+    if (receiverType.getKind() == ClassKind.STRING) {
+      if (methodName.equals("startsWith")) {
+        methodName = "startWith";
+      }
+    }
 
     LambdaExpressionModel lambda = null;
 

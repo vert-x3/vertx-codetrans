@@ -7,7 +7,7 @@ import org.junit.Test;
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class ObjectTest extends ConversionTestBase {
+public class NativeApiTest extends ConversionTestBase {
 
   public static Object isEquals;
   private static boolean called;
@@ -27,28 +27,28 @@ public class ObjectTest extends ConversionTestBase {
 
   @Test
   public void testObjectEqualsGroovy() throws Exception {
-    runGroovy("object/Equals", "objectEquals");
+    runGroovy("nativeapi/NativeMethods", "objectEquals");
     Assert.assertEquals(true, isEquals);
     Assert.assertFalse(called);
   }
 
   @Test
   public void testObjectEqualsJavaScript() throws Exception {
-    runJavaScript("object/Equals", "objectEquals");
+    runJavaScript("nativeapi/NativeMethods", "objectEquals");
     Assert.assertEquals(true, isEquals);
     Assert.assertFalse(called);
   }
 
   @Test
   public void testObjectEqualsRuby() throws Exception {
-    runRuby("object/Equals", "objectEquals");
+    runRuby("nativeapi/NativeMethods", "objectEquals");
     Assert.assertEquals(true, isEquals);
     Assert.assertTrue(called);
   }
 
   @Test
   public void testStringEquals() throws Exception {
-    runAll("object/Equals", "stringEquals", () -> {
+    runAll("nativeapi/NativeMethods", "stringEquals", () -> {
       Assert.assertEquals(true, isEquals);
       isEquals = false;
     });
@@ -56,7 +56,21 @@ public class ObjectTest extends ConversionTestBase {
 
   @Test
   public void testStringNotEquals() throws Exception {
-    runAll("object/Equals", "stringNotEquals", () -> {
+    runAll("nativeapi/NativeMethods", "stringNotEquals", () -> {
+      Assert.assertEquals(false, isEquals);
+    });
+  }
+
+  @Test
+  public void testStringStartsWithTrue() throws Exception {
+    runAll("nativeapi/NativeMethods", "stringStartsWithTrue", () -> {
+      Assert.assertEquals(true, isEquals);
+    });
+  }
+
+  @Test
+  public void testStringStartsWithFalse() throws Exception {
+    runAll("nativeapi/NativeMethods", "stringStartsWithFalse", () -> {
       Assert.assertEquals(false, isEquals);
     });
   }
