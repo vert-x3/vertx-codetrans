@@ -56,7 +56,7 @@ public class ExpressionModel extends CodeModel {
 
   public ExpressionModel onNew(TypeInfo type, List<ExpressionModel> arguments) {
     return ExpressionModel.render((renderer) -> {
-      renderer.getLang().renderNew(ExpressionModel.this, type, renderer);
+      renderer.getLang().renderNew(ExpressionModel.this, type, arguments, renderer);
     });
   }
 

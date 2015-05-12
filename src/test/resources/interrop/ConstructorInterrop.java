@@ -12,8 +12,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ConstructorInterrop {
 
   @CodeTranslate
-  public void noArgConstructor() throws Exception {
+  public void zeroArgConstructor() throws Exception {
     AtomicInteger r = new AtomicInteger();
+    InterropTest.numericValue = r.incrementAndGet();
+  }
+
+  @CodeTranslate
+  public void oneArgConstructor() throws Exception {
+    AtomicInteger r = new AtomicInteger(4);
     InterropTest.numericValue = r.incrementAndGet();
   }
 }

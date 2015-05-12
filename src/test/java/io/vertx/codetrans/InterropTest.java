@@ -88,9 +88,17 @@ public class InterropTest extends ConversionTestBase {
   }
 
   @Test
-  public void testNoArgConstructor() throws Exception {
-    runAll("interrop/ConstructorInterrop", "noArgConstructor", () -> {
+  public void testZeroArgConstructor() throws Exception {
+    runAll("interrop/ConstructorInterrop", "zeroArgConstructor", () -> {
       Assert.assertEquals(1, numericValue.intValue());
+      numericValue = null;
+    });
+  }
+
+  @Test
+  public void testOneArgConstructor() throws Exception {
+    runAll("interrop/ConstructorInterrop", "oneArgConstructor", () -> {
+      Assert.assertEquals(5, numericValue.intValue());
       numericValue = null;
     });
   }

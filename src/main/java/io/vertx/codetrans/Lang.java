@@ -71,9 +71,7 @@ public interface Lang {
 
   void renderMethodReference(ExpressionModel expression, String methodName, CodeWriter writer);
 
-  default void renderNew(ExpressionModel expression, TypeInfo type, CodeWriter writer) {
-    throw new UnsupportedOperationException();
-  }
+  void renderNew(ExpressionModel expression, TypeInfo type, List<ExpressionModel> argumentModels, CodeWriter writer);
 
   default void renderMethodInvocation(ExpressionModel expression,
                                       TypeInfo receiverType,

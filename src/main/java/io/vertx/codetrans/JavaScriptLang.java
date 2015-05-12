@@ -360,9 +360,17 @@ public class JavaScriptLang implements Lang {
   }
 
   @Override
-  public void renderNew(ExpressionModel expression, TypeInfo type, CodeWriter writer) {
+  public void renderNew(ExpressionModel expression, TypeInfo type, List<ExpressionModel> argumentModels, CodeWriter writer) {
     writer.append("new (");
     expression.render(writer);
-    writer.append(")()");
+    writer.append(")");
+    writer.append('(');
+    for (int i = 0; i < argumentModels.size(); i++) {
+      if (i > 0) {
+        writer.append(", ");
+      }
+      argumentModels.get(i).render(writer);
+    }
+    writer.append(')');
   }
 }

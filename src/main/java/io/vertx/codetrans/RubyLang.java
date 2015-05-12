@@ -229,13 +229,27 @@ public class RubyLang implements Lang {
       methodName += "?";
     }
 
-    Lang.super.renderMethodInvocation(expression, receiverType, methodName, returnType, parameterTypes, argumentModels, argumentTypes, writer);
+    expression.render(writer);
+    writer.append('.');
+    writer.append(methodName);
+    renderArguments(argumentModels, writer);
 
     //
     if (lambda != null) {
       writer.append(" ");
       renderBlock(lambda.getBodyKind(), lambda.getParameterTypes(), lambda.getParameterNames(), lambda.getBody(), writer);
     }
+  }
+
+  private void renderArguments(List<ExpressionModel> arguments, CodeWriter writer) {
+    writer.append('(');
+    for (int i = 0; i < arguments.size(); i++) {
+      if (i > 0) {
+        writer.append(", ");
+      }
+      arguments.get(i).render(writer);
+    }
+    writer.append(')');
   }
 
   @Override
@@ -522,10 +536,11 @@ public class RubyLang implements Lang {
   }
 
   @Override
-  public void renderNew(ExpressionModel expression, TypeInfo type, CodeWriter writer) {
+  public void renderNew(ExpressionModel expression, TypeInfo type, List<ExpressionModel> argumentModels, CodeWriter writer) {
     writer.append("");
     expression.render(writer);
-    writer.append(".new()");
+    writer.append(".new");
+    renderArguments(argumentModels, writer);
   }
 }
 
