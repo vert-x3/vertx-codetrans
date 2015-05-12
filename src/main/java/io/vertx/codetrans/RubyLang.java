@@ -460,6 +460,12 @@ public class RubyLang implements Lang {
   }
 
   @Override
+  public void renderMemberSelect(ExpressionModel expression, String identifier, CodeWriter writer) {
+    expression.render(writer);
+    writer.append("::").append(identifier);
+  }
+
+  @Override
   public StatementModel variableDecl(TypeInfo type, String name, ExpressionModel initializer) {
     return StatementModel.render(renderer -> {
       if (initializer != null) {

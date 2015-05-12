@@ -1,38 +1,38 @@
-package nativeapi;
+package interrop;
 
 import io.vertx.codetrans.annotations.CodeTranslate;
-import io.vertx.codetrans.NativeApiTest;
+import io.vertx.codetrans.InterropTest;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class NativeMethods {
+public class MethodInterrop {
 
   @CodeTranslate
   public void objectEquals() throws Exception {
-    Object o = NativeApiTest.o;
-    NativeApiTest.isEquals = o.equals(o);
+    Object o = InterropTest.o;
+    InterropTest.isEquals = o.equals(o);
   }
 
   @CodeTranslate
   public void stringEquals() throws Exception {
-    NativeApiTest.isEquals = "abc".equals("abc");
+    InterropTest.isEquals = "abc".equals("abc");
   }
 
   @CodeTranslate
   public void stringNotEquals() throws Exception {
-    NativeApiTest.isEquals = "abc".equals("def");
+    InterropTest.isEquals = "abc".equals("def");
   }
 
   @CodeTranslate
   public void stringStartsWithTrue() throws Exception {
     String s = "foobar";
-    NativeApiTest.isEquals = s.startsWith("foo");
+    InterropTest.isEquals = s.startsWith("foo");
   }
 
   @CodeTranslate
   public void stringStartsWithFalse() throws Exception {
     String s = "foobar";
-    NativeApiTest.isEquals = s.startsWith("bar");
+    InterropTest.isEquals = s.startsWith("bar");
   }
 }

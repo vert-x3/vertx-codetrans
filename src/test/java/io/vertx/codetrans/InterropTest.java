@@ -4,10 +4,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.text.DateFormat;
+
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class NativeApiTest extends ConversionTestBase {
+public class InterropTest extends ConversionTestBase {
 
   public static Object isEquals;
   private static boolean called;
@@ -27,28 +29,28 @@ public class NativeApiTest extends ConversionTestBase {
 
   @Test
   public void testObjectEqualsGroovy() throws Exception {
-    runGroovy("nativeapi/NativeMethods", "objectEquals");
+    runGroovy("interrop/MethodInterrop", "objectEquals");
     Assert.assertEquals(true, isEquals);
     Assert.assertFalse(called);
   }
 
   @Test
   public void testObjectEqualsJavaScript() throws Exception {
-    runJavaScript("nativeapi/NativeMethods", "objectEquals");
+    runJavaScript("interrop/MethodInterrop", "objectEquals");
     Assert.assertEquals(true, isEquals);
     Assert.assertFalse(called);
   }
 
   @Test
   public void testObjectEqualsRuby() throws Exception {
-    runRuby("nativeapi/NativeMethods", "objectEquals");
+    runRuby("interrop/MethodInterrop", "objectEquals");
     Assert.assertEquals(true, isEquals);
     Assert.assertTrue(called);
   }
 
   @Test
   public void testStringEquals() throws Exception {
-    runAll("nativeapi/NativeMethods", "stringEquals", () -> {
+    runAll("interrop/MethodInterrop", "stringEquals", () -> {
       Assert.assertEquals(true, isEquals);
       isEquals = false;
     });
@@ -56,22 +58,32 @@ public class NativeApiTest extends ConversionTestBase {
 
   @Test
   public void testStringNotEquals() throws Exception {
-    runAll("nativeapi/NativeMethods", "stringNotEquals", () -> {
+    runAll("interrop/MethodInterrop", "stringNotEquals", () -> {
       Assert.assertEquals(false, isEquals);
     });
   }
 
   @Test
   public void testStringStartsWithTrue() throws Exception {
-    runAll("nativeapi/NativeMethods", "stringStartsWithTrue", () -> {
+    runAll("interrop/MethodInterrop", "stringStartsWithTrue", () -> {
       Assert.assertEquals(true, isEquals);
     });
   }
 
   @Test
   public void testStringStartsWithFalse() throws Exception {
-    runAll("nativeapi/NativeMethods", "stringStartsWithFalse", () -> {
+    runAll("interrop/MethodInterrop", "stringStartsWithFalse", () -> {
       Assert.assertEquals(false, isEquals);
     });
   }
+
+  public static Number constantValue;
+
+  @Test
+  public void testReadConstant() throws Exception {
+    runAll("interrop/FieldInterrop", "readConstant", () -> {
+      Assert.assertEquals(DateFormat.SHORT, constantValue.intValue());
+    });
+  }
+
 }
