@@ -339,4 +339,11 @@ public class GroovyLang implements Lang {
     expression.render(writer);
     writer.append(".&").append(methodName);
   }
+
+  @Override
+  public void renderNew(ExpressionModel expression, TypeInfo type, CodeWriter writer) {
+    writer.append("new ");
+    expression.render(writer);
+    writer.append("()");
+  }
 }

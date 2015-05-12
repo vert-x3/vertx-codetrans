@@ -54,8 +54,10 @@ public class ExpressionModel extends CodeModel {
     });
   }
 
-  public ExpressionModel onNew(List<ExpressionModel> arguments) {
-    throw unsupported(" with arguments " + arguments);
+  public ExpressionModel onNew(TypeInfo type, List<ExpressionModel> arguments) {
+    return ExpressionModel.render((renderer) -> {
+      renderer.getLang().renderNew(ExpressionModel.this, type, renderer);
+    });
   }
 
   public ExpressionModel onPostFixIncrement() {
@@ -103,7 +105,7 @@ public class ExpressionModel extends CodeModel {
   public static ExpressionModel forNew(Function<List<ExpressionModel>, ExpressionModel> f) {
     return new ExpressionModel() {
       @Override
-      public ExpressionModel onNew(List<ExpressionModel> arguments) {
+      public ExpressionModel onNew(TypeInfo type, List<ExpressionModel> arguments) {
         return f.apply(arguments);
       }
     };

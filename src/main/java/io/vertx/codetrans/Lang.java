@@ -71,8 +71,18 @@ public interface Lang {
 
   void renderMethodReference(ExpressionModel expression, String methodName, CodeWriter writer);
 
-  default void renderMethodInvocation(ExpressionModel expression, TypeInfo receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes,
-                                      List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes, CodeWriter writer) {
+  default void renderNew(ExpressionModel expression, TypeInfo type, CodeWriter writer) {
+    throw new UnsupportedOperationException();
+  }
+
+  default void renderMethodInvocation(ExpressionModel expression,
+                                      TypeInfo receiverType,
+                                      String methodName,
+                                      TypeInfo returnType,
+                                      List<TypeInfo> parameterTypes,
+                                      List<ExpressionModel> argumentModels,
+                                      List<TypeInfo> argumentTypes,
+                                      CodeWriter writer) {
     expression.render(writer);
     writer.append('.');
     writer.append(methodName);

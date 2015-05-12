@@ -353,7 +353,9 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
   public CodeModel visitNewClass(NewClassTree node, VisitContext visitContext) {
     ExpressionModel identifier = scan(node.getIdentifier(), visitContext);
     List<ExpressionModel> arguments = node.getArguments().stream().map(arg -> scan(arg, visitContext)).collect(Collectors.toList());
-    return identifier.onNew(arguments);
+    JCTree.JCNewClass newClass = (JCTree.JCNewClass) node;
+    TypeInfo type = factory.create(newClass.type);
+    return identifier.onNew(type, arguments);
   }
 
   @Override

@@ -11,6 +11,6 @@ public class FieldInterrop {
 
   @CodeTranslate
   public void readConstant() throws Exception {
-    InterropTest.constantValue = DateFormat.SHORT;
+    InterropTest.numericValue = DateFormat.SHORT;
   }
 }

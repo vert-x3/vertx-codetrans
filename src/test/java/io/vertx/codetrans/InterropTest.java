@@ -77,13 +77,21 @@ public class InterropTest extends ConversionTestBase {
     });
   }
 
-  public static Number constantValue;
+  public static Number numericValue;
 
   @Test
   public void testReadConstant() throws Exception {
     runAll("interrop/FieldInterrop", "readConstant", () -> {
-      Assert.assertEquals(DateFormat.SHORT, constantValue.intValue());
+      Assert.assertEquals(DateFormat.SHORT, numericValue.intValue());
+      numericValue = null;
     });
   }
 
+  @Test
+  public void testNoArgConstructor() throws Exception {
+    runAll("interrop/ConstructorInterrop", "noArgConstructor", () -> {
+      Assert.assertEquals(1, numericValue.intValue());
+      numericValue = null;
+    });
+  }
 }

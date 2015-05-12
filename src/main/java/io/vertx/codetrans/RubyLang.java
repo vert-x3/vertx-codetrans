@@ -520,4 +520,12 @@ public class RubyLang implements Lang {
     }
     return Lang.super.variable(type, true, name);
   }
+
+  @Override
+  public void renderNew(ExpressionModel expression, TypeInfo type, CodeWriter writer) {
+    writer.append("");
+    expression.render(writer);
+    writer.append(".new()");
+  }
 }
+

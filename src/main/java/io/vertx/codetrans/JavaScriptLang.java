@@ -358,4 +358,11 @@ public class JavaScriptLang implements Lang {
     }
     Lang.super.renderMethodInvocation(expression, receiverType, methodName, returnType, parameterTypes, argumentModels, argumentTypes, writer);
   }
+
+  @Override
+  public void renderNew(ExpressionModel expression, TypeInfo type, CodeWriter writer) {
+    writer.append("new (");
+    expression.render(writer);
+    writer.append(")()");
+  }
 }
