@@ -7,6 +7,7 @@ Supported languages:
 
 * Groovy
 * JavaScript
+* Ruby
 
 ## Todo
 
