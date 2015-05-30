@@ -295,16 +295,14 @@ public class GroovyLang implements Lang {
 
   @Override
   public void renderJsonObjectToString(ExpressionModel expression, CodeWriter writer) {
-    writer.append("groovy.json.JsonOutput.toJson(");
     expression.render(writer);
-    writer.append(")");
+    writer.append(".toString()");
   }
 
   @Override
   public void renderJsonArrayToString(ExpressionModel expression, CodeWriter writer) {
-    writer.append("groovy.json.JsonOutput.toJson(");
     expression.render(writer);
-    writer.append(")");
+    writer.append(".toString()");
   }
 
   @Override
