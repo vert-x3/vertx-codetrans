@@ -93,7 +93,7 @@ public class JavaScriptLang implements Lang {
   public void renderStatement(StatementModel statement, CodeWriter writer) {
     statement.render(writer);
     // In javascript, conditional structure should not have an ending ;. This generates an empty instruction.
-    if (statement instanceof StatementModel.ExpressionStatement) {
+    if (statement instanceof StatementModel.Expression) {
       writer.append(";\n");
     }
   }

@@ -10,7 +10,7 @@ public class StatementModel extends CodeModel {
 
   /**
    * Creates a {@link StatementModel} for an 'if-then-else' conditional structure.
-   * The returned statement is not an {@link io.vertx.codetrans.StatementModel.ExpressionStatement}.
+   * The returned statement is not an {@link Expression}.
    *
    * @param conditionals the conditionals
    * @param otherwise    the 'else' part
@@ -27,7 +27,7 @@ public class StatementModel extends CodeModel {
 
   /**
    * Creates a {@link StatementModel} for a conditional structure (for loop, while loop...).
-   * The returned statement is not an {@link io.vertx.codetrans.StatementModel.ExpressionStatement}.
+   * The returned statement is not an {@link Expression}.
    *
    * @param c the code of the structure.
    * @return the statement
@@ -42,13 +42,13 @@ public class StatementModel extends CodeModel {
   }
 
   /**
-   * Creates an {@link io.vertx.codetrans.StatementModel.ExpressionStatement} from the given code.
+   * Creates an {@link Expression} from the given code.
    *
    * @param c the code
    * @return the statement
    */
   public static StatementModel render(Consumer<CodeWriter> c) {
-    return new ExpressionStatement() {
+    return new Expression() {
       @Override
       public void render(CodeWriter writer) {
         c.accept(writer);
@@ -57,13 +57,13 @@ public class StatementModel extends CodeModel {
   }
 
   /**
-   * Creates an {@link io.vertx.codetrans.StatementModel.ExpressionStatement} from the given code.
+   * Creates an {@link Expression} from the given code.
    *
    * @param s the code
    * @return the statement
    */
   public static StatementModel render(String s) {
-    return new ExpressionStatement() {
+    return new Expression() {
       @Override
       public void render(CodeWriter writer) {
         writer.append(s);
@@ -74,7 +74,7 @@ public class StatementModel extends CodeModel {
   /**
    * Marker class for the _default_ statement model.
    */
-  public static class ExpressionStatement extends StatementModel {
+  public static class Expression extends StatementModel {
 
   }
 
