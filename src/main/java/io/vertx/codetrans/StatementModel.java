@@ -8,13 +8,31 @@ import java.util.function.Consumer;
  */
 public class StatementModel extends CodeModel {
 
+  /**
+   * Creates a {@link StatementModel} for an 'if-then-else' conditional structure.
+   * The returned statement is not an {@link io.vertx.codetrans.StatementModel.ExpressionStatement}.
+   *
+   * @param conditionals the conditionals
+   * @param otherwise    the 'else' part
+   * @return the statement
+   */
   public static StatementModel conditionals(List<ConditionalBlockModel> conditionals, StatementModel otherwise) {
-    return ConditionalStructureModel.render((writer) -> {
-      writer.getLang().renderConditionals(conditionals, otherwise, writer);
-    });
+    return new StatementModel() {
+      @Override
+      public void render(CodeWriter writer) {
+        writer.getLang().renderConditionals(conditionals, otherwise, writer);
+      }
+    };
   }
 
-  public static StatementModel render(Consumer<CodeWriter> c) {
+  /**
+   * Creates a {@link StatementModel} for a conditional structure (for loop, while loop...).
+   * The returned statement is not an {@link io.vertx.codetrans.StatementModel.ExpressionStatement}.
+   *
+   * @param c the code of the structure.
+   * @return the statement
+   */
+  public static StatementModel conditional(Consumer<CodeWriter> c) {
     return new StatementModel() {
       @Override
       public void render(CodeWriter writer) {
@@ -23,8 +41,29 @@ public class StatementModel extends CodeModel {
     };
   }
 
+  /**
+   * Creates an {@link io.vertx.codetrans.StatementModel.ExpressionStatement} from the given code.
+   *
+   * @param c the code
+   * @return the statement
+   */
+  public static StatementModel render(Consumer<CodeWriter> c) {
+    return new ExpressionStatement() {
+      @Override
+      public void render(CodeWriter writer) {
+        c.accept(writer);
+      }
+    };
+  }
+
+  /**
+   * Creates an {@link io.vertx.codetrans.StatementModel.ExpressionStatement} from the given code.
+   *
+   * @param s the code
+   * @return the statement
+   */
   public static StatementModel render(String s) {
-    return new StatementModel() {
+    return new ExpressionStatement() {
       @Override
       public void render(CodeWriter writer) {
         writer.append(s);
@@ -33,28 +72,10 @@ public class StatementModel extends CodeModel {
   }
 
   /**
-   * A class marking conditional structures.
-   * In some language conditional structure requires specific actions (such as in JavaScript where then ending
-   * {@code ;} is not required).
+   * Marker class for the _default_ statement model.
    */
-  public static class ConditionalStructureModel extends StatementModel {
-    public static ConditionalStructureModel render(Consumer<CodeWriter> c) {
-      return new ConditionalStructureModel() {
-        @Override
-        public void render(CodeWriter writer) {
-          c.accept(writer);
-        }
-      };
-    }
-
-    public static StatementModel render(String s) {
-      return new ConditionalStructureModel() {
-        @Override
-        public void render(CodeWriter writer) {
-          writer.append(s);
-        }
-      };
-    }
+  public static class ExpressionStatement extends StatementModel {
 
   }
+
 }
