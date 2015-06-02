@@ -69,7 +69,7 @@ public abstract class ConversionTestBase {
     return convert(lang, path).get(method);
   }
 
-  public Map<String, Result> convert(Lang lang, String path) {
+  public static Map<String, Result> convert(Lang lang, String path) {
     try {
       return ConvertingProcessor.convert(ClassIdentifierExpressionTest.class.getClassLoader(), lang, path + ".java");
     } catch (Exception e) {
@@ -77,7 +77,7 @@ public abstract class ConversionTestBase {
     }
   }
 
-  public Script script(Lang lang, String path, String method) {
+  public static Script script(Lang lang, String path, String method) {
     Map<String, Result> results = convert(lang, path);
     Thread current = Thread.currentThread();
     ClassLoader prev = current.getContextClassLoader();

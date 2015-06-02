@@ -92,7 +92,10 @@ public class JavaScriptLang implements Lang {
   @Override
   public void renderStatement(StatementModel statement, CodeWriter writer) {
     statement.render(writer);
-    writer.append(";\n");
+    // In javascript, conditional structure should not have an ending ;. This generates an empty instruction.
+    if (statement instanceof StatementModel.Expression) {
+      writer.append(";\n");
+    }
   }
 
   @Override
@@ -288,7 +291,7 @@ public class JavaScriptLang implements Lang {
 
   @Override
   public StatementModel forLoop(StatementModel initializer, ExpressionModel condition, ExpressionModel update, StatementModel body) {
-    return StatementModel.render((renderer) -> {
+    return StatementModel.conditional((renderer) -> {
       renderer.append("for (");
       initializer.render(renderer);
       renderer.append("; ");
