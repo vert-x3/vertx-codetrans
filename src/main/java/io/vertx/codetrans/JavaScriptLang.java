@@ -94,8 +94,9 @@ public class JavaScriptLang implements Lang {
     statement.render(writer);
     // In javascript, conditional structure should not have an ending ;. This generates an empty instruction.
     if (statement instanceof StatementModel.Expression) {
-      writer.append(";\n");
+      writer.append(";");
     }
+    writer.append("\n");
   }
 
   @Override
