@@ -130,6 +130,9 @@ public class GroovyLang implements Lang {
     writer.append(" ->\n");
     writer.indent();
     body.render(writer);
+    if (bodyKind == LambdaExpressionTree.BodyKind.EXPRESSION) {
+      writer.append(";\n");
+    }
     writer.unindent();
     writer.append("}");
   }
