@@ -259,17 +259,17 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
       case STRING_LITERAL:
         return lang.stringLiteral(node.getValue().toString());
       case BOOLEAN_LITERAL:
-        return ExpressionModel.render(renderer -> renderer.getLang().renderBooleanLiteral(node.getValue().toString(), renderer));
+        return lang.booleanLiteral(node.getValue().toString());
       case INT_LITERAL:
-        return ExpressionModel.render(renderer -> renderer.getLang().renderIntegerLiteral(node.getValue().toString(), renderer));
+        return lang.integerLiteral(node.getValue().toString());
       case LONG_LITERAL:
-        return ExpressionModel.render(renderer -> renderer.getLang().renderLongLiteral(node.getValue().toString(), renderer));
+        return lang.longLiteral(node.getValue().toString());
       case CHAR_LITERAL:
-        return ExpressionModel.render(renderer -> renderer.getLang().renderCharLiteral(node.getValue().toString().charAt(0), renderer));
+        return lang.characterLiteral(node.getValue().toString().charAt(0));
       case FLOAT_LITERAL:
-        return ExpressionModel.render(renderer -> renderer.getLang().renderFloatLiteral(node.getValue().toString(), renderer));
+        return lang.floatLiteral(node.getValue().toString());
       case DOUBLE_LITERAL:
-        return ExpressionModel.render(renderer -> renderer.getLang().renderDoubleLiteral(node.getValue().toString(), renderer));
+        return lang.doubleLiteral(node.getValue().toString());
       default:
         throw new UnsupportedOperationException("Literal " + node.getKind().name() + " not yet implemented");
     }

@@ -253,21 +253,6 @@ public class RubyLang implements Lang {
   }
 
   @Override
-  public void renderFloatLiteral(String value, CodeWriter writer) {
-    writer.renderChars(value);
-  }
-
-  @Override
-  public void renderDoubleLiteral(String value, CodeWriter writer) {
-    writer.renderChars(value);
-  }
-
-  @Override
-  public void renderLongLiteral(String value, CodeWriter writer) {
-    writer.renderChars(value);
-  }
-
-  @Override
   public void renderMapGet(ExpressionModel map, ExpressionModel arg, CodeWriter writer) {
     map.render(writer);
     writer.append('[');

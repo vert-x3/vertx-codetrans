@@ -23,21 +23,6 @@ import java.util.Scanner;
 public class JavaScriptLang implements Lang {
 
   @Override
-  public void renderLongLiteral(String value, CodeWriter writer) {
-    writer.renderChars(value);
-  }
-
-  @Override
-  public void renderFloatLiteral(String value, CodeWriter writer) {
-    writer.renderChars(value);
-  }
-
-  @Override
-  public void renderDoubleLiteral(String value, CodeWriter writer) {
-    writer.renderChars(value);
-  }
-
-  @Override
   public void renderBinary(BinaryExpressionModel expression, CodeWriter writer) {
     String op = expression.op;
     switch (op) {

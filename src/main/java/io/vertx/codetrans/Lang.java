@@ -116,15 +116,21 @@ public interface Lang {
     writer.append('\'');
   }
 
-  void renderFloatLiteral(String value, CodeWriter writer);
+  default void renderFloatLiteral(String value, CodeWriter writer) {
+    writer.renderChars(value);
+  }
 
-  void renderDoubleLiteral(String value, CodeWriter writer);
+  default void renderDoubleLiteral(String value, CodeWriter writer) {
+    writer.renderChars(value);
+  }
 
   default void renderBooleanLiteral(String value, CodeWriter writer) {
     writer.append(value);
   }
 
-  void renderLongLiteral(String value, CodeWriter writer);
+  default void renderLongLiteral(String value, CodeWriter writer) {
+    writer.renderChars(value);
+  }
 
   default void renderIntegerLiteral(String value, CodeWriter writer) {
     writer.append(value);
@@ -236,11 +242,35 @@ public interface Lang {
   //
 
   default ExpressionModel nullLiteral() {
-    return ExpressionModel.render(renderer -> renderer.getLang().renderNullLiteral(renderer));
+    return new LiteralModel.Null();
   }
 
   default ExpressionModel stringLiteral(String value) {
-    return new StringLiteralModel(value);
+    return new LiteralModel.String(value);
+  }
+
+  default ExpressionModel booleanLiteral(String value) {
+    return new LiteralModel.Boolean(value);
+  }
+
+  default ExpressionModel integerLiteral(String value) {
+    return new LiteralModel.Integer(value);
+  }
+
+  default ExpressionModel longLiteral(String value) {
+    return new LiteralModel.Long(value);
+  }
+
+  default ExpressionModel characterLiteral(char value) {
+    return new LiteralModel.Character(value);
+  }
+
+  default ExpressionModel floatLiteral(String value) {
+    return new LiteralModel.Float(value);
+  }
+
+  default ExpressionModel doubleLiteral(String value) {
+    return new LiteralModel.Double(value);
   }
 
   default ExpressionModel combine(ExpressionModel left, String op, ExpressionModel right) {

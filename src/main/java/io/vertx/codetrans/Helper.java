@@ -27,7 +27,7 @@ public class Helper {
   }
 
   static boolean isString(ExpressionModel expression) {
-    if (expression instanceof StringLiteralModel) {
+    if (expression instanceof LiteralModel.String) {
       return true;
     } else if (expression instanceof BinaryExpressionModel) {
       BinaryExpressionModel binary = (BinaryExpressionModel) expression;
@@ -62,8 +62,8 @@ public class Helper {
 
   private static void renderInterpolatedString(ExpressionModel expression, CodeWriter writer,
                                                String beginInterpolation, String endInterpolation) {
-    if (expression instanceof StringLiteralModel) {
-      StringLiteralModel string = (StringLiteralModel) expression;
+    if (expression instanceof LiteralModel.String) {
+      LiteralModel.String string = (LiteralModel.String) expression;
       writer.renderChars(string.value);
     } else if (Helper.isString(expression)) {
       expression.render(writer);
