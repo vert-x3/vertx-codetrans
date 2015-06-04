@@ -3,9 +3,9 @@ package io.vertx.codetrans;
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-abstract class FragmentParser {
+public abstract class FragmentParser {
 
-  void parse(String s) {
+  public void parse(String s) {
     int width = 0;
     int status = 0;
     int margin = 0;
@@ -96,12 +96,12 @@ abstract class FragmentParser {
     }
   }
 
-  abstract void onNewline();
+  protected abstract void onNewline();
 
-  abstract void onComment(char c);
+  protected abstract void onComment(char c);
 
-  abstract void onBeginComment(boolean multiline);
+  protected abstract void onBeginComment(boolean multiline);
 
-  abstract void onEndComment(boolean multiline);
+  protected abstract void onEndComment(boolean multiline);
 
 }

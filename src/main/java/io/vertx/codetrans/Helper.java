@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class Helper {
 
-  static String unwrapQuotedString(String s) {
+  public static String unwrapQuotedString(String s) {
     int len = s.length();
     if (len > 2 && s.charAt(0) == '"' && s.charAt(len - 1) == '"') {
       return s.substring(1, len - 1);
@@ -20,13 +20,13 @@ public class Helper {
     }
   }
 
-  static <E> List<E> append(List<E> list, E last) {
+  public static <E> List<E> append(List<E> list, E last) {
     ArrayList<E> copy = new ArrayList<>(list);
     copy.add(last);
     return copy;
   }
 
-  static boolean isString(ExpressionModel expression) {
+  public static boolean isString(ExpressionModel expression) {
     if (expression instanceof LiteralModel.String) {
       return true;
     } else if (expression instanceof BinaryExpressionModel) {
@@ -44,7 +44,7 @@ public class Helper {
    * @param expression the binary string expression
    * @param writer the writer
    */
-  static void renderInterpolatedString(BinaryExpressionModel expression, CodeWriter writer,
+  public static void renderInterpolatedString(BinaryExpressionModel expression, CodeWriter writer,
                                        String beginInterpolation, String endInterpolation) {
     boolean prev = string;
     if (!string) {
@@ -81,7 +81,7 @@ public class Helper {
     }
   }
 
-  static boolean isHandler(TypeInfo type) {
+  public static boolean isHandler(TypeInfo type) {
     if (type instanceof TypeInfo.Parameterized) {
       TypeInfo.Parameterized parameterizedType = (TypeInfo.Parameterized) type;
       return parameterizedType.getRaw().getName().equals(Handler.class.getName());
@@ -89,7 +89,7 @@ public class Helper {
     return false;
   }
 
-  static boolean isInstanceOfHandler(TypeInfo type) {
+  public static boolean isInstanceOfHandler(TypeInfo type) {
     if (type instanceof TypeInfo.Class.Api) {
       TypeInfo.Class.Api apiType = (TypeInfo.Class.Api) type;
       return apiType.isHandler();

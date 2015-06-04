@@ -12,4 +12,12 @@ public class ConditionalBlockModel {
     this.condition = condition;
     this.body = body;
   }
+
+  public ExpressionModel getCondition() {
+    return condition;
+  }
+
+  public StatementModel getBody() {
+    return body;
+  }
 }

@@ -1,5 +1,8 @@
 package io.vertx.codetrans;
 
+import io.vertx.codetrans.lang.groovy.GroovyLang;
+import io.vertx.codetrans.lang.js.JavaScriptLang;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStream;

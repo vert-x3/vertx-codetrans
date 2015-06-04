@@ -1,8 +1,21 @@
-package io.vertx.codetrans;
+package io.vertx.codetrans.lang.js;
 
 import com.sun.source.tree.LambdaExpressionTree;
 import io.vertx.codegen.Helper;
 import io.vertx.codegen.TypeInfo;
+import io.vertx.codetrans.BinaryExpressionModel;
+import io.vertx.codetrans.BlockModel;
+import io.vertx.codetrans.CodeModel;
+import io.vertx.codetrans.CodeWriter;
+import io.vertx.codetrans.DataObjectLiteralModel;
+import io.vertx.codetrans.ExpressionModel;
+import io.vertx.codetrans.JsonArrayLiteralModel;
+import io.vertx.codetrans.JsonObjectLiteralModel;
+import io.vertx.codetrans.LambdaExpressionModel;
+import io.vertx.codetrans.Lang;
+import io.vertx.codetrans.Member;
+import io.vertx.codetrans.Script;
+import io.vertx.codetrans.StatementModel;
 
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
@@ -24,7 +37,7 @@ public class JavaScriptLang implements Lang {
 
   @Override
   public void renderBinary(BinaryExpressionModel expression, CodeWriter writer) {
-    String op = expression.op;
+    String op = expression.getOp();
     switch (op) {
       case "==":
         op = "===";
@@ -33,7 +46,7 @@ public class JavaScriptLang implements Lang {
         op = "!==";
         break;
     }
-    Lang.super.renderBinary(new BinaryExpressionModel(expression.left, op, expression.right), writer);
+    Lang.super.renderBinary(new BinaryExpressionModel(expression.getLeft(), op, expression.getRight()), writer);
   }
 
   @Override
@@ -135,15 +148,15 @@ public class JavaScriptLang implements Lang {
     writer.indent();
     for (Iterator<Member> iterator = members.iterator();iterator.hasNext();) {
       Member member = iterator.next();
-      String name = member.name.render(writer.getLang());
+      String name = member.getName().render(writer.getLang());
       if (unquote) {
         name = io.vertx.codetrans.Helper.unwrapQuotedString(name);
       }
       writer.append("\"").append(name).append("\" : ");
       if (member instanceof Member.Single) {
-        ((Member.Single) member).value.render(writer);
+        ((Member.Single) member).getValue().render(writer);
       } else {
-        renderJsonArray(((Member.Array) member).values, writer);
+        renderJsonArray(((Member.Array) member).getValues(), writer);
       }
       if (iterator.hasNext()) {
         writer.append(',');

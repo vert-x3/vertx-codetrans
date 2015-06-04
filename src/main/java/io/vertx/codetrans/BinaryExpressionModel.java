@@ -15,6 +15,18 @@ public class BinaryExpressionModel extends ExpressionModel {
     this.right = right;
   }
 
+  public ExpressionModel getLeft() {
+    return left;
+  }
+
+  public String getOp() {
+    return op;
+  }
+
+  public ExpressionModel getRight() {
+    return right;
+  }
+
   @Override
   public void render(CodeWriter writer) {
     writer.getLang().renderBinary(this, writer);

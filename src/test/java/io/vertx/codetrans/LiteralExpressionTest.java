@@ -1,6 +1,8 @@
 package io.vertx.codetrans;
 
 import groovy.lang.GString;
+import io.vertx.codetrans.lang.groovy.GroovyLang;
+import io.vertx.codetrans.lang.js.JavaScriptLang;
 import io.vertx.support.TheEnum;
 import org.jruby.RubySymbol;
 import org.junit.Before;

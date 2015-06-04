@@ -1,4 +1,4 @@
-package io.vertx.codetrans;
+package io.vertx.codetrans.lang.groovy;
 
 import com.sun.source.tree.LambdaExpressionTree;
 import groovy.lang.Binding;
@@ -6,6 +6,19 @@ import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyCodeSource;
 import groovy.lang.Script;
 import io.vertx.codegen.TypeInfo;
+import io.vertx.codetrans.BinaryExpressionModel;
+import io.vertx.codetrans.BlockModel;
+import io.vertx.codetrans.CodeModel;
+import io.vertx.codetrans.CodeWriter;
+import io.vertx.codetrans.DataObjectLiteralModel;
+import io.vertx.codetrans.ExpressionModel;
+import io.vertx.codetrans.Helper;
+import io.vertx.codetrans.JsonArrayLiteralModel;
+import io.vertx.codetrans.JsonObjectLiteralModel;
+import io.vertx.codetrans.LambdaExpressionModel;
+import io.vertx.codetrans.Lang;
+import io.vertx.codetrans.Member;
+import io.vertx.codetrans.StatementModel;
 
 import java.io.InputStream;
 import java.util.Arrays;
@@ -241,16 +254,16 @@ public class GroovyLang implements Lang {
       writer.append("[\n").indent();
       while (iterator.hasNext()) {
         Member member = iterator.next();
-        String name = member.name.render(writer.getLang());
+        String name = member.getName().render(writer.getLang());
         if (unquote) {
           name = Helper.unwrapQuotedString(name);
         }
         writer.append(name);
         writer.append(":");
         if (member instanceof Member.Single) {
-          ((Member.Single) member).value.render(writer);
+          ((Member.Single) member).getValue().render(writer);
         } else {
-          renderJsonArray(((Member.Array) member).values, writer);
+          renderJsonArray(((Member.Array) member).getValues(), writer);
         }
         if (iterator.hasNext()) {
           writer.append(',');

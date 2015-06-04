@@ -1,10 +1,10 @@
 package io.vertx.codetrans;
 
-import org.junit.Assert;
+import io.vertx.codetrans.lang.groovy.GroovyLang;
+import io.vertx.codetrans.lang.js.JavaScriptLang;
+import io.vertx.codetrans.lang.ruby.RubyLang;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Map;
 
 import static org.junit.Assert.*;
 

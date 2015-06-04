@@ -1,9 +1,25 @@
-package io.vertx.codetrans;
+package io.vertx.codetrans.lang.ruby;
 
 import com.sun.source.tree.LambdaExpressionTree;
 import io.vertx.codegen.Case;
 import io.vertx.codegen.ClassKind;
 import io.vertx.codegen.TypeInfo;
+import io.vertx.codetrans.BinaryExpressionModel;
+import io.vertx.codetrans.BlockModel;
+import io.vertx.codetrans.CodeModel;
+import io.vertx.codetrans.CodeWriter;
+import io.vertx.codetrans.ConditionalBlockModel;
+import io.vertx.codetrans.DataObjectLiteralModel;
+import io.vertx.codetrans.ExpressionModel;
+import io.vertx.codetrans.FragmentParser;
+import io.vertx.codetrans.Helper;
+import io.vertx.codetrans.JsonArrayLiteralModel;
+import io.vertx.codetrans.JsonObjectLiteralModel;
+import io.vertx.codetrans.LambdaExpressionModel;
+import io.vertx.codetrans.Lang;
+import io.vertx.codetrans.Member;
+import io.vertx.codetrans.Script;
+import io.vertx.codetrans.StatementModel;
 import org.jruby.embed.LocalContextScope;
 import org.jruby.embed.ScriptingContainer;
 
@@ -109,10 +125,10 @@ public class RubyLang implements Lang {
     for (int i = 0;i < conditionals.size();i++) {
       ConditionalBlockModel conditional = conditionals.get(i);
       writer.append(i == 0 ? "if " : "elsif ");
-      conditional.condition.render(writer);
+      conditional.getCondition().render(writer);
       writer.append("\n");
       writer.indent();
-      conditional.body.render(writer);
+      conditional.getBody().render(writer);
       writer.unindent();
     }
     if (otherwise != null) {
@@ -282,15 +298,15 @@ public class RubyLang implements Lang {
     writer.indent();
     for (Iterator<Member> iterator = members.iterator();iterator.hasNext();) {
       Member member = iterator.next();
-      String name = member.name.render(writer.getLang());
+      String name = member.getName().render(writer.getLang());
       if (unquote) {
         name = io.vertx.codetrans.Helper.unwrapQuotedString(name);
       }
       writer.append("'").append(name).append("' => ");
       if (member instanceof Member.Single) {
-        ((Member.Single) member).value.render(writer);
+        ((Member.Single) member).getValue().render(writer);
       } else {
-        renderJsonArray(((Member.Array) member).values, writer);
+        renderJsonArray(((Member.Array) member).getValues(), writer);
       }
       if (iterator.hasNext()) {
         writer.append(',');

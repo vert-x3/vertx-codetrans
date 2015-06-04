@@ -16,12 +16,20 @@ public abstract class Member {
     this.name = name;
   }
 
+  public ExpressionModel getName() {
+    return name;
+  }
+
   public static class Single extends Member {
 
     ExpressionModel value;
 
     public Single(ExpressionModel name) {
       super(name);
+    }
+
+    public ExpressionModel getValue() {
+      return value;
     }
 
     @Override
@@ -37,6 +45,10 @@ public abstract class Member {
 
     public Array(ExpressionModel name) {
       super(name);
+    }
+
+    public List<ExpressionModel> getValues() {
+      return values;
     }
 
     @Override

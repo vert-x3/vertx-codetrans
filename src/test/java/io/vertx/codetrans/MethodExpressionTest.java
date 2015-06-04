@@ -1,8 +1,7 @@
 package io.vertx.codetrans;
 
+import io.vertx.codetrans.lang.groovy.GroovyLang;
 import org.junit.Test;
-
-import java.util.function.Consumer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
