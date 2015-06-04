@@ -1,11 +1,16 @@
 package io.vertx.codetrans;
 
+import com.sun.source.tree.LambdaExpressionTree;
+import io.vertx.codegen.TypeInfo;
+
+import java.util.List;
+
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class CodeWriter implements Appendable {
+public abstract class CodeWriter implements Appendable {
 
-  private final Lang lang;
+  protected final Lang lang;
   private int indent = 0;
   private boolean first = true;
   private StringBuilder buffer = new StringBuilder();
@@ -99,5 +104,225 @@ public class CodeWriter implements Appendable {
           }
       }
     }
+  }
+
+  public void renderConditionals(List<ConditionalBlockModel> conditionals, StatementModel otherwise) {
+    for (int i = 0;i < conditionals.size();i++) {
+      ConditionalBlockModel conditional = conditionals.get(i);
+      append(i == 0 ? "if " : " else if ");
+      conditional.condition.render(this);
+      append(" {\n");
+      indent();
+      conditional.body.render(this);
+      unindent();
+      append("}");
+    }
+    if (otherwise != null) {
+      append(" else {\n");
+      indent();
+      otherwise.render(this);
+      unindent();
+      append("}");
+    }
+  }
+
+  public void renderParenthesized(ExpressionModel expression) {
+    append('(');
+    expression.render(this);
+    append(')');
+  }
+
+  public void renderEquals(ExpressionModel expression, ExpressionModel arg) {
+    expression.render(this);
+    append(" == ");
+    arg.render(this);
+  }
+
+  public void renderConditionalExpression(ExpressionModel condition, ExpressionModel trueExpression, ExpressionModel falseExpression) {
+    condition.render(this);
+    append(" ? ");
+    trueExpression.render(this);
+    append(" : ");
+    falseExpression.render(this);
+  }
+
+  public void renderAssign(ExpressionModel variable, ExpressionModel expression) {
+    variable.render(this);
+    append(" = ");
+    expression.render(this);
+  }
+
+  public abstract void renderStatement(StatementModel statement);
+
+  public void renderBlock(BlockModel block) {
+    block.render(this);
+  }
+
+  public void renderMemberSelect(ExpressionModel expression, String identifier) {
+    expression.render(this);
+    append('.').append(identifier);
+  }
+
+  public abstract void renderMethodReference(ExpressionModel expression, String methodName);
+
+  public abstract void renderNew(ExpressionModel expression, TypeInfo type, List<ExpressionModel> argumentModels);
+
+  public void renderMethodInvocation(ExpressionModel expression,
+                                     TypeInfo receiverType,
+                                     String methodName,
+                                     TypeInfo returnType,
+                                     List<TypeInfo> parameterTypes,
+                                     List<ExpressionModel> argumentModels,
+                                     List<TypeInfo> argumentTypes) {
+    expression.render(this);
+    append('.');
+    append(methodName);
+    append('(');
+    for (int i = 0; i < argumentModels.size(); i++) {
+      if (i > 0) {
+        append(", ");
+      }
+      argumentModels.get(i).render(this);
+    }
+    append(')');
+  }
+
+  public void renderBinary(BinaryExpressionModel expression) {
+    expression.left.render(this);
+    append(" ").append(expression.op).append(" ");
+    expression.right.render(this);
+  }
+
+  public void renderNullLiteral() {
+    append("null");
+  }
+
+  public void renderStringLiteral(String value) {
+    append('"');
+    renderChars(value);
+    append('"');
+  }
+
+  public void renderCharLiteral(char value) {
+    append('\'');
+    renderChars(Character.toString(value));
+    append('\'');
+  }
+
+  public void renderFloatLiteral(String value) {
+    renderChars(value);
+  }
+
+  public void renderDoubleLiteral(String value) {
+    renderChars(value);
+  }
+
+  public void renderBooleanLiteral(String value) {
+    append(value);
+  }
+
+  public void renderLongLiteral(String value) {
+    renderChars(value);
+  }
+
+  public void renderIntegerLiteral(String value) {
+    append(value);
+  }
+
+  public void renderPostfixIncrement(ExpressionModel expression) {
+    expression.render(this);
+    append("++");
+  }
+
+  public void renderPrefixIncrement(ExpressionModel expression, CodeWriter writer) {
+    writer.append("++");
+    expression.render(writer);
+  }
+
+  public void renderPostfixDecrement(ExpressionModel expression) {
+    expression.render(this);
+    append("--");
+  }
+
+  public void renderPrefixDecrement(ExpressionModel expression) {
+    append("--");
+    expression.render(this);
+  }
+
+  public void renderLogicalComplement(ExpressionModel expression) {
+    append("!");
+    expression.render(this);
+  }
+
+  public void renderUnaryMinus(ExpressionModel expression) {
+    append("-");
+    expression.render(this);
+  }
+
+  public void renderUnaryPlus(ExpressionModel expression) {
+    append("+");
+    expression.render(this);
+  }
+
+  public abstract void renderMapGet(ExpressionModel map, ExpressionModel arg);
+
+  public abstract void renderMapForEach(ExpressionModel map,
+                                        String keyName, TypeInfo keyType,
+                                        String valueName, TypeInfo valueType,
+                                        LambdaExpressionTree.BodyKind bodyKind, CodeModel block);
+
+  public abstract void renderJsonObject(JsonObjectLiteralModel jsonObject);
+
+  public abstract void renderJsonArray(JsonArrayLiteralModel jsonArray);
+
+  public abstract void renderDataObject(DataObjectLiteralModel model);
+
+  public abstract void renderJsonObjectAssign(ExpressionModel expression, ExpressionModel name, ExpressionModel value);
+
+  public abstract void renderDataObjectAssign(ExpressionModel expression, ExpressionModel name, ExpressionModel value);
+
+  public abstract void renderJsonObjectToString(ExpressionModel expression);
+
+  public abstract void renderJsonArrayToString(ExpressionModel expression);
+
+  public abstract void renderJsonObjectMemberSelect(ExpressionModel expression, ExpressionModel name);
+
+  public abstract void renderDataObjectMemberSelect(ExpressionModel expression, ExpressionModel name);
+
+  public void renderJsonArrayGet(ExpressionModel expression, ExpressionModel index) {
+    expression.render(this);
+    append('[');
+    index.render(this);
+    append(']');
+  }
+
+  public abstract void renderLambda(LambdaExpressionTree.BodyKind bodyKind, List<TypeInfo> parameterTypes, List<String> parameterNames, CodeModel body);
+
+  public abstract void renderEnumConstant(TypeInfo.Class.Enum type, String constant);
+
+  public abstract void renderThrow(String throwableType, ExpressionModel reason);
+
+  public void renderFragment(String fragment) {
+    FragmentParser renderer = new FragmentParser() {
+      @Override
+      public void onNewline() {
+        append('\n');
+      }
+      @Override
+      public void onComment(char c) {
+        append(c);
+      }
+      @Override
+      public void onBeginComment(boolean multiline) {
+        append(multiline ? "/*" : "//");
+      }
+      @Override
+      public void onEndComment(boolean multiline) {
+        if (multiline) {
+          append("*/");
+        }
+      }
+    };
+    renderer.parse(fragment);
   }
 }

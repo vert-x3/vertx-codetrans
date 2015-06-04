@@ -362,7 +362,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
   public CodeModel visitThrow(ThrowTree node, VisitContext visitContext) {
     ThrowableModel throwableExpression = (ThrowableModel) scan(node.getExpression(), visitContext);
     return StatementModel.render(writer -> {
-      writer.getLang().renderThrow(throwableExpression.getType(), throwableExpression.getReason(), writer);
+      writer.renderThrow(throwableExpression.getType(), throwableExpression.getReason());
     });
   }
 
@@ -481,18 +481,18 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return StatementModel.render(renderer -> {
-      renderer.getLang().renderBlock(new BlockModel() {
+    return StatementModel.render(writer -> {
+      writer.renderBlock(new BlockModel() {
         @Override
         public void render(CodeWriter writer) {
-          for (int i = 0;i < models.size();i++) {
+          for (int i = 0; i < models.size(); i++) {
             StatementModel model = models.get(i);
-            writer.getLang().renderFragment(fragments.get(i), writer);
-            writer.getLang().renderStatement(model, writer);
+            writer.renderFragment(fragments.get(i));
+            writer.renderStatement(model);
           }
-          writer.getLang().renderFragment(fragments.getLast(), writer);
+          writer.renderFragment(fragments.getLast());
         }
-      }, renderer);
+      });
     });
   }
 

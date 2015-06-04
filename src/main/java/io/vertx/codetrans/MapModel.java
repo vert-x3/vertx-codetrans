@@ -20,20 +20,20 @@ public class MapModel extends ExpressionModel {
     switch (methodName) {
       case "get":
         return ExpressionModel.render(writer -> {
-          writer.getLang().renderMapGet(expression, argumentModels.get(0), writer);
+          writer.renderMapGet(expression, argumentModels.get(0));
         });
       case "forEach":
         LambdaExpressionModel lambda = (LambdaExpressionModel) argumentModels.get(0);
         return ExpressionModel.render(writer -> {
-          writer.getLang().renderMapForEach(
+          writer.renderMapForEach(
               expression,
               lambda.getParameterNames().get(0),
               lambda.getParameterTypes().get(0),
               lambda.getParameterNames().get(1),
               lambda.getParameterTypes().get(1),
               lambda.getBodyKind(),
-              lambda.getBody(),
-              writer);
+              lambda.getBody()
+          );
         });
       default:
         throw new UnsupportedOperationException("Map " + methodName + " method not supported");

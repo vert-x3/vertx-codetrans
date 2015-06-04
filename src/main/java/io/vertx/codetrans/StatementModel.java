@@ -20,7 +20,7 @@ public class StatementModel extends CodeModel {
     return new StatementModel() {
       @Override
       public void render(CodeWriter writer) {
-        writer.getLang().renderConditionals(conditionals, otherwise, writer);
+        writer.renderConditionals(conditionals, otherwise);
       }
     };
   }

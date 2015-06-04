@@ -52,7 +52,7 @@ public class CodeTranslator {
     TreePath path = trees.getPath(methodElt);
     ModelBuilder builder = new ModelBuilder(trees, path, SystemType, ThrowableType, factory, typeUtils, lang);
     CodeModel model = builder.build(path);
-    CodeWriter writer = new CodeWriter(lang);
+    CodeWriter writer = lang.newWriter();
     model.render(writer);
     return writer.getBuffer().toString();
   }

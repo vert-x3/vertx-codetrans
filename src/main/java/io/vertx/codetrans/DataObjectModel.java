@@ -19,15 +19,15 @@ public class DataObjectModel extends ExpressionModel {
   public ExpressionModel onMethodInvocation(TypeInfo receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
     if (DataObjectLiteralModel.isSet(methodName)) {
       return ExpressionModel.render( writer -> {
-        writer.getLang().renderDataObjectAssign(expression,
+        writer.renderDataObjectAssign(expression,
             ExpressionModel.render(DataObjectLiteralModel.unwrapSet(methodName)),
-            argumentModels.get(0), writer);
+            argumentModels.get(0));
       });
     }
     if (DataObjectLiteralModel.isGet(methodName)) {
       return ExpressionModel.render( writer -> {
-        writer.getLang().renderDataObjectMemberSelect(expression,
-            ExpressionModel.render(DataObjectLiteralModel.unwrapSet(methodName)), writer);
+        writer.renderDataObjectMemberSelect(expression,
+            ExpressionModel.render(DataObjectLiteralModel.unwrapSet(methodName)));
       });
     }
     throw new UnsupportedOperationException("Unsupported method " + methodName + " on object model");

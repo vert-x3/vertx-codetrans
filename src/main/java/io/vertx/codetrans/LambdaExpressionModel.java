@@ -40,6 +40,6 @@ public class LambdaExpressionModel extends ExpressionModel {
 
   @Override
   public void render(CodeWriter writer) {
-    writer.getLang().renderLambda(bodyKind, parameterTypes, parameterNames, body, writer);
+    writer.renderLambda(bodyKind, parameterTypes, parameterNames, body);
   }
 }

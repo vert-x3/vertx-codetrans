@@ -12,7 +12,7 @@ public class LiteralModel {
 
     @Override
     public void render(CodeWriter writer) {
-      writer.getLang().renderNullLiteral(writer);
+      writer.renderNullLiteral();
     }
   }
 
@@ -26,7 +26,7 @@ public class LiteralModel {
 
     @Override
     public void render(CodeWriter writer) {
-      writer.getLang().renderStringLiteral(value, writer);
+      writer.renderStringLiteral(value);
     }
   }
 
@@ -40,7 +40,7 @@ public class LiteralModel {
 
     @Override
     public void render(CodeWriter writer) {
-      writer.getLang().renderBooleanLiteral(value, writer);
+      writer.renderBooleanLiteral(value);
     }
   }
 
@@ -54,7 +54,7 @@ public class LiteralModel {
 
     @Override
     public void render(CodeWriter writer) {
-      writer.getLang().renderIntegerLiteral(value, writer);
+      writer.renderIntegerLiteral(value);
     }
   }
 
@@ -68,7 +68,7 @@ public class LiteralModel {
 
     @Override
     public void render(CodeWriter writer) {
-      writer.getLang().renderLongLiteral(value, writer);
+      writer.renderLongLiteral(value);
     }
   }
 
@@ -82,7 +82,7 @@ public class LiteralModel {
 
     @Override
     public void render(CodeWriter writer) {
-      writer.getLang().renderCharLiteral(value, writer);
+      writer.renderCharLiteral(value);
     }
   }
 
@@ -96,7 +96,7 @@ public class LiteralModel {
 
     @Override
     public void render(CodeWriter writer) {
-      writer.getLang().renderFloatLiteral(value, writer);
+      writer.renderFloatLiteral(value);
     }
   }
 
@@ -110,7 +110,7 @@ public class LiteralModel {
 
     @Override
     public void render(CodeWriter writer) {
-      writer.getLang().renderDoubleLiteral(value, writer);
+      writer.renderDoubleLiteral(value);
     }
   }
 }

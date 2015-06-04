@@ -20,7 +20,7 @@ public class EnumExpressionModel extends ExpressionModel {
   @Override
   public ExpressionModel onField(String identifier) {
     return ExpressionModel.render(writer -> {
-      writer.getLang().renderEnumConstant(type, identifier, writer);
+      writer.renderEnumConstant(type, identifier);
     });
   }
 }

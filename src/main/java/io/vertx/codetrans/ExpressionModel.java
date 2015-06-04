@@ -32,73 +32,73 @@ public class ExpressionModel extends CodeModel {
                                             List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
     if (methodName.equals("equals") && argumentModels.size() == 1) {
       return ExpressionModel.render(writer -> {
-        writer.getLang().renderEquals(ExpressionModel.this, argumentModels.get(0), writer);
+        writer.renderEquals(ExpressionModel.this, argumentModels.get(0));
       });
     } else {
       return ExpressionModel.render(writer -> {
-        writer.getLang().renderMethodInvocation(ExpressionModel.this, receiverType, methodName, returnType, parameterTypes,
-            argumentModels, argumenTypes, writer);
+        writer.renderMethodInvocation(ExpressionModel.this, receiverType, methodName, returnType, parameterTypes,
+            argumentModels, argumenTypes);
       });
     }
   }
 
   public ExpressionModel onField(String identifier) {
     return ExpressionModel.render((renderer) -> {
-      renderer.getLang().renderMemberSelect(ExpressionModel.this, identifier, renderer);
+      renderer.renderMemberSelect(ExpressionModel.this, identifier);
     });
   }
 
   public ExpressionModel onMethodReference(String methodName) {
     return ExpressionModel.render((renderer) -> {
-      renderer.getLang().renderMethodReference(ExpressionModel.this, methodName, renderer);
+      renderer.renderMethodReference(ExpressionModel.this, methodName);
     });
   }
 
   public ExpressionModel onNew(TypeInfo type, List<ExpressionModel> arguments) {
     return ExpressionModel.render((renderer) -> {
-      renderer.getLang().renderNew(ExpressionModel.this, type, arguments, renderer);
+      renderer.renderNew(ExpressionModel.this, type, arguments);
     });
   }
 
   public ExpressionModel onPostFixIncrement() {
     return ExpressionModel.render((renderer) -> {
-      renderer.getLang().renderPostfixIncrement(ExpressionModel.this, renderer);
+      renderer.renderPostfixIncrement(ExpressionModel.this);
     });
   }
 
   public ExpressionModel onPrefixIncrement() {
     return ExpressionModel.render((renderer) -> {
-      renderer.getLang().renderPrefixIncrement(ExpressionModel.this, renderer);
+      renderer.renderPrefixIncrement(ExpressionModel.this, renderer);
     });
   }
 
   public ExpressionModel onPostFixDecrement() {
     return ExpressionModel.render((renderer) -> {
-      renderer.getLang().renderPostfixDecrement(ExpressionModel.this, renderer);
+      renderer.renderPostfixDecrement(ExpressionModel.this);
     });
   }
 
   public ExpressionModel onPrefixDecrement() {
     return ExpressionModel.render((renderer) -> {
-      renderer.getLang().renderPrefixDecrement(ExpressionModel.this, renderer);
+      renderer.renderPrefixDecrement(ExpressionModel.this);
     });
   }
 
   public ExpressionModel onLogicalComplement() {
     return ExpressionModel.render((renderer) -> {
-      renderer.getLang().renderLogicalComplement(ExpressionModel.this, renderer);
+      renderer.renderLogicalComplement(ExpressionModel.this);
     });
   }
 
   public ExpressionModel unaryMinus() {
     return ExpressionModel.render((renderer) -> {
-      renderer.getLang().renderUnaryMinus(ExpressionModel.this, renderer);
+      renderer.renderUnaryMinus(ExpressionModel.this);
     });
   }
 
   public ExpressionModel unaryPlus() {
     return ExpressionModel.render((renderer) -> {
-      renderer.getLang().renderUnaryPlus(ExpressionModel.this, renderer);
+      renderer.renderUnaryPlus(ExpressionModel.this);
     });
   }
 
@@ -126,19 +126,19 @@ public class ExpressionModel extends CodeModel {
 
   public static ExpressionModel forParenthesized(ExpressionModel expression) {
     return ExpressionModel.render((renderer) -> {
-      renderer.getLang().renderParenthesized(expression, renderer);
+      renderer.renderParenthesized(expression);
     });
   }
 
   public static ExpressionModel forConditionalExpression(ExpressionModel condition, ExpressionModel trueExpression, ExpressionModel falseExpression) {
     return ExpressionModel.render((renderer) -> {
-      renderer.getLang().renderConditionalExpression(condition, trueExpression, falseExpression, renderer);
+      renderer.renderConditionalExpression(condition, trueExpression, falseExpression);
     });
   }
 
   public static ExpressionModel forAssign(ExpressionModel variable, ExpressionModel expression) {
     return ExpressionModel.render((renderer) -> {
-      renderer.getLang().renderAssign(variable, expression, renderer);
+      renderer.renderAssign(variable, expression);
     });
   }
 

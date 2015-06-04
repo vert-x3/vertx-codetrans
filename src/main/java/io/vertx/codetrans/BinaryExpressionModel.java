@@ -29,6 +29,6 @@ public class BinaryExpressionModel extends ExpressionModel {
 
   @Override
   public void render(CodeWriter writer) {
-    writer.getLang().renderBinary(this, writer);
+    writer.renderBinary(this);
   }
 }

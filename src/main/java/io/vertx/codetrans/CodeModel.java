@@ -14,7 +14,7 @@ public class CodeModel {
   }
 
   public String render(Lang lang) {
-    CodeWriter writer = new CodeWriter(lang);
+    CodeWriter writer = lang.newWriter();
     render(writer);
     return writer.getBuffer().toString();
   }

@@ -1,19 +1,12 @@
 package io.vertx.codetrans.lang.js;
 
 import com.sun.source.tree.LambdaExpressionTree;
-import io.vertx.codegen.Helper;
 import io.vertx.codegen.TypeInfo;
-import io.vertx.codetrans.BinaryExpressionModel;
-import io.vertx.codetrans.BlockModel;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
-import io.vertx.codetrans.DataObjectLiteralModel;
 import io.vertx.codetrans.ExpressionModel;
-import io.vertx.codetrans.JsonArrayLiteralModel;
-import io.vertx.codetrans.JsonObjectLiteralModel;
 import io.vertx.codetrans.LambdaExpressionModel;
 import io.vertx.codetrans.Lang;
-import io.vertx.codetrans.Member;
 import io.vertx.codetrans.Script;
 import io.vertx.codetrans.StatementModel;
 
@@ -24,8 +17,6 @@ import javax.script.SimpleBindings;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -36,17 +27,8 @@ import java.util.Scanner;
 public class JavaScriptLang implements Lang {
 
   @Override
-  public void renderBinary(BinaryExpressionModel expression, CodeWriter writer) {
-    String op = expression.getOp();
-    switch (op) {
-      case "==":
-        op = "===";
-        break;
-      case "!=":
-        op = "!==";
-        break;
-    }
-    Lang.super.renderBinary(new BinaryExpressionModel(expression.getLeft(), op, expression.getRight()), writer);
+  public CodeWriter newWriter() {
+    return new JavaScriptWriter(this);
   }
 
   @Override
@@ -80,38 +62,6 @@ public class JavaScriptLang implements Lang {
     };
   }
 
-  static class JavaScriptRenderer extends CodeWriter {
-    LinkedHashSet<TypeInfo.Class> modules = new LinkedHashSet<>();
-    JavaScriptRenderer(Lang lang) {
-      super(lang);
-    }
-  }
-
-  @Override
-  public void renderStatement(StatementModel statement, CodeWriter writer) {
-    statement.render(writer);
-    // In javascript, conditional structure should not have an ending ;. This generates an empty instruction.
-    if (statement instanceof StatementModel.Expression) {
-      writer.append(";");
-    }
-    writer.append("\n");
-  }
-
-  @Override
-  public void renderBlock(BlockModel block, CodeWriter writer) {
-    if (writer instanceof JavaScriptRenderer) {
-      Lang.super.renderBlock(block, writer);
-    } else {
-      JavaScriptRenderer langRenderer = new JavaScriptRenderer(this);
-      Lang.super.renderBlock(block, langRenderer);
-      for (TypeInfo.Class module : langRenderer.modules) {
-        writer.append("var ").append(module.getSimpleName()).append(" = require(\"").
-            append(module.getModuleName()).append("-js/").append(Helper.convertCamelCaseToUnderscores(module.getSimpleName())).append("\");\n");
-      }
-      writer.append(langRenderer.getBuffer());
-    }
-  }
-
   @Override
   public String getExtension() {
     return "js";
@@ -131,139 +81,18 @@ public class JavaScriptLang implements Lang {
     });
   }
 
-  public void renderDataObject(DataObjectLiteralModel model, CodeWriter writer) {
-    renderJsonObject(model.getMembers(), writer, false);
-  }
-
-  public void renderJsonObject(JsonObjectLiteralModel jsonObject, CodeWriter writer) {
-    renderJsonObject(jsonObject.getMembers(), writer, true);
-  }
-
-  public void renderJsonArray(JsonArrayLiteralModel jsonArray, CodeWriter writer) {
-    renderJsonArray(jsonArray.getValues(), writer);
-  }
-
-  private void renderJsonObject(Iterable<Member> members, CodeWriter writer, boolean unquote) {
-    writer.append("{\n");
-    writer.indent();
-    for (Iterator<Member> iterator = members.iterator();iterator.hasNext();) {
-      Member member = iterator.next();
-      String name = member.getName().render(writer.getLang());
-      if (unquote) {
-        name = io.vertx.codetrans.Helper.unwrapQuotedString(name);
-      }
-      writer.append("\"").append(name).append("\" : ");
-      if (member instanceof Member.Single) {
-        ((Member.Single) member).getValue().render(writer);
-      } else {
-        renderJsonArray(((Member.Array) member).getValues(), writer);
-      }
-      if (iterator.hasNext()) {
-        writer.append(',');
-      }
-      writer.append('\n');
-    }
-    writer.unindent().append("}");
-  }
-
-  private void renderJsonArray(List<ExpressionModel> values, CodeWriter writer) {
-    writer.append("[\n").indent();
-    for (int i = 0;i < values.size();i++) {
-      values.get(i).render(writer);
-      if (i < values.size() - 1) {
-        writer.append(',');
-      }
-      writer.append('\n');
-    }
-    writer.unindent().append(']');
-  }
-
-  @Override
-  public void renderJsonObjectAssign(ExpressionModel expression, ExpressionModel name, ExpressionModel value, CodeWriter writer) {
-    expression.render(writer);
-    writer.append('.');
-    name.render(writer);
-    writer.append(" = ");
-    value.render(writer);
-  }
-
-  @Override
-  public void renderDataObjectAssign(ExpressionModel expression, ExpressionModel name, ExpressionModel value, CodeWriter writer) {
-    renderJsonObjectAssign(expression, name, value, writer);
-  }
-
-  @Override
-  public void renderJsonObjectMemberSelect(ExpressionModel expression, ExpressionModel name, CodeWriter writer) {
-    expression.render(writer);
-    writer.append('.');
-    name.render(writer);
-  }
-
-  @Override
-  public void renderJsonObjectToString(ExpressionModel expression, CodeWriter writer) {
-    writer.append("JSON.stringify(");
-    expression.render(writer);
-    writer.append(")");
-  }
-
-  @Override
-  public void renderJsonArrayToString(ExpressionModel expression, CodeWriter writer) {
-    writer.append("JSON.stringify(");
-    expression.render(writer);
-    writer.append(")");
-  }
-
-  @Override
-  public void renderDataObjectMemberSelect(ExpressionModel expression, ExpressionModel name, CodeWriter writer) {
-    renderJsonObjectMemberSelect(expression, name, writer);
-  }
-
   @Override
   public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, TypeInfo.Parameterized resultType, String resultName, CodeModel body) {
     return new LambdaExpressionModel(bodyKind, Arrays.asList(resultType.getArgs().get(0), TypeInfo.create(Throwable.class)), Arrays.asList(resultName, resultName + "_err"), body);
   }
 
   @Override
-  public void renderLambda(LambdaExpressionTree.BodyKind bodyKind, List<TypeInfo> parameterTypes, List<String> parameterNames, CodeModel body, CodeWriter writer) {
-    writer.append("function (");
-    for (int i = 0; i < parameterNames.size(); i++) {
-      if (i > 0) {
-        writer.append(", ");
-      }
-      writer.append(parameterNames.get(i));
-    }
-    writer.append(") {\n");
-    writer.indent();
-    body.render(writer);
-    if (bodyKind == LambdaExpressionTree.BodyKind.EXPRESSION) {
-      writer.append(";\n");
-    }
-    writer.unindent();
-    writer.append("}");
-  }
-
-  @Override
-  public void renderEnumConstant(TypeInfo.Class.Enum type, String constant, CodeWriter writer) {
-    writer.append('\'').append(constant).append('\'');
-  }
-
-  @Override
-  public void renderThrow(String throwableType, ExpressionModel reason, CodeWriter writer) {
-    if (reason == null) {
-      writer.append("throw ").append("\"an error occured\"");
-    } else {
-      writer.append("throw ");
-      reason.render(writer);
-    }
-  }
-
-  @Override
   public ExpressionModel staticFactory(TypeInfo.Class receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> arguments, List<TypeInfo> argumentTypes) {
     return ExpressionModel.render(writer -> {
-      JavaScriptRenderer jsRenderer = (JavaScriptRenderer) writer;
+      JavaScriptWriter jsRenderer = (JavaScriptWriter) writer;
       jsRenderer.modules.add(receiverType);
       ExpressionModel expr = ExpressionModel.render(receiverType.getSimpleName());
-      renderMethodInvocation(expr, receiverType, methodName, returnType, parameterTypes, arguments, argumentTypes, writer);
+      writer.renderMethodInvocation(expr, receiverType, methodName, returnType, parameterTypes, arguments, argumentTypes);
     });
   }
 
@@ -324,58 +153,5 @@ public class JavaScriptLang implements Lang {
           throw new UnsupportedOperationException("Not implemented");
       }
     });
-  }
-
-  @Override
-  public void renderMapGet(ExpressionModel map, ExpressionModel arg, CodeWriter writer) {
-    map.render(writer);
-    writer.append('[');
-    arg.render(writer);
-    writer.append(']');
-  }
-
-  @Override
-  public void renderMapForEach(ExpressionModel map, String keyName, TypeInfo keyType, String valueName, TypeInfo valueType, LambdaExpressionTree.BodyKind bodyKind, CodeModel block, CodeWriter writer) {
-    map.render(writer);
-    writer.append(".forEach(");
-    renderLambda(bodyKind, Arrays.asList(valueType, keyType), Arrays.asList(valueName, keyName), block, writer);
-    writer.append(")");
-  }
-
-  @Override
-  public void renderMethodReference(ExpressionModel expression, String methodName, CodeWriter writer) {
-    expression.render(writer);
-    writer.append('.').append(methodName);
-  }
-
-  @Override
-  public void renderMethodInvocation(ExpressionModel expression, TypeInfo receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes, CodeWriter writer) {
-    for (int i = 0;i < parameterTypes.size();i++) {
-      TypeInfo parameterType = parameterTypes.get(i);
-      TypeInfo argumentType = argumentTypes.get(i);
-      if (io.vertx.codetrans.Helper.isHandler(parameterType) && io.vertx.codetrans.Helper.isInstanceOfHandler(argumentType)) {
-        ExpressionModel expressionModel = argumentModels.get(i);
-        argumentModels.set(i, ExpressionModel.render(cw -> {
-          expressionModel.render(cw);
-          cw.append(".handle");
-        }));
-      }
-    }
-    Lang.super.renderMethodInvocation(expression, receiverType, methodName, returnType, parameterTypes, argumentModels, argumentTypes, writer);
-  }
-
-  @Override
-  public void renderNew(ExpressionModel expression, TypeInfo type, List<ExpressionModel> argumentModels, CodeWriter writer) {
-    writer.append("new (");
-    expression.render(writer);
-    writer.append(")");
-    writer.append('(');
-    for (int i = 0; i < argumentModels.size(); i++) {
-      if (i > 0) {
-        writer.append(", ");
-      }
-      argumentModels.get(i).render(writer);
-    }
-    writer.append(')');
   }
 }

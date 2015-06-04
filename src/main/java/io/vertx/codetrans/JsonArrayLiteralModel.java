@@ -45,6 +45,6 @@ public class JsonArrayLiteralModel extends ExpressionModel {
 
   @Override
   public void render(CodeWriter writer) {
-    writer.getLang().renderJsonArray(this, writer);
+    writer.renderJsonArray(this);
   }
 }

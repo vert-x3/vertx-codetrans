@@ -63,7 +63,7 @@ public class DataObjectLiteralModel extends ExpressionModel {
   }
 
   public void render(CodeWriter writer) {
-    writer.getLang().renderDataObject(this, writer);
+    writer.renderDataObject(this);
   }
 
   static boolean isGet(String identifier) {

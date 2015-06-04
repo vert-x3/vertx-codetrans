@@ -26,22 +26,22 @@ public class JsonArrayModel extends ExpressionModel {
       case "getInteger":
         if (argumentModels.size() == 1) {
           return ExpressionModel.render( writer -> {
-            writer.getLang().renderJsonArrayGet(expression, argumentModels.get(0), writer);
+            writer.renderJsonArrayGet(expression, argumentModels.get(0));
           });
         } else {
           throw unsupported("Invalid arguments " + argumentModels);
         }
       case "getJsonArray":
         return new JsonArrayModel(ExpressionModel.render( writer -> {
-          writer.getLang().renderJsonArrayGet(expression, argumentModels.get(0), writer);
+          writer.renderJsonArrayGet(expression, argumentModels.get(0));
         }));
       case "getJsonObject":
         return new JsonObjectModel(ExpressionModel.render( writer -> {
-          writer.getLang().renderJsonArrayGet(expression, argumentModels.get(0), writer);
+          writer.renderJsonArrayGet(expression, argumentModels.get(0));
         }));
       case "encodePrettily": {
         return ExpressionModel.render(writer -> {
-          writer.getLang().renderJsonArrayToString(expression, writer);
+          writer.renderJsonArrayToString(expression);
         });
       }
       default:

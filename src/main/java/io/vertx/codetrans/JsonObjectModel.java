@@ -20,11 +20,11 @@ public class JsonObjectModel extends ExpressionModel {
     switch (methodName) {
       case "put":
         return ExpressionModel.render(writer -> {
-          writer.getLang().renderJsonObjectAssign(expression, argumentModels.get(0), argumentModels.get(1), writer);
+          writer.renderJsonObjectAssign(expression, argumentModels.get(0), argumentModels.get(1));
         });
       case "encodePrettily": {
         return ExpressionModel.render(writer -> {
-          writer.getLang().renderJsonObjectToString(expression, writer);
+          writer.renderJsonObjectToString(expression);
         });
       }
       case "getString":
@@ -38,7 +38,7 @@ public class JsonObjectModel extends ExpressionModel {
       case "getValue":
         if (argumentModels.size() == 1) {
           return ExpressionModel.render( writer -> {
-            writer.getLang().renderJsonObjectMemberSelect(expression, argumentModels.get(0), writer);
+            writer.renderJsonObjectMemberSelect(expression, argumentModels.get(0));
           });
         } else {
           throw unsupported("Invalid arguments " + argumentModels);
