@@ -30,7 +30,8 @@ public class DataObjectLiteralModel extends ExpressionModel {
   }
 
   @Override
-  public ExpressionModel onMethodInvocation(TypeInfo receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
+  public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodRef method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
+    String methodName = method.getName();
     String name;
     Function<String, Member> memberFactory;
     if (isSet(methodName)) {
@@ -40,7 +41,7 @@ public class DataObjectLiteralModel extends ExpressionModel {
       name = unwrapAdd(methodName);
       memberFactory = $ -> new Member.Array(render(name));
     } else {
-      throw unsupported("Method " + methodName);
+      throw unsupported("Method " + method);
     }
     if (argumentModels.size() == 1) {
       Map<String, Member> copy = new LinkedHashMap<>(members);
@@ -50,7 +51,7 @@ public class DataObjectLiteralModel extends ExpressionModel {
       copy.put(name, member);
       return new DataObjectLiteralModel(type, copy);
     } else {
-      throw unsupported("Method " + methodName + " must be invoked with a single argument");
+      throw unsupported("Method " + method + " must be invoked with a single argument");
     }
   }
 

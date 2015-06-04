@@ -28,17 +28,15 @@ public class ExpressionModel extends CodeModel {
     }
   }
 
-  public ExpressionModel onMethodInvocation(TypeInfo receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes,
+  public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodRef method, TypeInfo returnType,
                                             List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
-    if (methodName.equals("equals") && argumentModels.size() == 1) {
+    if (method.getName().equals("equals") && method.getParameterTypes().size() == 1) {
       return ExpressionModel.render(writer -> {
         writer.renderEquals(ExpressionModel.this, argumentModels.get(0));
       });
     } else {
-      return ExpressionModel.render(writer -> {
-        writer.renderMethodInvocation(ExpressionModel.this, receiverType, methodName, returnType, parameterTypes,
-            argumentModels, argumenTypes);
-      });
+      return new MethodInvocationModel(ExpressionModel.this, receiverType, method, returnType,
+          argumentModels, argumenTypes);
     }
   }
 
@@ -146,11 +144,11 @@ public class ExpressionModel extends CodeModel {
     String s = methodName;
     return new ExpressionModel() {
       @Override
-      public ExpressionModel onMethodInvocation(TypeInfo receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
-        if (s.equals(methodName)) {
+      public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodRef method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
+        if (s.equals(method.getName())) {
           return f.apply(argumentModels);
         } else {
-          return super.onMethodInvocation(receiverType, methodName, returnType, parameterTypes, argumentModels, argumenTypes);
+          return super.onMethodInvocation(receiverType, method, returnType, argumentModels, argumenTypes);
         }
       }
     };
@@ -159,8 +157,8 @@ public class ExpressionModel extends CodeModel {
   public static ExpressionModel forMethodInvocation(BiFunction<String, List<ExpressionModel>, ExpressionModel> f) {
     return new ExpressionModel() {
       @Override
-      public ExpressionModel onMethodInvocation(TypeInfo receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
-        return f.apply(methodName, argumentModels);
+      public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodRef method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
+        return f.apply(method.getName(), argumentModels);
       }
     };
   }

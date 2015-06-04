@@ -16,7 +16,8 @@ public class MapModel extends ExpressionModel {
   }
 
   @Override
-  public ExpressionModel onMethodInvocation(TypeInfo receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
+  public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodRef method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
+    String methodName = method.getName();
     switch (methodName) {
       case "get":
         return ExpressionModel.render(writer -> {
@@ -36,7 +37,7 @@ public class MapModel extends ExpressionModel {
           );
         });
       default:
-        throw new UnsupportedOperationException("Map " + methodName + " method not supported");
+        throw new UnsupportedOperationException("Map " + method + " method not supported");
     }
   }
 

@@ -7,6 +7,7 @@ import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.ExpressionModel;
 import io.vertx.codetrans.LambdaExpressionModel;
 import io.vertx.codetrans.Lang;
+import io.vertx.codetrans.MethodRef;
 import io.vertx.codetrans.Script;
 import io.vertx.codetrans.StatementModel;
 
@@ -87,12 +88,12 @@ public class JavaScriptLang implements Lang {
   }
 
   @Override
-  public ExpressionModel staticFactory(TypeInfo.Class receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> arguments, List<TypeInfo> argumentTypes) {
+  public ExpressionModel staticFactory(TypeInfo.Class receiverType, MethodRef method, TypeInfo returnType, List<ExpressionModel> arguments, List<TypeInfo> argumentTypes) {
     return ExpressionModel.render(writer -> {
       JavaScriptWriter jsRenderer = (JavaScriptWriter) writer;
       jsRenderer.modules.add(receiverType);
       ExpressionModel expr = ExpressionModel.render(receiverType.getSimpleName());
-      writer.renderMethodInvocation(expr, receiverType, methodName, returnType, parameterTypes, arguments, argumentTypes);
+      writer.renderMethodInvocation(expr, receiverType, method, returnType, arguments, argumentTypes);
     });
   }
 

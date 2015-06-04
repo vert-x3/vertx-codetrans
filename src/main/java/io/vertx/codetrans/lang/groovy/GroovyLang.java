@@ -11,6 +11,7 @@ import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.ExpressionModel;
 import io.vertx.codetrans.LambdaExpressionModel;
 import io.vertx.codetrans.Lang;
+import io.vertx.codetrans.MethodRef;
 import io.vertx.codetrans.StatementModel;
 
 import java.io.InputStream;
@@ -74,7 +75,8 @@ public class GroovyLang implements Lang {
   }
 
   @Override
-  public ExpressionModel staticFactory(TypeInfo.Class receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> arguments, List<TypeInfo> argumentTypes) {
+  public ExpressionModel staticFactory(TypeInfo.Class receiverType, MethodRef method, TypeInfo returnType, List<ExpressionModel> arguments, List<TypeInfo> argumentTypes) {
+    String methodName = method.getName();
     return ExpressionModel.render(writer -> {
       GroovyWriter jsRenderer = (GroovyWriter) writer;
       jsRenderer.imports.add(receiverType);

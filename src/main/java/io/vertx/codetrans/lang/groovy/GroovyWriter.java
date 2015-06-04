@@ -61,7 +61,7 @@ class GroovyWriter extends CodeWriter {
       for (TypeInfo.Class importedType : imports) {
         String fqn = importedType.getName();
         if (importedType instanceof TypeInfo.Class.Api) {
-          fqn = importedType.getName().replace("io.vertx.", "io.vertx.groovy.");
+          fqn = importedType.translateName("groovy");
         }
         append("import ").append(fqn).append('\n');
       }
@@ -86,6 +86,11 @@ class GroovyWriter extends CodeWriter {
   public void renderDoubleLiteral(String value) {
     renderChars(value);
     append('d');
+  }
+
+  @Override
+  public void renderThis() {
+    append("this");
   }
 
   @Override

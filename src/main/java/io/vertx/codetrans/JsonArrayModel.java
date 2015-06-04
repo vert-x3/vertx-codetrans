@@ -16,7 +16,8 @@ public class JsonArrayModel extends ExpressionModel {
   }
 
   @Override
-  public ExpressionModel onMethodInvocation(TypeInfo receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
+  public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodRef method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
+    String methodName = method.getName();
     switch (methodName) {
       case "getString":
       case "getBoolean":
@@ -45,7 +46,7 @@ public class JsonArrayModel extends ExpressionModel {
         });
       }
       default:
-        throw unsupported("Method " + methodName);
+        throw unsupported("Method " + method);
     }
   }
   @Override

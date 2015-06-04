@@ -13,6 +13,7 @@ import io.vertx.codetrans.JsonArrayLiteralModel;
 import io.vertx.codetrans.JsonObjectLiteralModel;
 import io.vertx.codetrans.Lang;
 import io.vertx.codetrans.Member;
+import io.vertx.codetrans.MethodRef;
 import io.vertx.codetrans.StatementModel;
 
 import java.util.Arrays;
@@ -74,6 +75,11 @@ class JavaScriptWriter extends CodeWriter {
       append(tmp);
     }
     depth--;
+  }
+
+  @Override
+  public void renderThis() {
+    throw new UnsupportedOperationException();
   }
 
   public void renderDataObject(DataObjectLiteralModel model) {
@@ -220,7 +226,8 @@ class JavaScriptWriter extends CodeWriter {
   }
 
   @Override
-  public void renderMethodInvocation(ExpressionModel expression, TypeInfo receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
+  public void renderMethodInvocation(ExpressionModel expression, TypeInfo receiverType, MethodRef method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
+    List<TypeInfo> parameterTypes = method.getParameterTypes();
     for (int i = 0;i < parameterTypes.size();i++) {
       TypeInfo parameterType = parameterTypes.get(i);
       TypeInfo argumentType = argumentTypes.get(i);
@@ -232,7 +239,7 @@ class JavaScriptWriter extends CodeWriter {
         }));
       }
     }
-    super.renderMethodInvocation(expression, receiverType, methodName, returnType, parameterTypes, argumentModels, argumentTypes);
+    super.renderMethodInvocation(expression, receiverType, method, returnType, argumentModels, argumentTypes);
   }
 
   @Override

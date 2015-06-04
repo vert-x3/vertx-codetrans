@@ -36,11 +36,15 @@ public class MethodExpressionTest extends ConversionTestBase {
   }
 
   @Test
-  public void testIdentInvocation() throws Exception {
+  public void testInstanceIdentInvocation() throws Exception {
+    run(new GroovyLang(), "expression/MethodInvocation", "instanceIdentInvocation");
+/*
     Result.Failure result = (Result.Failure) convert(new GroovyLang(), "expression/MethodInvocation", "expression/MethodInvocation_instanceIdentInvocation.groovy");
     Throwable cause = result.getCause();
+    cause.printStackTrace();
     assertTrue("Was expecting result to be an UnsupportedOperationException and not a " + cause.getClass().getName(),
         cause instanceof UnsupportedOperationException);
+*/
   }
 
   public static Object helloworld;

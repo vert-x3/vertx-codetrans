@@ -51,7 +51,8 @@ public class CodeTranslator {
     attributeClass(typeElt);
     TreePath path = trees.getPath(methodElt);
     ModelBuilder builder = new ModelBuilder(trees, path, SystemType, ThrowableType, factory, typeUtils, lang);
-    CodeModel model = builder.build(path);
+    VisitContext visitContext = new VisitContext();
+    CodeModel model = builder.build(path, visitContext);
     CodeWriter writer = lang.newWriter();
     model.render(writer);
     return writer.getBuffer().toString();

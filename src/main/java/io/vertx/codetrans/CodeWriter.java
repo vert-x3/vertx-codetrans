@@ -169,14 +169,13 @@ public abstract class CodeWriter implements Appendable {
 
   public void renderMethodInvocation(ExpressionModel expression,
                                      TypeInfo receiverType,
-                                     String methodName,
+                                     MethodRef method,
                                      TypeInfo returnType,
-                                     List<TypeInfo> parameterTypes,
                                      List<ExpressionModel> argumentModels,
                                      List<TypeInfo> argumentTypes) {
     expression.render(this);
     append('.');
-    append(methodName);
+    append(method.getName());
     append('(');
     for (int i = 0; i < argumentModels.size(); i++) {
       if (i > 0) {
@@ -301,6 +300,8 @@ public abstract class CodeWriter implements Appendable {
   public abstract void renderEnumConstant(TypeInfo.Class.Enum type, String constant);
 
   public abstract void renderThrow(String throwableType, ExpressionModel reason);
+
+  public abstract void renderThis();
 
   public void renderFragment(String fragment) {
     FragmentParser renderer = new FragmentParser() {

@@ -69,8 +69,8 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     this.lang = lang;
   }
 
-  public CodeModel build(TreePath path) {
-    return scan(path, new VisitContext());
+  public CodeModel build(TreePath path, VisitContext visitContext) {
+    return scan(path, visitContext);
   }
 
   public StatementModel scan(StatementTree tree, VisitContext visitContext) {
@@ -298,8 +298,8 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
         if (type.getKind() == ClassKind.API) {
           return new ExpressionModel() {
             @Override
-            public ExpressionModel onMethodInvocation(TypeInfo receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
-              return lang.staticFactory(type, methodName, returnType, parameterTypes, argumentModels, argumenTypes);
+            public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodRef method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
+              return lang.staticFactory(type, method, returnType, argumentModels, argumenTypes);
             }
           };
         } else if (type.getKind() == ClassKind.JSON_OBJECT) {
@@ -394,28 +394,10 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
 
   @Override
   public ExpressionModel visitMethodInvocation(MethodInvocationTree node, VisitContext p) {
-    if (node.getMethodSelect() instanceof IdentifierTree) {
-      throw new UnsupportedOperationException("Invoking a method of the same class is not supported");
-    }
-    // Is there a case it would not be a member select expression ?
-    JCTree.JCFieldAccess memberSelect = (JCTree.JCFieldAccess) node.getMethodSelect();
-    ExpressionModel memberSelectExpression = scan(memberSelect.getExpression(), p);
-    String methodName = memberSelect.getIdentifier().toString();
-    List<ExpressionModel> argumentModels = node.getArguments().stream().map(argument -> scan(argument, p)).collect(Collectors.toList());
-    TypeInfo returnType = factory.create(((JCTree) node).type);
-    JCTree.JCMethodInvocation abc = (JCTree.JCMethodInvocation) node;
-
-    // Compute the parameter types
-    Symbol.MethodSymbol sym = (Symbol.MethodSymbol) memberSelect.sym;
-    List<TypeInfo> parameterTypes = new ArrayList<>();
-    for (Symbol.VarSymbol var : sym.getParameters()) {
-      TypeInfo parameterType = factory.create(var.asType());
-      parameterTypes.add(parameterType);
-    }
 
     // Compute the argument types
     List<TypeInfo> argumentTypes = new ArrayList<>();
-    for (JCTree.JCExpression argument : abc.getArguments()) {
+    for (JCTree.JCExpression argument : ((JCTree.JCMethodInvocation) node).getArguments()) {
       TypeInfo argumentType = null;
       if (argument.type.getKind() != TypeKind.NULL) {
         argumentType = factory.create(argument.type);
@@ -423,9 +405,44 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
       argumentTypes.add(argumentType);
     }
 
+    //
+    List<ExpressionModel> argumentModels = node.getArguments().stream().map(argument -> scan(argument, p)).collect(Collectors.toList());
+    TypeInfo returnType = factory.create(((JCTree) node).type);
+
+    //
+    Symbol.MethodSymbol sym;
+    ExpressionModel memberSelectExpression;
+    String methodName;
+    boolean addToRefedMethods;
+    if (node.getMethodSelect() instanceof IdentifierTree) {
+      JCTree.JCIdent def = (JCTree.JCIdent) node.getMethodSelect();
+      methodName = def.getName().toString();
+      memberSelectExpression = lang.thisModel();
+      sym = (Symbol.MethodSymbol) def.sym;
+      addToRefedMethods = true;
+    } else {
+      // Is there a case it would not be a member select expression ?
+      JCTree.JCFieldAccess memberSelect = (JCTree.JCFieldAccess) node.getMethodSelect();
+      memberSelectExpression = scan(memberSelect.getExpression(), p);
+      methodName = memberSelect.getIdentifier().toString();
+      sym = (Symbol.MethodSymbol) memberSelect.sym;
+      addToRefedMethods = false;
+    }
+
+    // Compute the parameter types
+    List<TypeInfo> parameterTypes = new ArrayList<>();
+    for (Symbol.VarSymbol var : sym.getParameters()) {
+      TypeInfo parameterType = factory.create(var.asType());
+      parameterTypes.add(parameterType);
+    }
+
     TypeInfo type = factory.create(sym.owner.type);
-    ExpressionModel expression = memberSelectExpression.onMethodInvocation(type, methodName,
-        returnType, parameterTypes, argumentModels, argumentTypes);
+    MethodRef method = new MethodRef(methodName, parameterTypes);
+    if (addToRefedMethods) {
+      p.getRefedMethods().add(method);
+    }
+
+    ExpressionModel expression = memberSelectExpression.onMethodInvocation(type, method, returnType, argumentModels, argumentTypes);
     return expression.as(returnType);
   }
 
@@ -525,7 +542,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
   }
 
   @Override
-  public CodeModel visitMethod(MethodTree node, VisitContext p) {
-    return scan(node.getBody(), p);
+  public MethodModel visitMethod(MethodTree node, VisitContext p) {
+    return new MethodModel(scan(node.getBody(), p));
   }
 }

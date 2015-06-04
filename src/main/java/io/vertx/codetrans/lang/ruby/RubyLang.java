@@ -8,6 +8,7 @@ import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.ExpressionModel;
 import io.vertx.codetrans.LambdaExpressionModel;
 import io.vertx.codetrans.Lang;
+import io.vertx.codetrans.MethodRef;
 import io.vertx.codetrans.Script;
 import io.vertx.codetrans.StatementModel;
 import org.jruby.embed.LocalContextScope;
@@ -90,12 +91,12 @@ public class RubyLang implements Lang {
   }
 
   @Override
-  public ExpressionModel staticFactory(TypeInfo.Class receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> arguments, List<TypeInfo> argumentTypes) {
+  public ExpressionModel staticFactory(TypeInfo.Class receiverType, MethodRef method, TypeInfo returnType, List<ExpressionModel> arguments, List<TypeInfo> argumentTypes) {
     return ExpressionModel.render(writer -> {
       RubyWriter jsRenderer = (RubyWriter) writer;
       jsRenderer.imports.add(receiverType);
       String expr = Case.CAMEL.format(Case.KEBAB.parse(receiverType.getModule().getName())) + "::" + receiverType.getSimpleName();
-      writer.renderMethodInvocation(ExpressionModel.render(expr), receiverType, methodName, returnType, parameterTypes, arguments, argumentTypes);
+      writer.renderMethodInvocation(ExpressionModel.render(expr), receiverType, method, returnType, arguments, argumentTypes);
     });
   }
 

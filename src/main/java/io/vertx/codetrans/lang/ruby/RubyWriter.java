@@ -18,6 +18,7 @@ import io.vertx.codetrans.JsonObjectLiteralModel;
 import io.vertx.codetrans.LambdaExpressionModel;
 import io.vertx.codetrans.Lang;
 import io.vertx.codetrans.Member;
+import io.vertx.codetrans.MethodRef;
 import io.vertx.codetrans.StatementModel;
 
 import java.util.ArrayList;
@@ -94,6 +95,11 @@ class RubyWriter extends CodeWriter {
   }
 
   @Override
+  public void renderThis() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
   public void renderConditionals(List<ConditionalBlockModel> conditionals, StatementModel otherwise) {
     for (int i = 0;i < conditionals.size();i++) {
       ConditionalBlockModel conditional = conditionals.get(i);
@@ -166,7 +172,9 @@ class RubyWriter extends CodeWriter {
   }
 
   @Override
-  public void renderMethodInvocation(ExpressionModel expression, TypeInfo receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
+  public void renderMethodInvocation(ExpressionModel expression, TypeInfo receiverType, MethodRef method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
+    List<TypeInfo> parameterTypes = method.getParameterTypes();
+    String methodName = method.getName();
     int size = parameterTypes.size();
     int index = size - 1;
 

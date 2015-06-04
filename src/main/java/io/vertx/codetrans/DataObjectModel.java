@@ -16,7 +16,8 @@ public class DataObjectModel extends ExpressionModel {
   }
 
   @Override
-  public ExpressionModel onMethodInvocation(TypeInfo receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
+  public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodRef method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
+    String methodName = method.getName();
     if (DataObjectLiteralModel.isSet(methodName)) {
       return ExpressionModel.render( writer -> {
         writer.renderDataObjectAssign(expression,
@@ -30,7 +31,7 @@ public class DataObjectModel extends ExpressionModel {
             ExpressionModel.render(DataObjectLiteralModel.unwrapSet(methodName)));
       });
     }
-    throw new UnsupportedOperationException("Unsupported method " + methodName + " on object model");
+    throw new UnsupportedOperationException("Unsupported method " + method + " on object model");
   }
   @Override
   public void render(CodeWriter writer) {

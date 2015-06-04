@@ -34,12 +34,13 @@ public class JsonArrayLiteralModel extends ExpressionModel {
   }
 
   @Override
-  public ExpressionModel onMethodInvocation(TypeInfo receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
+  public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodRef method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
+    String methodName = method.getName();
     switch (methodName) {
       case "add":
         return new JsonArrayLiteralModel(Helper.append(values, argumentModels.get(0)));
       default:
-        throw new UnsupportedOperationException("Method " + methodName + " not yet implemented");
+        throw new UnsupportedOperationException("Method " + method + " not yet implemented");
     }
   }
 
