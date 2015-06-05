@@ -326,7 +326,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
         } else if (type.getKind() == ClassKind.DATA_OBJECT) {
           return ExpressionModel.forNew(args -> new DataObjectLiteralModel(type));
         } else if (type.getKind() == ClassKind.ENUM) {
-          return new EnumExpressionModel((TypeInfo.Class.Enum) type);
+          return lang.enumType((TypeInfo.Class.Enum) type);
         } else {
           return lang.classExpression(type);
         }

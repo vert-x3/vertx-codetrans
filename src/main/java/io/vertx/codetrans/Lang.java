@@ -60,6 +60,10 @@ public interface Lang {
     return new ApiTypeModel(type);
   }
 
+  default EnumExpressionModel enumType(TypeInfo.Class.Enum type) {
+    return new EnumExpressionModel(type);
+  }
+
   default ExpressionModel variable(TypeInfo type, boolean local, String name) {
     return ExpressionModel.render(name).as(type);
   }
