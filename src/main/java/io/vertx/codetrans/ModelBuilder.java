@@ -298,14 +298,6 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
         }
         TypeInfo.Class type = (TypeInfo.Class) factory.create(ident.type);
         if (type.getKind() == ClassKind.API) {
-/*
-          return new ExpressionModel() {
-            @Override
-            public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodRef method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
-              return context.lang.staticFactory(type, method, returnType, argumentModels, argumenTypes);
-            }
-          };
-*/
           return context.builder.apiType((TypeInfo.Class.Api) type);
         } else if (type.getKind() == ClassKind.JSON_OBJECT) {
           return context.builder.forNew(args -> {
