@@ -5,7 +5,6 @@ import io.vertx.codegen.Case;
 import io.vertx.codegen.ClassKind;
 import io.vertx.codegen.TypeInfo;
 import io.vertx.codetrans.BinaryExpressionModel;
-import io.vertx.codetrans.BlockModel;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.ConditionalBlockModel;
@@ -19,6 +18,7 @@ import io.vertx.codetrans.LambdaExpressionModel;
 import io.vertx.codetrans.Member;
 import io.vertx.codetrans.MethodRef;
 import io.vertx.codetrans.StatementModel;
+import io.vertx.codetrans.ThisModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,32 +69,8 @@ class RubyWriter extends CodeWriter {
     renderer.parse(fragment);
   }
 
-  // Temporary hack
-  private int depth = 0;
-
-  @Override
-  public void renderBlock(BlockModel block) {
-    if (depth++ > 0) {
-      super.renderBlock(block);
-    } else {
-      super.renderBlock(block);
-      StringBuilder buffer = getBuffer();
-      String tmp = buffer.toString();
-      buffer.setLength(0);
-      for (TypeInfo.Class type : builder.imports) {
-        builder.requires.add(type.getModuleName() + "/" + Case.SNAKE.format(Case.CAMEL.parse(type.getSimpleName())));
-      }
-      for (String require : builder.requires) {
-        append("require '").append(require).append("'\n");
-      }
-      append(tmp);
-    }
-    depth--;
-  }
-
   @Override
   public void renderThis() {
-    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -171,8 +147,12 @@ class RubyWriter extends CodeWriter {
 
   @Override
   public void renderMethodReference(ExpressionModel expression, String methodName) {
-    expression.render(this);
-    append(".method(:").append(Case.SNAKE.format(Case.CAMEL.parse(methodName))).append(")");
+    if (!(expression instanceof ThisModel)) {
+      expression.render(this);
+      append(".");
+    }
+
+    append("method(:").append(Case.SNAKE.format(Case.CAMEL.parse(methodName))).append(")");
   }
 
   @Override
@@ -230,8 +210,10 @@ class RubyWriter extends CodeWriter {
       methodName += "?";
     }
 
-    expression.render(this);
-    append('.');
+    if (!(expression instanceof ThisModel)) {
+      expression.render(this);
+      append('.');
+    }
     append(methodName);
     renderArguments(argumentModels, this);
 

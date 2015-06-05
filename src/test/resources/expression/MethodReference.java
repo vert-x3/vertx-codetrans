@@ -14,9 +14,25 @@ import java.util.function.Consumer;
 public class MethodReference {
 
   @CodeTranslate
-  public void lambdaisation() throws Exception {
+  public void methodReference() throws Exception {
     Buffer buffer = Buffer.buffer("hello");
     HandlerInvoker.invokeStringHandler(buffer::appendString);
+    MethodExpressionTest.helloworld = buffer.toString("UTF-8");
+  }
+
+  @CodeTranslate
+  public void thisMethodReference() {
+    HandlerInvoker.invokeStringHandler(this::appendString);
+  }
+
+  @CodeTranslate
+  public void thisMethodReferenceNotLast() {
+    HandlerInvoker.invokeStringHandlerFirstParam(this::appendString, "the_last_value");
+  }
+
+  private void appendString(String s) {
+    Buffer buffer = Buffer.buffer("hello");
+    buffer.appendString(s);
     MethodExpressionTest.helloworld = buffer.toString("UTF-8");
   }
 }

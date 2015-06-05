@@ -1,10 +1,8 @@
 package io.vertx.codetrans.lang.js;
 
 import com.sun.source.tree.LambdaExpressionTree;
-import io.vertx.codegen.Helper;
 import io.vertx.codegen.TypeInfo;
 import io.vertx.codetrans.BinaryExpressionModel;
-import io.vertx.codetrans.BlockModel;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.DataObjectLiteralModel;
@@ -14,6 +12,7 @@ import io.vertx.codetrans.JsonObjectLiteralModel;
 import io.vertx.codetrans.Member;
 import io.vertx.codetrans.MethodRef;
 import io.vertx.codetrans.StatementModel;
+import io.vertx.codetrans.ThisModel;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -55,30 +54,9 @@ class JavaScriptWriter extends CodeWriter {
     append("\n");
   }
 
-  // Temporary hack
-  private int depth = 0;
-
-  @Override
-  public void renderBlock(BlockModel block) {
-    if (depth++ > 0) {
-      super.renderBlock(block);
-    } else {
-      super.renderBlock(block);
-      StringBuilder buffer = getBuffer();
-      String tmp = buffer.toString();
-      buffer.setLength(0);
-      for (TypeInfo.Class module : builder.modules) {
-        append("var ").append(module.getSimpleName()).append(" = require(\"").
-            append(module.getModuleName()).append("-js/").append(Helper.convertCamelCaseToUnderscores(module.getSimpleName())).append("\");\n");
-      }
-      append(tmp);
-    }
-    depth--;
-  }
-
   @Override
   public void renderThis() {
-    throw new UnsupportedOperationException();
+
   }
 
   public void renderDataObject(DataObjectLiteralModel model) {
@@ -220,8 +198,11 @@ class JavaScriptWriter extends CodeWriter {
 
   @Override
   public void renderMethodReference(ExpressionModel expression, String methodName) {
-    expression.render(this);
-    append('.').append(methodName);
+    if (!(expression instanceof ThisModel)) {
+      expression.render(this);
+      append('.');
+    }
+    append(methodName);
   }
 
   @Override
@@ -243,7 +224,21 @@ class JavaScriptWriter extends CodeWriter {
         }));
       }
     }
-    super.renderMethodInvocation(expression, receiverType, method, returnType, argumentModels, argumentTypes);
+
+    //
+    if (!(expression instanceof ThisModel)) {
+      expression.render(this);
+      append('.');
+    }
+    append(method.getName());
+    append('(');
+    for (int i = 0; i < argumentModels.size(); i++) {
+      if (i > 0) {
+        append(", ");
+      }
+      argumentModels.get(i).render(this);
+    }
+    append(')');
   }
 
   @Override
@@ -260,4 +255,5 @@ class JavaScriptWriter extends CodeWriter {
     }
     append(')');
   }
+
 }

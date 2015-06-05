@@ -21,11 +21,21 @@ public class MethodInvocation {
   }
 
   @CodeTranslate
-  public void instanceIdentInvocation() throws Exception {
+  public void thisInvocation() throws Exception {
     someMethod();
   }
 
   public void someMethod() {
+    MethodExpressionTest.count();
+  }
+
+  @CodeTranslate
+  public void thisInvocationWithParam() throws Exception {
+    someMethodWithParam("the_arg");
+  }
+
+  public void someMethodWithParam(String s) {
+    MethodExpressionTest.state = s;
   }
 
   @CodeTranslate
@@ -39,8 +49,6 @@ public class MethodInvocation {
     SubHandler handler = SubHandler.create();
     SubHandler.classHandler(handler);
   }
-
-  //
 
   @CodeTranslate
   public void invokeNullArgument() throws Exception {

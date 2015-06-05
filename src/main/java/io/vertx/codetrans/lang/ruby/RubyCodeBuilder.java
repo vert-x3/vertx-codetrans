@@ -10,10 +10,14 @@ import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.EnumExpressionModel;
 import io.vertx.codetrans.ExpressionModel;
 import io.vertx.codetrans.LambdaExpressionModel;
+import io.vertx.codetrans.MethodModel;
+import io.vertx.codetrans.RunnableCompilationUnit;
 import io.vertx.codetrans.StatementModel;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -26,6 +30,35 @@ class RubyCodeBuilder implements CodeBuilder {
   @Override
   public CodeWriter newWriter() {
     return new RubyWriter(this);
+  }
+
+  @Override
+  public String render(RunnableCompilationUnit unit) {
+    CodeWriter writer = newWriter();
+    for (TypeInfo.Class type : imports) {
+      requires.add(type.getModuleName() + "/" + Case.SNAKE.format(Case.CAMEL.parse(type.getSimpleName())));
+    }
+    for (String require : requires) {
+      writer.append("require '").append(require).append("'\n");
+    }
+    for (Map.Entry<String, MethodModel> member : unit.getMembers().entrySet()) {
+      String methodName = Case.SNAKE.format(Case.CAMEL.parse(member.getKey()));
+      writer.append("def ").append(methodName).append("(");
+      for (Iterator<String> it = member.getValue().getParameterNames().iterator();it.hasNext();) {
+        String paramName = it.next();
+        writer.append(paramName);
+        if (it.hasNext()) {
+          writer.append(", ");
+        }
+      }
+      writer.append(")\n");
+      writer.indent();
+      member.getValue().render(writer);
+      writer.unindent();
+      writer.append("end\n");
+    }
+    unit.getMain().render(writer);
+    return writer.getBuffer().toString();
   }
 
   @Override

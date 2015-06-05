@@ -3,7 +3,6 @@ package io.vertx.codetrans.lang.groovy;
 import com.sun.source.tree.LambdaExpressionTree;
 import io.vertx.codegen.TypeInfo;
 import io.vertx.codetrans.BinaryExpressionModel;
-import io.vertx.codetrans.BlockModel;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.DataObjectLiteralModel;
@@ -43,30 +42,6 @@ class GroovyWriter extends CodeWriter {
   public void renderStatement(StatementModel statement) {
     statement.render(this);
     append("\n");
-  }
-
-  // Temporary hack
-  private int depth = 0;
-
-  @Override
-  public void renderBlock(BlockModel block) {
-    if (depth++ > 0) {
-      super.renderBlock(block);
-    } else {
-      super.renderBlock(block);
-      StringBuilder buffer = getBuffer();
-      String tmp = buffer.toString();
-      buffer.setLength(0);
-      for (TypeInfo.Class importedType : builder.imports) {
-        String fqn = importedType.getName();
-        if (importedType instanceof TypeInfo.Class.Api) {
-          fqn = importedType.translateName("groovy");
-        }
-        append("import ").append(fqn).append('\n');
-      }
-      append(tmp);
-    }
-    depth--;
   }
 
   @Override

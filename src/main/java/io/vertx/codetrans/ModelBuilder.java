@@ -40,6 +40,7 @@ import javax.lang.model.util.Types;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -276,6 +277,9 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
   @Override
   public ExpressionModel visitIdentifier(IdentifierTree node, VisitContext context) {
     JCTree.JCIdent ident = (JCTree.JCIdent) node;
+    if (node.getName().toString().equals("this")) {
+      return new ThisModel(context.builder);
+    }
     if (ident.sym instanceof TypeElement) {
       if (ident.type.equals(systemType)) {
         return context.builder.forFieldSelect("out",
@@ -386,6 +390,9 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
   public CodeModel visitMemberReference(MemberReferenceTree node, VisitContext p) {
     if (node.getMode() == MemberReferenceTree.ReferenceMode.INVOKE) {
       ExpressionModel expression = scan(node.getQualifierExpression(), p);
+      if (expression instanceof ThisModel) {
+        p.getReferencedMethods().add(node.getName().toString());
+      }
       ExpressionModel methodReferenceExpression = expression.onMethodReference(node.getName().toString());
       return methodReferenceExpression;
     } else {
@@ -418,7 +425,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     if (node.getMethodSelect() instanceof IdentifierTree) {
       JCTree.JCIdent def = (JCTree.JCIdent) node.getMethodSelect();
       methodName = def.getName().toString();
-      memberSelectExpression = context.builder.thisModel();
+      memberSelectExpression = context.builder.thisModel(); // todo : see if we can resolve via scannning
       sym = (Symbol.MethodSymbol) def.sym;
       addToRefedMethods = true;
     } else {
@@ -440,7 +447,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     TypeInfo type = factory.create(sym.owner.type);
     MethodRef method = new MethodRef(methodName, parameterTypes);
     if (addToRefedMethods) {
-      context.getRefedMethods().add(method);
+      context.getReferencedMethods().add(methodName);
     }
 
     ExpressionModel expression = memberSelectExpression.onMethodInvocation(type, method, returnType, argumentModels, argumentTypes);
@@ -544,6 +551,6 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
 
   @Override
   public MethodModel visitMethod(MethodTree node, VisitContext p) {
-    return new MethodModel(scan(node.getBody(), p));
+    return new MethodModel(scan(node.getBody(), p), node.getParameters().stream().map(param -> param.getName().toString()).collect(Collectors.toList()));
   }
 }

@@ -1,6 +1,7 @@
 package io.vertx.codetrans.lang.js;
 
 import com.sun.source.tree.LambdaExpressionTree;
+import io.vertx.codegen.Helper;
 import io.vertx.codegen.TypeInfo;
 import io.vertx.codetrans.ApiTypeModel;
 import io.vertx.codetrans.CodeBuilder;
@@ -8,20 +9,14 @@ import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.ExpressionModel;
 import io.vertx.codetrans.LambdaExpressionModel;
-import io.vertx.codetrans.Lang;
-import io.vertx.codetrans.Script;
+import io.vertx.codetrans.MethodModel;
+import io.vertx.codetrans.RunnableCompilationUnit;
 import io.vertx.codetrans.StatementModel;
 
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.SimpleBindings;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Scanner;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -33,6 +28,32 @@ class JavaScriptCodeBuilder implements CodeBuilder {
   @Override
   public CodeWriter newWriter() {
     return new JavaScriptWriter(this);
+  }
+
+  @Override
+  public String render(RunnableCompilationUnit unit) {
+    CodeWriter writer = newWriter();
+    for (TypeInfo.Class module : modules) {
+      writer.append("var ").append(module.getSimpleName()).append(" = require(\"").
+          append(module.getModuleName()).append("-js/").append(Helper.convertCamelCaseToUnderscores(module.getSimpleName())).append("\");\n");
+    }
+    for (Map.Entry<String, MethodModel> member : unit.getMembers().entrySet()) {
+      writer.append("var ").append(member.getKey()).append(" = function(");
+      for (Iterator<String> it = member.getValue().getParameterNames().iterator();it.hasNext();) {
+        String paramName = it.next();
+        writer.append(paramName);
+        if (it.hasNext()) {
+          writer.append(", ");
+        }
+      }
+      writer.append(") {\n");
+      writer.indent();
+      member.getValue().render(writer);
+      writer.unindent();
+      writer.append("};\n");
+    }
+    unit.getMain().render(writer);
+    return writer.getBuffer().toString();
   }
 
   @Override

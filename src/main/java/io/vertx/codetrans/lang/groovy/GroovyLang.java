@@ -49,5 +49,4 @@ public class GroovyLang implements Lang {
   public String getExtension() {
     return "groovy";
   }
-
 }

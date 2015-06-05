@@ -1,6 +1,7 @@
 package io.vertx.codetrans;
 
 import io.vertx.codetrans.lang.groovy.GroovyLang;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -11,9 +12,16 @@ import static org.junit.Assert.assertTrue;
  */
 public class MethodExpressionTest extends ConversionTestBase {
 
-  private static int countValue = 0;
+  private static int countValue;
+  public static Object state;
 
   public static Runnable counter = () -> countValue++;
+
+  @Before
+  public void before() {
+    countValue = 0;
+    state = null;
+  }
 
   public static void count() {
     countValue++;
@@ -36,23 +44,41 @@ public class MethodExpressionTest extends ConversionTestBase {
   }
 
   @Test
-  public void testInstanceIdentInvocation() throws Exception {
-    run(new GroovyLang(), "expression/MethodInvocation", "instanceIdentInvocation");
-/*
-    Result.Failure result = (Result.Failure) convert(new GroovyLang(), "expression/MethodInvocation", "expression/MethodInvocation_instanceIdentInvocation.groovy");
-    Throwable cause = result.getCause();
-    cause.printStackTrace();
-    assertTrue("Was expecting result to be an UnsupportedOperationException and not a " + cause.getClass().getName(),
-        cause instanceof UnsupportedOperationException);
-*/
+  public void testThisInvocation() throws Exception {
+    runAll("expression/MethodInvocation", "thisInvocation", () -> {
+      assertEquals(1, countValue);
+      countValue = 0;
+    });
+  }
+
+  @Test
+  public void testThisInvocationWithParam() throws Exception {
+    run(new GroovyLang(), "expression/MethodInvocation", "thisInvocationWithParam");
+    assertEquals("the_arg", state);
   }
 
   public static Object helloworld;
 
   @Test
   public void testMethodReference() throws Exception {
-    runAll("expression/MethodReference", "lambdaisation", () -> {
+    runAll("expression/MethodReference", "methodReference", () -> {
       assertEquals("hellocallback_value", helloworld);
+      helloworld = null;
+    });
+  }
+
+  @Test
+  public void testThisMethodReference() throws Exception {
+    runAll("expression/MethodReference", "thisMethodReference", () -> {
+      assertEquals("hellocallback_value", helloworld);
+      helloworld = null;
+    });
+  }
+
+  @Test
+  public void testThisMethodReferenceNotLast() throws Exception {
+    runAll("expression/MethodReference", "thisMethodReferenceNotLast", () -> {
+      assertEquals("hellothe_last_value", helloworld);
       helloworld = null;
     });
   }

@@ -17,6 +17,11 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Types;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -52,13 +57,29 @@ public class CodeTranslator {
     TreePath path = trees.getPath(methodElt);
     ModelBuilder builder = new ModelBuilder(trees, path, SystemType, ThrowableType, factory, typeUtils, lang);
     VisitContext visitContext = new VisitContext(lang.codeBuilder());
-    CodeModel model = builder.build(path, visitContext);
-    CodeWriter writer = visitContext.builder.newWriter();
-    if (visitContext.getRefedMethods().size() > 0) {
-      throw new UnsupportedOperationException("TODO");
+    MethodModel main = (MethodModel) builder.build(path, visitContext);
+    Map<String, MethodModel> methods = new HashMap<>();
+    Set<String> pending = new HashSet<>(visitContext.getReferencedMethods());
+    while (pending.size() > 0) {
+      Iterator<String> it = pending.iterator();
+      String method = it.next();
+      it.remove();
+      for (Element enclosed : typeElt.getEnclosedElements()) {
+        if (enclosed instanceof ExecutableElement && enclosed.getSimpleName().toString().equals(method)) {
+          VisitContext other = new VisitContext(visitContext.builder);
+          MethodModel refed = (MethodModel) builder.build(trees.getPath(enclosed), other);
+          methods.put(method, refed);
+          for (String abc : other.getReferencedMethods()) {
+            if (!methods.containsKey(abc)) {
+              pending.add(abc);
+            }
+          }
+        }
+      }
     }
-    model.render(writer);
-    return writer.getBuffer().toString();
+    RunnableCompilationUnit unit = new RunnableCompilationUnit(main, methods);
+    String s = visitContext.builder.render(unit);
+    return s;
   }
 
   private void attributeClass(Element classElement) {

@@ -9,10 +9,15 @@ import io.vertx.codetrans.EnumExpressionModel;
 import io.vertx.codetrans.ExpressionModel;
 import io.vertx.codetrans.LambdaExpressionModel;
 import io.vertx.codetrans.CodeBuilder;
+import io.vertx.codetrans.MethodModel;
+import io.vertx.codetrans.MethodRef;
+import io.vertx.codetrans.RunnableCompilationUnit;
 import io.vertx.codetrans.StatementModel;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -22,8 +27,37 @@ class GroovyCodeBuilder implements CodeBuilder {
   LinkedHashSet<TypeInfo.Class> imports = new LinkedHashSet<>();
 
   @Override
-  public CodeWriter newWriter() {
+  public GroovyWriter newWriter() {
     return new GroovyWriter(this);
+  }
+
+  @Override
+  public String render(RunnableCompilationUnit unit) {
+    GroovyWriter writer = newWriter();
+    for (TypeInfo.Class importedType : imports) {
+      String fqn = importedType.getName();
+      if (importedType instanceof TypeInfo.Class.Api) {
+        fqn = importedType.translateName("groovy");
+      }
+      writer.append("import ").append(fqn).append('\n');
+    }
+    for (Map.Entry<String, MethodModel> member : unit.getMembers().entrySet()) {
+      writer.append("def ").append(member.getKey()).append("(");
+      for (Iterator<String> it = member.getValue().getParameterNames().iterator();it.hasNext();) {
+        String paramName = it.next();
+        writer.append(paramName);
+        if (it.hasNext()) {
+          writer.append(", ");
+        }
+      }
+      writer.append(") {\n");
+      writer.indent();
+      member.getValue().render(writer);
+      writer.unindent();
+      writer.append("}\n");
+    }
+    unit.getMain().render(writer);
+    return writer.getBuffer().toString();
   }
 
   @Override

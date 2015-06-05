@@ -16,6 +16,10 @@ public interface CodeBuilder {
 
   CodeWriter newWriter();
 
+  default String render(RunnableCompilationUnit unit) {
+    throw new UnsupportedOperationException();
+  }
+
   default ExpressionModel nullLiteral() {
     return new LiteralModel.Null(this);
   }
