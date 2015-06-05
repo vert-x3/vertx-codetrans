@@ -328,6 +328,14 @@ class RubyWriter extends CodeWriter {
   }
 
   @Override
+  public void renderJsonArrayAdd(ExpressionModel expression, ExpressionModel value) {
+    expression.render(this);
+    append(".push(");
+    value.render(this);
+    append(")");
+  }
+
+  @Override
   public void renderJsonObjectToString(ExpressionModel expression) {
     append("JSON.generate(");
     expression.render(this);

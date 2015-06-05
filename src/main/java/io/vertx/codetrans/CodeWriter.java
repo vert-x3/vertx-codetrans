@@ -286,6 +286,10 @@ public abstract class CodeWriter implements Appendable {
 
   public abstract void renderJsonArrayToString(ExpressionModel expression);
 
+  public void renderJsonArrayAdd(ExpressionModel expression,ExpressionModel value) {
+    throw new UnsupportedOperationException("todo");
+  }
+
   public abstract void renderJsonObjectMemberSelect(ExpressionModel expression, ExpressionModel name);
 
   public abstract void renderDataObjectMemberSelect(ExpressionModel expression, ExpressionModel name);

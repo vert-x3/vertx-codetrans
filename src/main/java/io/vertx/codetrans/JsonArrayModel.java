@@ -44,6 +44,11 @@ public class JsonArrayModel extends ExpressionModel {
       case "encodePrettily": {
         return builder.jsonArrayEncoder(expression);
       }
+      case "add": {
+        return builder.render(writer -> {
+          writer.renderJsonArrayAdd(expression, argumentModels.get(0));
+        });
+      }
       default:
         throw unsupported("Method " + method);
     }
