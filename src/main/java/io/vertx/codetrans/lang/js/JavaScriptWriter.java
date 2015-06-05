@@ -43,7 +43,7 @@ class JavaScriptWriter extends CodeWriter {
         op = "!==";
         break;
     }
-    super.renderBinary(new BinaryExpressionModel(expression.getLeft(), op, expression.getRight()));
+    super.renderBinary(new BinaryExpressionModel(lang, expression.getLeft(), op, expression.getRight()));
   }
 
   @Override
@@ -238,7 +238,7 @@ class JavaScriptWriter extends CodeWriter {
       TypeInfo argumentType = argumentTypes.get(i);
       if (io.vertx.codetrans.Helper.isHandler(parameterType) && io.vertx.codetrans.Helper.isInstanceOfHandler(argumentType)) {
         ExpressionModel expressionModel = argumentModels.get(i);
-        argumentModels.set(i, ExpressionModel.render(cw -> {
+        argumentModels.set(i, lang.render(cw -> {
           expressionModel.render(cw);
           cw.append(".handle");
         }));

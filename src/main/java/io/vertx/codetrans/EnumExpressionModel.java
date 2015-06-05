@@ -9,7 +9,8 @@ public class EnumExpressionModel extends ExpressionModel {
 
   private final TypeInfo.Class.Enum type;
 
-  public EnumExpressionModel(TypeInfo.Class.Enum type) {
+  public EnumExpressionModel(Lang lang, TypeInfo.Class.Enum type) {
+    super(lang);
     this.type = type;
   }
 
@@ -19,7 +20,7 @@ public class EnumExpressionModel extends ExpressionModel {
 
   @Override
   public ExpressionModel onField(String identifier) {
-    return ExpressionModel.render(writer -> {
+    return lang.render(writer -> {
       writer.renderEnumConstant(type, identifier);
     });
   }

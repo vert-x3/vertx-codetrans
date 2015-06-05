@@ -16,7 +16,8 @@ public class MethodInvocationModel extends ExpressionModel {
   final List<ExpressionModel> argumentModels;
   final List<TypeInfo> argumentTypes;
 
-  public MethodInvocationModel(ExpressionModel expression, TypeInfo receiverType, MethodRef method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
+  public MethodInvocationModel(Lang lang, ExpressionModel expression, TypeInfo receiverType, MethodRef method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
+    super(lang);
     this.expression = expression;
     this.receiverType = receiverType;
     this.method = method;

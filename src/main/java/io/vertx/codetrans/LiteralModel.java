@@ -7,7 +7,8 @@ public class LiteralModel {
 
   public static class Null extends ExpressionModel {
 
-    public Null() {
+    public Null(Lang lang) {
+      super(lang);
     }
 
     @Override
@@ -20,7 +21,8 @@ public class LiteralModel {
 
     final java.lang.String value;
 
-    public String(java.lang.String value) {
+    public String(Lang lang, java.lang.String value) {
+      super(lang);
       this.value = value;
     }
 
@@ -34,7 +36,8 @@ public class LiteralModel {
 
     final java.lang.String value;
 
-    public Boolean(java.lang.String value) {
+    public Boolean(Lang lang, java.lang.String value) {
+      super(lang);
       this.value = value;
     }
 
@@ -48,7 +51,8 @@ public class LiteralModel {
 
     final java.lang.String value;
 
-    public Integer(java.lang.String value) {
+    public Integer(Lang lang, java.lang.String value) {
+      super(lang);
       this.value = value;
     }
 
@@ -62,7 +66,8 @@ public class LiteralModel {
 
     final java.lang.String value;
 
-    public Long(java.lang.String value) {
+    public Long(Lang lang, java.lang.String value) {
+      super(lang);
       this.value = value;
     }
 
@@ -76,7 +81,8 @@ public class LiteralModel {
 
     final char value;
 
-    public Character(char value) {
+    public Character(Lang lang, char value) {
+      super(lang);
       this.value = value;
     }
 
@@ -90,7 +96,8 @@ public class LiteralModel {
 
     final java.lang.String value;
 
-    public Float(java.lang.String value) {
+    public Float(Lang lang, java.lang.String value) {
+      super(lang);
       this.value = value;
     }
 
@@ -104,7 +111,8 @@ public class LiteralModel {
 
     final java.lang.String value;
 
-    public Double(java.lang.String value) {
+    public Double(Lang lang, java.lang.String value) {
+      super(lang);
       this.value = value;
     }
 

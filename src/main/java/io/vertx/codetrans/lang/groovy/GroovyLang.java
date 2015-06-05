@@ -76,17 +76,17 @@ public class GroovyLang implements Lang {
 
   @Override
   public ExpressionModel classExpression(TypeInfo.Class type) {
-    return ExpressionModel.render(type.getName());
+    return render(type.getName());
   }
 
   @Override
   public ExpressionModel asyncResult(String identifier) {
-    return ExpressionModel.render(renderer -> renderer.append(identifier));
+    return render(renderer -> renderer.append(identifier));
   }
 
   @Override
   public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, TypeInfo.Parameterized resultType, String resultName, CodeModel body) {
-    return new LambdaExpressionModel(bodyKind, Collections.singletonList(resultType), Collections.singletonList(resultName), body);
+    return new LambdaExpressionModel(this, bodyKind, Collections.singletonList(resultType), Collections.singletonList(resultName), body);
   }
 
   @Override
@@ -131,7 +131,7 @@ public class GroovyLang implements Lang {
 
   @Override
   public ExpressionModel console(ExpressionModel expression) {
-    return ExpressionModel.render(renderer -> {
+    return render(renderer -> {
       renderer.append("println(");
       expression.render(renderer);
       renderer.append(")");

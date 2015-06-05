@@ -77,23 +77,22 @@ public class RubyLang implements Lang {
 
   @Override
   public ExpressionModel classExpression(TypeInfo.Class type) {
-    return ExpressionModel.render(
-        "Java::" + Case.CAMEL.format(Case.QUALIFIED.parse(type.getPackageName())) + "::" + type.getSimpleName()
-    );
+    return render(
+        "Java::" + Case.CAMEL.format(Case.QUALIFIED.parse(type.getPackageName())) + "::" + type.getSimpleName());
   }
 
   @Override
   public ExpressionModel asyncResult(String identifier) {
-    return ExpressionModel.forMethodInvocation((member, args) -> {
+    return forMethodInvocation((member, args) -> {
       switch (member) {
         case "succeeded":
-          return ExpressionModel.render(identifier + "_err == nil");
+          return render(identifier + "_err == nil");
         case "result":
-          return ExpressionModel.render(identifier);
+          return render(identifier);
         case "cause":
-          return ExpressionModel.render(identifier + "_err");
+          return render(identifier + "_err");
         case "failed":
-          return ExpressionModel.render(identifier + "_err != nil");
+          return render(identifier + "_err != nil");
         default:
           throw new UnsupportedOperationException("Not implemented");
       }
@@ -102,7 +101,7 @@ public class RubyLang implements Lang {
 
   @Override
   public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, TypeInfo.Parameterized resultType, String resultName, CodeModel body) {
-    return new LambdaExpressionModel(bodyKind, Arrays.asList(resultType.getArgs().get(0), TypeInfo.create(Throwable.class)), Arrays.asList(resultName, resultName + "_err"), body);
+    return new LambdaExpressionModel(this, bodyKind, Arrays.asList(resultType.getArgs().get(0), TypeInfo.create(Throwable.class)), Arrays.asList(resultName, resultName + "_err"), body);
   }
 
   @Override
@@ -147,7 +146,7 @@ public class RubyLang implements Lang {
 
   @Override
   public ExpressionModel console(ExpressionModel expression) {
-    return ExpressionModel.render(renderer -> {
+    return render(renderer -> {
       renderer.append("puts ");
       expression.render(renderer);
     });

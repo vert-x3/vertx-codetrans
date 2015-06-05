@@ -24,7 +24,6 @@ import io.vertx.codetrans.StatementModel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
@@ -205,14 +204,14 @@ class RubyWriter extends CodeWriter {
           } else {
             if (Helper.isInstanceOfHandler(argumentTypes.get(i))) {
               argumentModels = new ArrayList<>(argumentModels);
-              argumentModels.set(index, ExpressionModel.render(writer2 -> {
+              argumentModels.set(index, lang.render(writer2 -> {
                 append("&");
                 lastExpr.render(this);
                 append(".method(:handle)");
               }));
             } else {
               argumentModels = new ArrayList<>(argumentModels);
-              argumentModels.set(index, ExpressionModel.render(writer2 -> {
+              argumentModels.set(index, lang.render(writer2 -> {
                 append("&");
                 lastExpr.render(this);
               }));
@@ -331,7 +330,7 @@ class RubyWriter extends CodeWriter {
 
   @Override
   public void renderDataObjectAssign(ExpressionModel expression, ExpressionModel name, ExpressionModel value) {
-    renderJsonObjectAssign(expression, ExpressionModel.render(writer2 -> {
+    renderJsonObjectAssign(expression, lang.render(writer2 -> {
       writer2.append("'");
       name.render(writer2);
       writer2.append("'");
@@ -364,7 +363,7 @@ class RubyWriter extends CodeWriter {
 
   @Override
   public void renderDataObjectMemberSelect(ExpressionModel expression, ExpressionModel name) {
-    renderJsonObjectMemberSelect(expression, ExpressionModel.render(writer2 -> {
+    renderJsonObjectMemberSelect(expression, lang.render(writer2 -> {
       writer2.append("'");
       name.render(writer2);
       writer2.append("'");

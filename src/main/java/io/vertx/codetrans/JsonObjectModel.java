@@ -11,7 +11,8 @@ public class JsonObjectModel extends ExpressionModel {
 
   final ExpressionModel expression;
 
-  public JsonObjectModel(ExpressionModel expression) {
+  public JsonObjectModel(Lang lang, ExpressionModel expression) {
+    super(lang);
     this.expression = expression;
   }
 
@@ -20,11 +21,11 @@ public class JsonObjectModel extends ExpressionModel {
     String methodName = method.getName();
     switch (methodName) {
       case "put":
-        return ExpressionModel.render(writer -> {
+        return lang.render(writer -> {
           writer.renderJsonObjectAssign(expression, argumentModels.get(0), argumentModels.get(1));
         });
       case "encodePrettily": {
-        return ExpressionModel.render(writer -> {
+        return lang.render(writer -> {
           writer.renderJsonObjectToString(expression);
         });
       }
@@ -38,7 +39,7 @@ public class JsonObjectModel extends ExpressionModel {
       case "getJsonArray":
       case "getValue":
         if (argumentModels.size() == 1) {
-          return ExpressionModel.render( writer -> {
+          return lang.render(writer -> {
             writer.renderJsonObjectMemberSelect(expression, argumentModels.get(0));
           });
         } else {

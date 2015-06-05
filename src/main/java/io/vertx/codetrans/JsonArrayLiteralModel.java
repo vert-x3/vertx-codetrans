@@ -13,11 +13,12 @@ public class JsonArrayLiteralModel extends ExpressionModel {
 
   private List<ExpressionModel> values;
 
-  public JsonArrayLiteralModel() {
-    this(Collections.emptyList());
+  public JsonArrayLiteralModel(Lang lang) {
+    this(lang, Collections.emptyList());
   }
 
-  private JsonArrayLiteralModel(List<ExpressionModel> values) {
+  private JsonArrayLiteralModel(Lang lang, List<ExpressionModel> values) {
+    super(lang);
     this.values = values;
   }
 
@@ -38,7 +39,7 @@ public class JsonArrayLiteralModel extends ExpressionModel {
     String methodName = method.getName();
     switch (methodName) {
       case "add":
-        return new JsonArrayLiteralModel(Helper.append(values, argumentModels.get(0)));
+        return new JsonArrayLiteralModel(lang, Helper.append(values, argumentModels.get(0)));
       default:
         throw new UnsupportedOperationException("Method " + method + " not yet implemented");
     }

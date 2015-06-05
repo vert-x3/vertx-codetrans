@@ -107,7 +107,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
   public CodeModel visitAssignment(AssignmentTree node, VisitContext context) {
     ExpressionModel variable = scan(node.getVariable(), context);
     ExpressionModel expression = scan(node.getExpression(), context);
-    return ExpressionModel.forAssign(variable, expression);
+    return lang.forAssign(variable, expression);
   }
 
   @Override
@@ -155,7 +155,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     ExpressionModel condition = scan(node.getCondition(), visitContext);
     ExpressionModel trueExpression = scan(node.getTrueExpression(), visitContext);
     ExpressionModel falseExpression = scan(node.getFalseExpression(), visitContext);
-    return ExpressionModel.forConditionalExpression(condition, trueExpression, falseExpression);
+    return lang.forConditionalExpression(condition, trueExpression, falseExpression);
   }
 
   @Override
@@ -280,16 +280,16 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     JCTree.JCIdent ident = (JCTree.JCIdent) node;
     if (ident.sym instanceof TypeElement) {
       if (ident.type.equals(systemType)) {
-        return ExpressionModel.forFieldSelect("out", () ->
-            ExpressionModel.forMethodInvocation("println", args -> lang.console(args.get(0)))
-        );
+        return lang.forFieldSelect("out",
+            () ->
+                lang.forMethodInvocation("println", args -> lang.console(args.get(0))));
       } else {
         if (typeUtils.isSubtype(ident.type, throwableType)) {
-          return ExpressionModel.forNew(args -> {
+          return lang.forNew(args -> {
             if (args.size() == 0) {
-              return new ThrowableModel(ident.type.toString(), null);
+              return new ThrowableModel(lang, ident.type.toString(), null);
             } else if (args.size() == 1) {
-              return new ThrowableModel(ident.type.toString(), args.get(0));
+              return new ThrowableModel(lang, ident.type.toString(), args.get(0));
             }
             throw new UnsupportedOperationException("Only empty or String throwable constructor are accepted");
           });
@@ -306,25 +306,25 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
 */
           return lang.apiType((TypeInfo.Class.Api) type);
         } else if (type.getKind() == ClassKind.JSON_OBJECT) {
-          return ExpressionModel.forNew(args -> {
+          return lang.forNew(args -> {
             switch (args.size()) {
               case 0:
-                return new JsonObjectLiteralModel();
+                return new JsonObjectLiteralModel(lang);
               default:
                 throw new UnsupportedOperationException();
             }
           });
         } else if (type.getKind() == ClassKind.JSON_ARRAY) {
-          return ExpressionModel.forNew(args -> {
+          return lang.forNew(args -> {
             switch (args.size()) {
               case 0:
-                return new JsonArrayLiteralModel();
+                return new JsonArrayLiteralModel(lang);
               default:
                 throw new UnsupportedOperationException();
             }
           });
         } else if (type.getKind() == ClassKind.DATA_OBJECT) {
-          return ExpressionModel.forNew(args -> new DataObjectLiteralModel(type));
+          return lang.forNew(args -> new DataObjectLiteralModel(lang, type));
         } else if (type.getKind() == ClassKind.ENUM) {
           return lang.enumType((TypeInfo.Class.Enum) type);
         } else {
@@ -372,7 +372,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
   @Override
   public CodeModel visitParenthesized(ParenthesizedTree node, VisitContext visitContext) {
     ExpressionModel expression = scan(node.getExpression(), visitContext);
-    return ExpressionModel.forParenthesized(expression);
+    return lang.forParenthesized(expression);
   }
 
   @Override
@@ -541,7 +541,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
       }
     }
     CodeModel body = scan(node.getBody(), p);
-    return new LambdaExpressionModel(node.getBodyKind(), parameterTypes, parameterNames, body);
+    return new LambdaExpressionModel(lang, node.getBodyKind(), parameterTypes, parameterNames, body);
   }
 
   @Override

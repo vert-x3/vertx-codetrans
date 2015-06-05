@@ -5,6 +5,10 @@ package io.vertx.codetrans;
  */
 public class ThisModel extends ExpressionModel {
 
+  public ThisModel(Lang lang) {
+    super(lang);
+  }
+
   @Override
   public void render(CodeWriter writer) {
     writer.renderThis();

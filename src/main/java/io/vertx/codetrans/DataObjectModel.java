@@ -11,7 +11,8 @@ public class DataObjectModel extends ExpressionModel {
 
   final ExpressionModel expression;
 
-  public DataObjectModel(ExpressionModel expression) {
+  public DataObjectModel(Lang lang, ExpressionModel expression) {
+    super(lang);
     this.expression = expression;
   }
 
@@ -19,16 +20,16 @@ public class DataObjectModel extends ExpressionModel {
   public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodRef method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
     String methodName = method.getName();
     if (DataObjectLiteralModel.isSet(methodName)) {
-      return ExpressionModel.render( writer -> {
+      return lang.render(writer -> {
         writer.renderDataObjectAssign(expression,
-            ExpressionModel.render(DataObjectLiteralModel.unwrapSet(methodName)),
+            lang.render(DataObjectLiteralModel.unwrapSet(methodName)),
             argumentModels.get(0));
       });
     }
     if (DataObjectLiteralModel.isGet(methodName)) {
-      return ExpressionModel.render( writer -> {
+      return lang.render(writer -> {
         writer.renderDataObjectMemberSelect(expression,
-            ExpressionModel.render(DataObjectLiteralModel.unwrapSet(methodName)));
+            lang.render(DataObjectLiteralModel.unwrapSet(methodName)));
       });
     }
     throw new UnsupportedOperationException("Unsupported method " + method + " on object model");

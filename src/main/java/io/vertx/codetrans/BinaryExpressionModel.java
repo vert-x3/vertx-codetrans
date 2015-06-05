@@ -9,7 +9,8 @@ public class BinaryExpressionModel extends ExpressionModel {
   final String op;
   final ExpressionModel right;
 
-  public BinaryExpressionModel(ExpressionModel left, String op, ExpressionModel right) {
+  public BinaryExpressionModel(Lang lang, ExpressionModel left, String op, ExpressionModel right) {
+    super(lang);
     this.left = left;
     this.op = op;
     this.right = right;
