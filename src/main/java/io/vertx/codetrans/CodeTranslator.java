@@ -54,6 +54,9 @@ public class CodeTranslator {
     VisitContext visitContext = new VisitContext();
     CodeModel model = builder.build(path, visitContext);
     CodeWriter writer = lang.newWriter();
+    if (visitContext.getRefedMethods().size() > 0) {
+      throw new UnsupportedOperationException("TODO");
+    }
     model.render(writer);
     return writer.getBuffer().toString();
   }

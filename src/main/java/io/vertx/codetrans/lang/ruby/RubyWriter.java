@@ -100,6 +100,13 @@ class RubyWriter extends CodeWriter {
   }
 
   @Override
+  public void renderApiType(TypeInfo.Class.Api apiType) {
+    imports.add(apiType);
+    String expr = Case.CAMEL.format(Case.KEBAB.parse(apiType.getModule().getName())) + "::" + apiType.getSimpleName();
+    append(expr);
+  }
+
+  @Override
   public void renderConditionals(List<ConditionalBlockModel> conditionals, StatementModel otherwise) {
     for (int i = 0;i < conditionals.size();i++) {
       ConditionalBlockModel conditional = conditionals.get(i);

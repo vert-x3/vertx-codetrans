@@ -3,8 +3,6 @@ package io.vertx.codetrans;
 import com.sun.source.tree.LambdaExpressionTree;
 import io.vertx.codegen.TypeInfo;
 
-import java.util.List;
-
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
@@ -58,7 +56,9 @@ public interface Lang {
 
   ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, TypeInfo.Parameterized resultType, String resultName, CodeModel body);
 
-  ExpressionModel staticFactory(TypeInfo.Class receiverType, MethodRef method, TypeInfo returnType, List<ExpressionModel> arguments, List<TypeInfo> argumentTypes);
+  default ApiTypeModel apiType(TypeInfo.Class.Api type) {
+    return new ApiTypeModel(type);
+  }
 
   default ExpressionModel variable(TypeInfo type, boolean local, String name) {
     return ExpressionModel.render(name).as(type);

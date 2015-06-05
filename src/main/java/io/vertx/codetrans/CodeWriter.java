@@ -173,8 +173,8 @@ public abstract class CodeWriter implements Appendable {
                                      TypeInfo returnType,
                                      List<ExpressionModel> argumentModels,
                                      List<TypeInfo> argumentTypes) {
-    expression.render(this);
-    append('.');
+    expression.render(this); // ?
+    append('.'); // ?
     append(method.getName());
     append('(');
     for (int i = 0; i < argumentModels.size(); i++) {
@@ -302,6 +302,8 @@ public abstract class CodeWriter implements Appendable {
   public abstract void renderThrow(String throwableType, ExpressionModel reason);
 
   public abstract void renderThis();
+
+  public abstract void renderApiType(TypeInfo.Class.Api apiType);
 
   public void renderFragment(String fragment) {
     FragmentParser renderer = new FragmentParser() {

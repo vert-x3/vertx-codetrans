@@ -7,7 +7,6 @@ import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.ExpressionModel;
 import io.vertx.codetrans.LambdaExpressionModel;
 import io.vertx.codetrans.Lang;
-import io.vertx.codetrans.MethodRef;
 import io.vertx.codetrans.Script;
 import io.vertx.codetrans.StatementModel;
 
@@ -18,7 +17,6 @@ import javax.script.SimpleBindings;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -85,16 +83,6 @@ public class JavaScriptLang implements Lang {
   @Override
   public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, TypeInfo.Parameterized resultType, String resultName, CodeModel body) {
     return new LambdaExpressionModel(bodyKind, Arrays.asList(resultType.getArgs().get(0), TypeInfo.create(Throwable.class)), Arrays.asList(resultName, resultName + "_err"), body);
-  }
-
-  @Override
-  public ExpressionModel staticFactory(TypeInfo.Class receiverType, MethodRef method, TypeInfo returnType, List<ExpressionModel> arguments, List<TypeInfo> argumentTypes) {
-    return ExpressionModel.render(writer -> {
-      JavaScriptWriter jsRenderer = (JavaScriptWriter) writer;
-      jsRenderer.modules.add(receiverType);
-      ExpressionModel expr = ExpressionModel.render(receiverType.getSimpleName());
-      writer.renderMethodInvocation(expr, receiverType, method, returnType, arguments, argumentTypes);
-    });
   }
 
   @Override

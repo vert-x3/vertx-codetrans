@@ -226,6 +226,12 @@ class JavaScriptWriter extends CodeWriter {
   }
 
   @Override
+  public void renderApiType(TypeInfo.Class.Api apiType) {
+    modules.add(apiType);
+    append(apiType.getSimpleName());
+  }
+
+  @Override
   public void renderMethodInvocation(ExpressionModel expression, TypeInfo receiverType, MethodRef method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
     List<TypeInfo> parameterTypes = method.getParameterTypes();
     for (int i = 0;i < parameterTypes.size();i++) {

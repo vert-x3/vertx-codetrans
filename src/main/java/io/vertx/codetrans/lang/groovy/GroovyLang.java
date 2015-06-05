@@ -11,12 +11,10 @@ import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.ExpressionModel;
 import io.vertx.codetrans.LambdaExpressionModel;
 import io.vertx.codetrans.Lang;
-import io.vertx.codetrans.MethodRef;
 import io.vertx.codetrans.StatementModel;
 
 import java.io.InputStream;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -72,25 +70,6 @@ public class GroovyLang implements Lang {
   @Override
   public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, TypeInfo.Parameterized resultType, String resultName, CodeModel body) {
     return new LambdaExpressionModel(bodyKind, Collections.singletonList(resultType), Collections.singletonList(resultName), body);
-  }
-
-  @Override
-  public ExpressionModel staticFactory(TypeInfo.Class receiverType, MethodRef method, TypeInfo returnType, List<ExpressionModel> arguments, List<TypeInfo> argumentTypes) {
-    String methodName = method.getName();
-    return ExpressionModel.render(writer -> {
-      GroovyWriter jsRenderer = (GroovyWriter) writer;
-      jsRenderer.imports.add(receiverType);
-      writer.append(receiverType.getSimpleName()).append('.').append(methodName);
-      writer.append('(');
-      for (int i = 0;i < arguments.size();i++) {
-        ExpressionModel argument = arguments.get(i);
-        if (i > 0) {
-          writer.append(", ");
-        }
-        argument.render(writer);
-      }
-      writer.append(')');
-    });
   }
 
   @Override

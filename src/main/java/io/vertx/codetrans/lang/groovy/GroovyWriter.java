@@ -115,6 +115,12 @@ class GroovyWriter extends CodeWriter {
   }
 
   @Override
+  public void renderApiType(TypeInfo.Class.Api apiType) {
+    imports.add(apiType);
+    append(apiType.getSimpleName());
+  }
+
+  @Override
   public void renderEnumConstant(TypeInfo.Class.Enum type, String constant) {
     imports.add(type);
     append(type.getSimpleName()).append('.').append(constant);
