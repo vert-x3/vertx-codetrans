@@ -25,9 +25,7 @@ public class JsonObjectModel extends ExpressionModel {
           writer.renderJsonObjectAssign(expression, argumentModels.get(0), argumentModels.get(1));
         });
       case "encodePrettily": {
-        return lang.render(writer -> {
-          writer.renderJsonObjectToString(expression);
-        });
+        return lang.jsonObjectEncoder(expression);
       }
       case "getString":
       case "getJsonObject":

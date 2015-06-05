@@ -42,9 +42,7 @@ public class JsonArrayModel extends ExpressionModel {
           writer.renderJsonArrayGet(expression, argumentModels.get(0));
         }));
       case "encodePrettily": {
-        return lang.render(writer -> {
-          writer.renderJsonArrayToString(expression);
-        });
+        return lang.jsonArrayEncoder(expression);
       }
       default:
         throw unsupported("Method " + method);

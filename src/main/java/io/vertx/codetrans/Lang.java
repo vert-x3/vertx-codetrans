@@ -80,6 +80,17 @@ public interface Lang {
 
   StatementModel forLoop(StatementModel initializer, ExpressionModel condition, ExpressionModel update, StatementModel body);
 
+  default ExpressionModel jsonArrayEncoder(ExpressionModel expression) {
+    return render(writer -> {
+      writer.renderJsonArrayToString(expression);
+    });
+  }
+
+  default ExpressionModel jsonObjectEncoder(ExpressionModel expression) {
+    return render(writer -> {
+      writer.renderJsonObjectToString(expression);
+    });
+  }
 
   //
 
