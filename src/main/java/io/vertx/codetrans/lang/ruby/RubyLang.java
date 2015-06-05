@@ -3,8 +3,10 @@ package io.vertx.codetrans.lang.ruby;
 import com.sun.source.tree.LambdaExpressionTree;
 import io.vertx.codegen.Case;
 import io.vertx.codegen.TypeInfo;
+import io.vertx.codetrans.ApiTypeModel;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
+import io.vertx.codetrans.EnumExpressionModel;
 import io.vertx.codetrans.ExpressionModel;
 import io.vertx.codetrans.LambdaExpressionModel;
 import io.vertx.codetrans.Lang;
@@ -15,6 +17,7 @@ import org.jruby.embed.ScriptingContainer;
 
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -22,6 +25,9 @@ import java.util.Scanner;
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 public class RubyLang implements Lang {
+
+  LinkedHashSet<TypeInfo.Class> imports = new LinkedHashSet<>();
+  LinkedHashSet<String> requires = new LinkedHashSet<>();
 
   @Override
   public CodeWriter newWriter() {
@@ -56,6 +62,17 @@ public class RubyLang implements Lang {
   @Override
   public String getExtension() {
     return "rb";
+  }
+
+  @Override
+  public EnumExpressionModel enumType(TypeInfo.Class.Enum type) {
+    return Lang.super.enumType(type);
+  }
+
+  @Override
+  public ApiTypeModel apiType(TypeInfo.Class.Api type) {
+    imports.add(type);
+    return Lang.super.apiType(type);
   }
 
   @Override

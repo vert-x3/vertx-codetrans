@@ -32,11 +32,11 @@ import java.util.List;
 */
 class RubyWriter extends CodeWriter {
 
-  LinkedHashSet<TypeInfo.Class> imports = new LinkedHashSet<>();
-  LinkedHashSet<String> requires = new LinkedHashSet<>();
+  final RubyLang lang;
 
-  RubyWriter(Lang lang) {
+  RubyWriter(RubyLang lang) {
     super(lang);
+    this.lang = lang;
   }
 
   public void renderEquals(ExpressionModel expression, ExpressionModel arg) {
@@ -83,10 +83,10 @@ class RubyWriter extends CodeWriter {
       StringBuilder buffer = getBuffer();
       String tmp = buffer.toString();
       buffer.setLength(0);
-      for (TypeInfo.Class type : imports) {
-        requires.add(type.getModuleName() + "/" + Case.SNAKE.format(Case.CAMEL.parse(type.getSimpleName())));
+      for (TypeInfo.Class type : lang.imports) {
+        lang.requires.add(type.getModuleName() + "/" + Case.SNAKE.format(Case.CAMEL.parse(type.getSimpleName())));
       }
-      for (String require : requires) {
+      for (String require : lang.requires) {
         append("require '").append(require).append("'\n");
       }
       append(tmp);
@@ -101,7 +101,6 @@ class RubyWriter extends CodeWriter {
 
   @Override
   public void renderApiType(TypeInfo.Class.Api apiType) {
-    imports.add(apiType);
     String expr = Case.CAMEL.format(Case.KEBAB.parse(apiType.getModule().getName())) + "::" + apiType.getSimpleName();
     append(expr);
   }
@@ -341,7 +340,7 @@ class RubyWriter extends CodeWriter {
 
   @Override
   public void renderJsonObjectToString(ExpressionModel expression) {
-    requires.add("json");
+    lang.requires.add("json");
     append("JSON.generate(");
     expression.render(this);
     append(")");
@@ -349,7 +348,7 @@ class RubyWriter extends CodeWriter {
 
   @Override
   public void renderJsonArrayToString(ExpressionModel expression) {
-    requires.add("json");
+    lang.requires.add("json");
     append("JSON.generate(");
     expression.render(this);
     append(")");

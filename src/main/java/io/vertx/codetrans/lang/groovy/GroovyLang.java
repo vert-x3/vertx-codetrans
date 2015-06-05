@@ -6,8 +6,10 @@ import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyCodeSource;
 import groovy.lang.Script;
 import io.vertx.codegen.TypeInfo;
+import io.vertx.codetrans.ApiTypeModel;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
+import io.vertx.codetrans.EnumExpressionModel;
 import io.vertx.codetrans.ExpressionModel;
 import io.vertx.codetrans.LambdaExpressionModel;
 import io.vertx.codetrans.Lang;
@@ -15,6 +17,7 @@ import io.vertx.codetrans.StatementModel;
 
 import java.io.InputStream;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -22,6 +25,8 @@ import java.util.Scanner;
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 public class GroovyLang implements Lang {
+
+  LinkedHashSet<TypeInfo.Class> imports = new LinkedHashSet<>();
 
   @Override
   public CodeWriter newWriter() {
@@ -50,6 +55,18 @@ public class GroovyLang implements Lang {
       };
     }
     throw new Exception("Could not compile " + path);
+  }
+
+  @Override
+  public EnumExpressionModel enumType(TypeInfo.Class.Enum type) {
+    imports.add(type);
+    return Lang.super.enumType(type);
+  }
+
+  @Override
+  public ApiTypeModel apiType(TypeInfo.Class.Api type) {
+    imports.add(type);
+    return Lang.super.apiType(type);
   }
 
   @Override

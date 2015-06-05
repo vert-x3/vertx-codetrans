@@ -74,6 +74,7 @@ public interface Lang {
 
   StatementModel forLoop(StatementModel initializer, ExpressionModel condition, ExpressionModel update, StatementModel body);
 
+
   //
 
   ExpressionModel console(ExpressionModel expression);

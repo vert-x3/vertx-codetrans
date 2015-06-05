@@ -18,7 +18,6 @@ import io.vertx.codetrans.StatementModel;
 
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
@@ -26,10 +25,11 @@ import java.util.List;
 */
 class JavaScriptWriter extends CodeWriter {
 
-  LinkedHashSet<TypeInfo.Class> modules = new LinkedHashSet<>();
+  final JavaScriptLang lang;
 
-  JavaScriptWriter(Lang lang) {
+  JavaScriptWriter(JavaScriptLang lang) {
     super(lang);
+    this.lang = lang;
   }
 
   @Override
@@ -68,7 +68,7 @@ class JavaScriptWriter extends CodeWriter {
       StringBuilder buffer = getBuffer();
       String tmp = buffer.toString();
       buffer.setLength(0);
-      for (TypeInfo.Class module : modules) {
+      for (TypeInfo.Class module : lang.modules) {
         append("var ").append(module.getSimpleName()).append(" = require(\"").
             append(module.getModuleName()).append("-js/").append(Helper.convertCamelCaseToUnderscores(module.getSimpleName())).append("\");\n");
       }
@@ -227,7 +227,6 @@ class JavaScriptWriter extends CodeWriter {
 
   @Override
   public void renderApiType(TypeInfo.Class.Api apiType) {
-    modules.add(apiType);
     append(apiType.getSimpleName());
   }
 

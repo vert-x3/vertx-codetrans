@@ -2,6 +2,7 @@ package io.vertx.codetrans.lang.js;
 
 import com.sun.source.tree.LambdaExpressionTree;
 import io.vertx.codegen.TypeInfo;
+import io.vertx.codetrans.ApiTypeModel;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.ExpressionModel;
@@ -17,6 +18,7 @@ import javax.script.SimpleBindings;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -24,6 +26,8 @@ import java.util.Scanner;
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 public class JavaScriptLang implements Lang {
+
+  LinkedHashSet<TypeInfo.Class> modules = new LinkedHashSet<>();
 
   @Override
   public CodeWriter newWriter() {
@@ -64,6 +68,12 @@ public class JavaScriptLang implements Lang {
   @Override
   public String getExtension() {
     return "js";
+  }
+
+  @Override
+  public ApiTypeModel apiType(TypeInfo.Class.Api type) {
+    modules.add(type);
+    return Lang.super.apiType(type);
   }
 
   @Override

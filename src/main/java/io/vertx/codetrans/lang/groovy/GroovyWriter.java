@@ -11,13 +11,11 @@ import io.vertx.codetrans.ExpressionModel;
 import io.vertx.codetrans.Helper;
 import io.vertx.codetrans.JsonArrayLiteralModel;
 import io.vertx.codetrans.JsonObjectLiteralModel;
-import io.vertx.codetrans.Lang;
 import io.vertx.codetrans.Member;
 import io.vertx.codetrans.StatementModel;
 
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
@@ -25,10 +23,11 @@ import java.util.List;
 */
 class GroovyWriter extends CodeWriter {
 
-  LinkedHashSet<TypeInfo.Class> imports = new LinkedHashSet<>();
+  final GroovyLang lang;
 
-  GroovyWriter(Lang lang) {
+  GroovyWriter(GroovyLang lang) {
     super(lang);
+    this.lang = lang;
   }
 
   @Override
@@ -58,7 +57,7 @@ class GroovyWriter extends CodeWriter {
       StringBuilder buffer = getBuffer();
       String tmp = buffer.toString();
       buffer.setLength(0);
-      for (TypeInfo.Class importedType : imports) {
+      for (TypeInfo.Class importedType : lang.imports) {
         String fqn = importedType.getName();
         if (importedType instanceof TypeInfo.Class.Api) {
           fqn = importedType.translateName("groovy");
@@ -116,13 +115,11 @@ class GroovyWriter extends CodeWriter {
 
   @Override
   public void renderApiType(TypeInfo.Class.Api apiType) {
-    imports.add(apiType);
     append(apiType.getSimpleName());
   }
 
   @Override
   public void renderEnumConstant(TypeInfo.Class.Enum type, String constant) {
-    imports.add(type);
     append(type.getSimpleName()).append('.').append(constant);
   }
 
