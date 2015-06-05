@@ -159,5 +159,17 @@ public class RubyLang implements Lang {
     }
     return Lang.super.variable(type, true, name);
   }
+
+  @Override
+  public ExpressionModel jsonArrayEncoder(ExpressionModel expression) {
+    requires.add("json");
+    return Lang.super.jsonArrayEncoder(expression);
+  }
+
+  @Override
+  public ExpressionModel jsonObjectEncoder(ExpressionModel expression) {
+    requires.add("json");
+    return Lang.super.jsonObjectEncoder(expression);
+  }
 }
 

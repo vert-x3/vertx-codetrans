@@ -339,7 +339,6 @@ class RubyWriter extends CodeWriter {
 
   @Override
   public void renderJsonObjectToString(ExpressionModel expression) {
-    lang.requires.add("json");
     append("JSON.generate(");
     expression.render(this);
     append(")");
@@ -347,7 +346,6 @@ class RubyWriter extends CodeWriter {
 
   @Override
   public void renderJsonArrayToString(ExpressionModel expression) {
-    lang.requires.add("json");
     append("JSON.generate(");
     expression.render(this);
     append(")");
