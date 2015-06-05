@@ -11,8 +11,8 @@ public class MapModel extends ExpressionModel {
 
   private final ExpressionModel expression;
 
-  public MapModel(Lang lang, ExpressionModel expression) {
-    super(lang);
+  public MapModel(CodeBuilder builder, ExpressionModel expression) {
+    super(builder);
     this.expression = expression;
   }
 
@@ -21,12 +21,12 @@ public class MapModel extends ExpressionModel {
     String methodName = method.getName();
     switch (methodName) {
       case "get":
-        return lang.render(writer -> {
+        return builder.render(writer -> {
           writer.renderMapGet(expression, argumentModels.get(0));
         });
       case "forEach":
         LambdaExpressionModel lambda = (LambdaExpressionModel) argumentModels.get(0);
-        return lang.render(writer -> {
+        return builder.render(writer -> {
           writer.renderMapForEach(
               expression,
               lambda.getParameterNames().get(0),

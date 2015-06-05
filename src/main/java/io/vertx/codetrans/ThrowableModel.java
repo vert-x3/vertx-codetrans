@@ -8,8 +8,8 @@ public class ThrowableModel extends ExpressionModel {
   private final String type;
   private final ExpressionModel reason;
 
-  public ThrowableModel(Lang lang, String type, ExpressionModel reason) {
-    super(lang);
+  public ThrowableModel(CodeBuilder builder, String type, ExpressionModel reason) {
+    super(builder);
     this.type = type;
     this.reason = reason;
   }

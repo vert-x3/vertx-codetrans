@@ -16,12 +16,12 @@ public class DataObjectLiteralModel extends ExpressionModel {
   private final TypeInfo.Class type;
   private final Map<String, Member> members;
 
-  public DataObjectLiteralModel(Lang lang, TypeInfo.Class type) {
-    this(lang, type, Collections.emptyMap());
+  public DataObjectLiteralModel(CodeBuilder builder, TypeInfo.Class type) {
+    this(builder, type, Collections.emptyMap());
   }
 
-  private DataObjectLiteralModel(Lang lang, TypeInfo.Class type, Map<String, Member> members) {
-    super(lang);
+  private DataObjectLiteralModel(CodeBuilder builder, TypeInfo.Class type, Map<String, Member> members) {
+    super(builder);
     this.type = type;
     this.members = members;
   }
@@ -37,10 +37,10 @@ public class DataObjectLiteralModel extends ExpressionModel {
     Function<String, Member> memberFactory;
     if (isSet(methodName)) {
       name = unwrapSet(methodName);
-      memberFactory = $ -> new Member.Single(lang.render(name));
+      memberFactory = $ -> new Member.Single(builder.render(name));
     } else if (isAdd(methodName)) {
       name = unwrapAdd(methodName);
-      memberFactory = $ -> new Member.Array(lang.render(name));
+      memberFactory = $ -> new Member.Array(builder.render(name));
     } else {
       throw unsupported("Method " + method);
     }
@@ -50,7 +50,7 @@ public class DataObjectLiteralModel extends ExpressionModel {
       Member member = copy.computeIfAbsent(name, memberFactory);
       member.append(value);
       copy.put(name, member);
-      return new DataObjectLiteralModel(lang, type, copy);
+      return new DataObjectLiteralModel(builder, type, copy);
     } else {
       throw unsupported("Method " + method + " must be invoked with a single argument");
     }

@@ -51,9 +51,9 @@ public class CodeTranslator {
     attributeClass(typeElt);
     TreePath path = trees.getPath(methodElt);
     ModelBuilder builder = new ModelBuilder(trees, path, SystemType, ThrowableType, factory, typeUtils, lang);
-    VisitContext visitContext = new VisitContext();
+    VisitContext visitContext = new VisitContext(lang.codeBuilder());
     CodeModel model = builder.build(path, visitContext);
-    CodeWriter writer = lang.newWriter();
+    CodeWriter writer = visitContext.builder.newWriter();
     if (visitContext.getRefedMethods().size() > 0) {
       throw new UnsupportedOperationException("TODO");
     }

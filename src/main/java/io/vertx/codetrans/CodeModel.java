@@ -13,8 +13,8 @@ public class CodeModel {
     };
   }
 
-  public String render(Lang lang) {
-    CodeWriter writer = lang.newWriter();
+  public String render(CodeBuilder builder) {
+    CodeWriter writer = builder.newWriter();
     render(writer);
     return writer.getBuffer().toString();
   }

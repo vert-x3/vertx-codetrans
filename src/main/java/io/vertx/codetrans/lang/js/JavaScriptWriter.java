@@ -11,7 +11,6 @@ import io.vertx.codetrans.DataObjectLiteralModel;
 import io.vertx.codetrans.ExpressionModel;
 import io.vertx.codetrans.JsonArrayLiteralModel;
 import io.vertx.codetrans.JsonObjectLiteralModel;
-import io.vertx.codetrans.Lang;
 import io.vertx.codetrans.Member;
 import io.vertx.codetrans.MethodRef;
 import io.vertx.codetrans.StatementModel;
@@ -25,11 +24,11 @@ import java.util.List;
 */
 class JavaScriptWriter extends CodeWriter {
 
-  final JavaScriptLang lang;
+  final JavaScriptCodeBuilder builder;
 
-  JavaScriptWriter(JavaScriptLang lang) {
-    super(lang);
-    this.lang = lang;
+  JavaScriptWriter(JavaScriptCodeBuilder builder) {
+    super(builder);
+    this.builder = builder;
   }
 
   @Override
@@ -43,7 +42,7 @@ class JavaScriptWriter extends CodeWriter {
         op = "!==";
         break;
     }
-    super.renderBinary(new BinaryExpressionModel(lang, expression.getLeft(), op, expression.getRight()));
+    super.renderBinary(new BinaryExpressionModel(builder, expression.getLeft(), op, expression.getRight()));
   }
 
   @Override
@@ -68,7 +67,7 @@ class JavaScriptWriter extends CodeWriter {
       StringBuilder buffer = getBuffer();
       String tmp = buffer.toString();
       buffer.setLength(0);
-      for (TypeInfo.Class module : lang.modules) {
+      for (TypeInfo.Class module : builder.modules) {
         append("var ").append(module.getSimpleName()).append(" = require(\"").
             append(module.getModuleName()).append("-js/").append(Helper.convertCamelCaseToUnderscores(module.getSimpleName())).append("\");\n");
       }
@@ -99,7 +98,7 @@ class JavaScriptWriter extends CodeWriter {
     indent();
     for (Iterator<Member> iterator = members.iterator();iterator.hasNext();) {
       Member member = iterator.next();
-      String name = member.getName().render(getLang());
+      String name = member.getName().render(getBuilder());
       if (unquote) {
         name = io.vertx.codetrans.Helper.unwrapQuotedString(name);
       }
@@ -238,7 +237,7 @@ class JavaScriptWriter extends CodeWriter {
       TypeInfo argumentType = argumentTypes.get(i);
       if (io.vertx.codetrans.Helper.isHandler(parameterType) && io.vertx.codetrans.Helper.isInstanceOfHandler(argumentType)) {
         ExpressionModel expressionModel = argumentModels.get(i);
-        argumentModels.set(i, lang.render(cw -> {
+        argumentModels.set(i, builder.render(cw -> {
           expressionModel.render(cw);
           cw.append(".handle");
         }));

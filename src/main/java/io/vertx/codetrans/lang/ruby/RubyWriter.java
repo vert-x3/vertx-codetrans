@@ -16,7 +16,6 @@ import io.vertx.codetrans.Helper;
 import io.vertx.codetrans.JsonArrayLiteralModel;
 import io.vertx.codetrans.JsonObjectLiteralModel;
 import io.vertx.codetrans.LambdaExpressionModel;
-import io.vertx.codetrans.Lang;
 import io.vertx.codetrans.Member;
 import io.vertx.codetrans.MethodRef;
 import io.vertx.codetrans.StatementModel;
@@ -31,11 +30,11 @@ import java.util.List;
 */
 class RubyWriter extends CodeWriter {
 
-  final RubyLang lang;
+  final RubyCodeBuilder builder;
 
-  RubyWriter(RubyLang lang) {
-    super(lang);
-    this.lang = lang;
+  RubyWriter(RubyCodeBuilder builder) {
+    super(builder);
+    this.builder = builder;
   }
 
   public void renderEquals(ExpressionModel expression, ExpressionModel arg) {
@@ -82,10 +81,10 @@ class RubyWriter extends CodeWriter {
       StringBuilder buffer = getBuffer();
       String tmp = buffer.toString();
       buffer.setLength(0);
-      for (TypeInfo.Class type : lang.imports) {
-        lang.requires.add(type.getModuleName() + "/" + Case.SNAKE.format(Case.CAMEL.parse(type.getSimpleName())));
+      for (TypeInfo.Class type : builder.imports) {
+        builder.requires.add(type.getModuleName() + "/" + Case.SNAKE.format(Case.CAMEL.parse(type.getSimpleName())));
       }
-      for (String require : lang.requires) {
+      for (String require : builder.requires) {
         append("require '").append(require).append("'\n");
       }
       append(tmp);
@@ -204,14 +203,14 @@ class RubyWriter extends CodeWriter {
           } else {
             if (Helper.isInstanceOfHandler(argumentTypes.get(i))) {
               argumentModels = new ArrayList<>(argumentModels);
-              argumentModels.set(index, lang.render(writer2 -> {
+              argumentModels.set(index, builder.render(writer2 -> {
                 append("&");
                 lastExpr.render(this);
                 append(".method(:handle)");
               }));
             } else {
               argumentModels = new ArrayList<>(argumentModels);
-              argumentModels.set(index, lang.render(writer2 -> {
+              argumentModels.set(index, builder.render(writer2 -> {
                 append("&");
                 lastExpr.render(this);
               }));
@@ -279,7 +278,7 @@ class RubyWriter extends CodeWriter {
     indent();
     for (Iterator<Member> iterator = members.iterator();iterator.hasNext();) {
       Member member = iterator.next();
-      String name = member.getName().render(getLang());
+      String name = member.getName().render(getBuilder());
       if (unquote) {
         name = io.vertx.codetrans.Helper.unwrapQuotedString(name);
       }
@@ -330,7 +329,7 @@ class RubyWriter extends CodeWriter {
 
   @Override
   public void renderDataObjectAssign(ExpressionModel expression, ExpressionModel name, ExpressionModel value) {
-    renderJsonObjectAssign(expression, lang.render(writer2 -> {
+    renderJsonObjectAssign(expression, builder.render(writer2 -> {
       writer2.append("'");
       name.render(writer2);
       writer2.append("'");
@@ -361,7 +360,7 @@ class RubyWriter extends CodeWriter {
 
   @Override
   public void renderDataObjectMemberSelect(ExpressionModel expression, ExpressionModel name) {
-    renderJsonObjectMemberSelect(expression, lang.render(writer2 -> {
+    renderJsonObjectMemberSelect(expression, builder.render(writer2 -> {
       writer2.append("'");
       name.render(writer2);
       writer2.append("'");

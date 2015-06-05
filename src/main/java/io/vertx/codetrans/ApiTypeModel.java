@@ -9,8 +9,8 @@ public class ApiTypeModel extends ExpressionModel {
 
   private final TypeInfo.Class.Api type;
 
-  public ApiTypeModel(Lang lang, TypeInfo.Class.Api type) {
-    super(lang);
+  public ApiTypeModel(CodeBuilder builder, TypeInfo.Class.Api type) {
+    super(builder);
     this.type = type;
   }
 

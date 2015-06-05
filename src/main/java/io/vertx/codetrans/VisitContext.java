@@ -13,15 +13,18 @@ import java.util.Set;
  */
 public class VisitContext {
 
+  final CodeBuilder builder;
   private final Map<Symbol, ExpressionModel> aliases;
   private final Set<MethodRef> refedMethods;
 
-  public VisitContext() {
-    aliases = Collections.emptyMap();
-    refedMethods = new LinkedHashSet<>();
+  public VisitContext(CodeBuilder builder) {
+    this.builder = builder;
+    this.aliases = Collections.emptyMap();
+    this.refedMethods = new LinkedHashSet<>();
   }
 
-  private VisitContext(Map<Symbol, ExpressionModel> aliases, Set<MethodRef> refedMethods) {
+  private VisitContext(CodeBuilder builder, Map<Symbol, ExpressionModel> aliases, Set<MethodRef> refedMethods) {
+    this.builder = builder;
     this.aliases = aliases;
     this.refedMethods = refedMethods;
   }
@@ -29,7 +32,7 @@ public class VisitContext {
   public VisitContext putAlias(Symbol symbol, ExpressionModel builder) {
     HashMap<Symbol, ExpressionModel> clone = new HashMap<>(aliases);
     clone.put(symbol, builder);
-    return new VisitContext(clone, refedMethods);
+    return new VisitContext(this.builder, clone, refedMethods);
   }
 
   public ExpressionModel getAlias(Symbol symbol) {

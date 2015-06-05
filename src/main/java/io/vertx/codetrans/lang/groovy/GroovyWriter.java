@@ -23,11 +23,11 @@ import java.util.List;
 */
 class GroovyWriter extends CodeWriter {
 
-  final GroovyLang lang;
+  final GroovyCodeBuilder builder;
 
-  GroovyWriter(GroovyLang lang) {
-    super(lang);
-    this.lang = lang;
+  GroovyWriter(GroovyCodeBuilder builder) {
+    super(builder);
+    this.builder = builder;
   }
 
   @Override
@@ -57,7 +57,7 @@ class GroovyWriter extends CodeWriter {
       StringBuilder buffer = getBuffer();
       String tmp = buffer.toString();
       buffer.setLength(0);
-      for (TypeInfo.Class importedType : lang.imports) {
+      for (TypeInfo.Class importedType : builder.imports) {
         String fqn = importedType.getName();
         if (importedType instanceof TypeInfo.Class.Api) {
           fqn = importedType.translateName("groovy");
@@ -152,7 +152,7 @@ class GroovyWriter extends CodeWriter {
       append("[\n").indent();
       while (iterator.hasNext()) {
         Member member = iterator.next();
-        String name = member.getName().render(getLang());
+        String name = member.getName().render(builder);
         if (unquote) {
           name = Helper.unwrapQuotedString(name);
         }

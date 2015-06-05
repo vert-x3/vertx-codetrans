@@ -10,17 +10,17 @@ import java.util.List;
  */
 public abstract class CodeWriter implements Appendable {
 
-  protected final Lang lang;
+  protected final CodeBuilder builder;
   private int indent = 0;
   private boolean first = true;
   private StringBuilder buffer = new StringBuilder();
 
-  public CodeWriter(Lang lang) {
-    this.lang = lang;
+  public CodeWriter(CodeBuilder builder) {
+    this.builder = builder;
   }
 
-  public Lang getLang() {
-    return lang;
+  public CodeBuilder getBuilder() {
+    return builder;
   }
 
   public CodeWriter indent() {

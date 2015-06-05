@@ -7,8 +7,8 @@ public class LiteralModel {
 
   public static class Null extends ExpressionModel {
 
-    public Null(Lang lang) {
-      super(lang);
+    public Null(CodeBuilder builder) {
+      super(builder);
     }
 
     @Override
@@ -21,8 +21,8 @@ public class LiteralModel {
 
     final java.lang.String value;
 
-    public String(Lang lang, java.lang.String value) {
-      super(lang);
+    public String(CodeBuilder builder, java.lang.String value) {
+      super(builder);
       this.value = value;
     }
 
@@ -36,8 +36,8 @@ public class LiteralModel {
 
     final java.lang.String value;
 
-    public Boolean(Lang lang, java.lang.String value) {
-      super(lang);
+    public Boolean(CodeBuilder builder, java.lang.String value) {
+      super(builder);
       this.value = value;
     }
 
@@ -51,8 +51,8 @@ public class LiteralModel {
 
     final java.lang.String value;
 
-    public Integer(Lang lang, java.lang.String value) {
-      super(lang);
+    public Integer(CodeBuilder builder, java.lang.String value) {
+      super(builder);
       this.value = value;
     }
 
@@ -66,8 +66,8 @@ public class LiteralModel {
 
     final java.lang.String value;
 
-    public Long(Lang lang, java.lang.String value) {
-      super(lang);
+    public Long(CodeBuilder builder, java.lang.String value) {
+      super(builder);
       this.value = value;
     }
 
@@ -81,8 +81,8 @@ public class LiteralModel {
 
     final char value;
 
-    public Character(Lang lang, char value) {
-      super(lang);
+    public Character(CodeBuilder builder, char value) {
+      super(builder);
       this.value = value;
     }
 
@@ -96,8 +96,8 @@ public class LiteralModel {
 
     final java.lang.String value;
 
-    public Float(Lang lang, java.lang.String value) {
-      super(lang);
+    public Float(CodeBuilder builder, java.lang.String value) {
+      super(builder);
       this.value = value;
     }
 
@@ -111,8 +111,8 @@ public class LiteralModel {
 
     final java.lang.String value;
 
-    public Double(Lang lang, java.lang.String value) {
-      super(lang);
+    public Double(CodeBuilder builder, java.lang.String value) {
+      super(builder);
       this.value = value;
     }
 

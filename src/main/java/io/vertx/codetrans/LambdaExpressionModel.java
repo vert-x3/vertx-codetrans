@@ -15,8 +15,8 @@ public class LambdaExpressionModel extends ExpressionModel {
   private final List<String> parameterNames;
   private final CodeModel body;
 
-  public LambdaExpressionModel(Lang lang, LambdaExpressionTree.BodyKind bodyKind, List<TypeInfo> parameterTypes, List<String> parameterNames, CodeModel body) {
-    super(lang);
+  public LambdaExpressionModel(CodeBuilder builder, LambdaExpressionTree.BodyKind bodyKind, List<TypeInfo> parameterTypes, List<String> parameterNames, CodeModel body) {
+    super(builder);
     this.bodyKind = bodyKind;
     this.parameterTypes = parameterTypes;
     this.parameterNames = parameterNames;

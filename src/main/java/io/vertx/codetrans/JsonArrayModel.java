@@ -11,8 +11,8 @@ public class JsonArrayModel extends ExpressionModel {
 
   final ExpressionModel expression;
 
-  public JsonArrayModel(Lang lang, ExpressionModel expression) {
-    super(lang);
+  public JsonArrayModel(CodeBuilder builder, ExpressionModel expression) {
+    super(builder);
     this.expression = expression;
   }
 
@@ -27,22 +27,22 @@ public class JsonArrayModel extends ExpressionModel {
       case "getLong":
       case "getInteger":
         if (argumentModels.size() == 1) {
-          return lang.render(writer -> {
+          return builder.render(writer -> {
             writer.renderJsonArrayGet(expression, argumentModels.get(0));
           });
         } else {
           throw unsupported("Invalid arguments " + argumentModels);
         }
       case "getJsonArray":
-        return new JsonArrayModel(lang, lang.render(writer -> {
+        return new JsonArrayModel(builder, builder.render(writer -> {
           writer.renderJsonArrayGet(expression, argumentModels.get(0));
         }));
       case "getJsonObject":
-        return new JsonObjectModel(lang, lang.render(writer -> {
+        return new JsonObjectModel(builder, builder.render(writer -> {
           writer.renderJsonArrayGet(expression, argumentModels.get(0));
         }));
       case "encodePrettily": {
-        return lang.jsonArrayEncoder(expression);
+        return builder.jsonArrayEncoder(expression);
       }
       default:
         throw unsupported("Method " + method);

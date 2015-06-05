@@ -5,8 +5,8 @@ package io.vertx.codetrans;
  */
 public class ThisModel extends ExpressionModel {
 
-  public ThisModel(Lang lang) {
-    super(lang);
+  public ThisModel(CodeBuilder builder) {
+    super(builder);
   }
 
   @Override

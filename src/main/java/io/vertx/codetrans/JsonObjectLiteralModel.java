@@ -13,12 +13,12 @@ public class JsonObjectLiteralModel extends ExpressionModel {
 
   private final List<Member> entries;
 
-  public JsonObjectLiteralModel(Lang lang) {
-    this(lang, Collections.emptyList());
+  public JsonObjectLiteralModel(CodeBuilder builder) {
+    this(builder, Collections.emptyList());
   }
 
-  private JsonObjectLiteralModel(Lang lang, List<Member> entries) {
-    super(lang);
+  private JsonObjectLiteralModel(CodeBuilder builder, List<Member> entries) {
+    super(builder);
     this.entries = entries;
   }
 
@@ -39,7 +39,7 @@ public class JsonObjectLiteralModel extends ExpressionModel {
     String methodName = method.getName();
     switch (methodName) {
       case "put":
-        return new JsonObjectLiteralModel(lang, Helper.append(entries, new Member.Single(argumentModels.get(0)).append(argumentModels.get(1))));
+        return new JsonObjectLiteralModel(builder, Helper.append(entries, new Member.Single(argumentModels.get(0)).append(argumentModels.get(1))));
       default:
         throw new UnsupportedOperationException("Method " + method + " not yet implemented");
     }
