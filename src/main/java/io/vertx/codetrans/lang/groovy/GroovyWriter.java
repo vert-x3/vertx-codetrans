@@ -200,11 +200,20 @@ class GroovyWriter extends CodeWriter {
   }
 
   @Override
-  public void renderMapGet(ExpressionModel map, ExpressionModel arg) {
+  public void renderMapGet(ExpressionModel map, ExpressionModel key) {
     map.render(this);
     append('[');
-    arg.render(this);
+    key.render(this);
     append(']');
+  }
+
+  @Override
+  public void renderMapPut(ExpressionModel map, ExpressionModel key, ExpressionModel value) {
+    map.render(this);
+    append('[');
+    key.render(this);
+    append("] = ");
+    value.render(this);
   }
 
   @Override

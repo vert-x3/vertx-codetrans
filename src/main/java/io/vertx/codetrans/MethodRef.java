@@ -41,4 +41,9 @@ public class MethodRef {
   public int hashCode() {
     return name.hashCode() + 31 * parameterTypes.hashCode();
   }
+
+  @Override
+  public String toString() {
+    return "MethodRef[name=" + name + ",parameters=" + parameterTypes + "]";
+  }
 }

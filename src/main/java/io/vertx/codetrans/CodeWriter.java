@@ -263,7 +263,9 @@ public abstract class CodeWriter implements Appendable {
     expression.render(this);
   }
 
-  public abstract void renderMapGet(ExpressionModel map, ExpressionModel arg);
+  public abstract void renderMapGet(ExpressionModel map, ExpressionModel key);
+
+  public abstract void renderMapPut(ExpressionModel map, ExpressionModel key, ExpressionModel value);
 
   public abstract void renderMapForEach(ExpressionModel map,
                                         String keyName, TypeInfo keyType,

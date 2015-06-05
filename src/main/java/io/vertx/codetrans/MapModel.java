@@ -24,6 +24,10 @@ public class MapModel extends ExpressionModel {
         return builder.render(writer -> {
           writer.renderMapGet(expression, argumentModels.get(0));
         });
+      case "put":
+        return builder.render(writer -> {
+          writer.renderMapPut(expression, argumentModels.get(0), argumentModels.get(1));
+        });
       case "forEach":
         LambdaExpressionModel lambda = (LambdaExpressionModel) argumentModels.get(0);
         return builder.render(writer -> {
