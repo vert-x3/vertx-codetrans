@@ -8,15 +8,21 @@ import java.util.List;
 public class MethodModel extends CodeModel {
 
   final StatementModel statement;
+  final MethodSignature signature;
   final List<String> parameterNames;
 
-  public MethodModel(StatementModel statement, List<String> parameterNames) {
+  public MethodModel(StatementModel statement, MethodSignature signature, List<String> parameterNames) {
     this.statement = statement;
+    this.signature = signature;
     this.parameterNames = parameterNames;
   }
 
   public StatementModel getStatement() {
     return statement;
+  }
+
+  public MethodSignature getSignature() {
+    return signature;
   }
 
   public List<String> getParameterNames() {

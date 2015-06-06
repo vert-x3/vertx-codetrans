@@ -173,7 +173,7 @@ public abstract class CodeWriter implements Appendable {
 
   public void renderMethodInvocation(ExpressionModel expression,
                                      TypeInfo receiverType,
-                                     MethodRef method,
+                                     MethodSignature method,
                                      TypeInfo returnType,
                                      List<ExpressionModel> argumentModels,
                                      List<TypeInfo> argumentTypes) {

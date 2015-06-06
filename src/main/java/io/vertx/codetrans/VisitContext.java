@@ -16,23 +16,26 @@ public class VisitContext {
   final CodeBuilder builder;
   private final Map<Symbol, ExpressionModel> aliases;
   private final Set<String> referencedMethods;
+  private final Set<String> referencedFields;
 
   public VisitContext(CodeBuilder builder) {
     this.builder = builder;
     this.aliases = Collections.emptyMap();
     this.referencedMethods = new LinkedHashSet<>();
+    this.referencedFields = new LinkedHashSet<>();
   }
 
-  private VisitContext(CodeBuilder builder, Map<Symbol, ExpressionModel> aliases, Set<String> referencedMethods) {
+  private VisitContext(CodeBuilder builder, Map<Symbol, ExpressionModel> aliases, Set<String> referencedMethods, Set<String> referencedFields) {
     this.builder = builder;
     this.aliases = aliases;
     this.referencedMethods = referencedMethods;
+    this.referencedFields = referencedFields;
   }
 
   public VisitContext putAlias(Symbol symbol, ExpressionModel builder) {
     HashMap<Symbol, ExpressionModel> clone = new HashMap<>(aliases);
     clone.put(symbol, builder);
-    return new VisitContext(this.builder, clone, referencedMethods);
+    return new VisitContext(this.builder, clone, referencedMethods, referencedFields);
   }
 
   public ExpressionModel getAlias(Symbol symbol) {
@@ -41,5 +44,9 @@ public class VisitContext {
 
   public Set<String> getReferencedMethods() {
     return referencedMethods;
+  }
+
+  public Set<String> getReferencedFields() {
+    return referencedFields;
   }
 }

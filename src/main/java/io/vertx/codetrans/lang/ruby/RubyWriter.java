@@ -17,7 +17,7 @@ import io.vertx.codetrans.JsonArrayLiteralModel;
 import io.vertx.codetrans.JsonObjectLiteralModel;
 import io.vertx.codetrans.LambdaExpressionModel;
 import io.vertx.codetrans.Member;
-import io.vertx.codetrans.MethodRef;
+import io.vertx.codetrans.MethodSignature;
 import io.vertx.codetrans.StatementModel;
 import io.vertx.codetrans.ThisModel;
 
@@ -181,7 +181,7 @@ class RubyWriter extends CodeWriter {
   }
 
   @Override
-  public void renderMethodInvocation(ExpressionModel expression, TypeInfo receiverType, MethodRef method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
+  public void renderMethodInvocation(ExpressionModel expression, TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
     List<TypeInfo> parameterTypes = method.getParameterTypes();
     String methodName = method.getName();
     int size = parameterTypes.size();
@@ -387,7 +387,7 @@ class RubyWriter extends CodeWriter {
 
   @Override
   public void renderIdentifier(String name, IdentifierKind kind) {
-    if (kind == IdentifierKind.FIELD) {
+    if (kind == IdentifierKind.GLOBAL) {
       name = "$" + name;
     }
     super.renderIdentifier(name, kind);

@@ -5,6 +5,8 @@ package io.vertx.codetrans;
  */
 public enum IdentifierKind {
 
+  GLOBAL,
+
   FIELD,
 
   PARAMETER,

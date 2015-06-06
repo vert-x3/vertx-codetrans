@@ -14,6 +14,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Types;
@@ -22,6 +23,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -59,25 +61,56 @@ public class CodeTranslator {
     VisitContext visitContext = new VisitContext(lang.codeBuilder());
     MethodModel main = (MethodModel) builder.build(path, visitContext);
     Map<String, MethodModel> methods = new HashMap<>();
-    Set<String> pending = new HashSet<>(visitContext.getReferencedMethods());
+    Map<String, StatementModel> fields = new HashMap<>();
+    Map<String, Boolean> pending = visitContext.getReferencedMethods().stream().collect(Collectors.toMap(k -> k, k -> true));
+    visitContext.getReferencedFields().forEach(field -> {
+      pending.put(field, false);
+    });
     while (pending.size() > 0) {
-      Iterator<String> it = pending.iterator();
-      String method = it.next();
+      Iterator<Map.Entry<String, Boolean>> it = pending.entrySet().iterator();
+      Map.Entry<String, Boolean> entry = it.next();
+      String name = entry.getKey();
       it.remove();
-      for (Element enclosed : typeElt.getEnclosedElements()) {
-        if (enclosed instanceof ExecutableElement && enclosed.getSimpleName().toString().equals(method)) {
-          VisitContext other = new VisitContext(visitContext.builder);
-          MethodModel refed = (MethodModel) builder.build(trees.getPath(enclosed), other);
-          methods.put(method, refed);
-          for (String abc : other.getReferencedMethods()) {
-            if (!methods.containsKey(abc)) {
-              pending.add(abc);
-            }
+      VisitContext other = null;
+      if (entry.getValue()) {
+        for (Element enclosed : typeElt.getEnclosedElements()) {
+          if (enclosed instanceof ExecutableElement && enclosed.getSimpleName().toString().equals(name)) {
+            other = new VisitContext(visitContext.builder);
+            MethodModel method = (MethodModel) builder.build(trees.getPath(enclosed), other);
+            methods.put(name, method);
+          }
+        }
+      } else {
+        for (Element enclosed : typeElt.getEnclosedElements()) {
+          if (enclosed instanceof VariableElement && enclosed.getSimpleName().toString().equals(name)) {
+            other = new VisitContext(visitContext.builder);
+            StatementModel statement = (StatementModel) builder.build(trees.getPath(enclosed), other);
+            fields.put(name, statement);
           }
         }
       }
+      if (other == null) {
+        throw new UnsupportedOperationException("Field / method " + name + " could not be resolved ");
+      }
+      for (String method : other.getReferencedMethods()) {
+        if (fields.containsKey(method)) {
+          throw new UnsupportedOperationException("Duplicate field / method " + method);
+        }
+        if (!methods.containsKey(method)) {
+          pending.put(method, true);
+        }
+      }
+      for (String field : other.getReferencedFields()) {
+        if (methods.containsKey(field)) {
+          throw new UnsupportedOperationException("Duplicate field / method " + field);
+        }
+        if (!methods.containsKey(field)) {
+          pending.put(field, false);
+        }
+      }
     }
-    RunnableCompilationUnit unit = new RunnableCompilationUnit(main, methods);
+
+    RunnableCompilationUnit unit = new RunnableCompilationUnit(main, methods, fields);
     String s = visitContext.builder.render(unit);
     return s;
   }

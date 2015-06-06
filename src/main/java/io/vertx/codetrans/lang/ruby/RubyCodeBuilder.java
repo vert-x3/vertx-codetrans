@@ -41,7 +41,11 @@ class RubyCodeBuilder implements CodeBuilder {
     for (String require : requires) {
       writer.append("require '").append(require).append("'\n");
     }
-    for (Map.Entry<String, MethodModel> member : unit.getMembers().entrySet()) {
+    for (Map.Entry<String, StatementModel> field : unit.getFields().entrySet()) {
+      field.getValue().render(writer);
+      writer.append("\n");
+    }
+    for (Map.Entry<String, MethodModel> member : unit.getMethods().entrySet()) {
       String methodName = Case.SNAKE.format(Case.CAMEL.parse(member.getKey()));
       writer.append("def ").append(methodName).append("(");
       for (Iterator<String> it = member.getValue().getParameterNames().iterator();it.hasNext();) {

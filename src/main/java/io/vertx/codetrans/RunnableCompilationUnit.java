@@ -8,18 +8,24 @@ import java.util.Map;
 public class RunnableCompilationUnit {
 
   private final MethodModel main;
-  private final Map<String, MethodModel> members;
+  private final Map<String, MethodModel> methods;
+  private final Map<String, StatementModel> fields;
 
-  public RunnableCompilationUnit(MethodModel main, Map<String, MethodModel> members) {
+  public RunnableCompilationUnit(MethodModel main, Map<String, MethodModel> methods, Map<String, StatementModel> fields) {
     this.main = main;
-    this.members = members;
+    this.methods = methods;
+    this.fields = fields;
   }
 
   public MethodModel getMain() {
     return main;
   }
 
-  public Map<String, MethodModel> getMembers() {
-    return members;
+  public Map<String, MethodModel> getMethods() {
+    return methods;
+  }
+
+  public Map<String, StatementModel> getFields() {
+    return fields;
   }
 }

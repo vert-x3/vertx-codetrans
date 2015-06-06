@@ -43,6 +43,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
@@ -354,7 +355,20 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
           case PARAMETER:
             return context.builder.identifier(name, IdentifierKind.PARAMETER).as(type);
           case FIELD:
-            return context.builder.identifier(name, IdentifierKind.FIELD).as(type);
+            AtomicReference<IdentifierKind> resolvedKind = new AtomicReference<>(IdentifierKind.GLOBAL);
+            new TreePathScanner<Void, Void>() {
+              @Override
+              public Void visitVariable(VariableTree node, Void aVoid) {
+                if (node.getName().toString().equals(name)) {
+                  resolvedKind.set(IdentifierKind.FIELD);
+                }
+                return null;
+              };
+            }.scan(path.getParentPath(), null);
+            if (resolvedKind.get() == IdentifierKind.FIELD) {
+              context.getReferencedFields().add(name);
+            }
+            return context.builder.identifier(name, resolvedKind.get()).as(type);
           default:
             throw new UnsupportedOperationException("Unsupported kind " + kind);
         }
@@ -428,11 +442,11 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     // extra models
     Symbol.MethodSymbol sym;
     ExpressionModel memberSelectExpression;
-    String methodName;
+    String name;
     boolean addToRefedMethods;
     if (node.getMethodSelect() instanceof IdentifierTree) {
       JCTree.JCIdent def = (JCTree.JCIdent) node.getMethodSelect();
-      methodName = def.getName().toString();
+      name = def.getName().toString();
       memberSelectExpression = context.builder.thisModel();
       sym = (Symbol.MethodSymbol) def.sym;
       addToRefedMethods = true;
@@ -440,7 +454,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
       // Is there a case it would not be a member select expression ?
       JCTree.JCFieldAccess memberSelect = (JCTree.JCFieldAccess) node.getMethodSelect();
       memberSelectExpression = scan(memberSelect.getExpression(), context);
-      methodName = memberSelect.getIdentifier().toString();
+      name = memberSelect.getIdentifier().toString();
       sym = (Symbol.MethodSymbol) memberSelect.sym;
       addToRefedMethods = false;
     }
@@ -453,12 +467,12 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     }
 
     TypeInfo type = factory.create(sym.owner.type);
-    MethodRef method = new MethodRef(methodName, parameterTypes);
+    MethodSignature signature = new MethodSignature(name, parameterTypes);
     if (addToRefedMethods) {
-      context.getReferencedMethods().add(methodName);
+      context.getReferencedMethods().add(name);
     }
 
-    ExpressionModel expression = memberSelectExpression.onMethodInvocation(type, method, returnType, argumentModels, argumentTypes);
+    ExpressionModel expression = memberSelectExpression.onMethodInvocation(type, signature, returnType, argumentModels, argumentTypes);
     return expression.as(returnType);
   }
 
@@ -559,6 +573,12 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
 
   @Override
   public MethodModel visitMethod(MethodTree node, VisitContext p) {
-    return new MethodModel(scan(node.getBody(), p), node.getParameters().stream().map(param -> param.getName().toString()).collect(Collectors.toList()));
+    List<TypeInfo> parameterTypes = new ArrayList<>();
+    for (VariableTree var : node.getParameters()) {
+      JCTree.JCVariableDecl decl = (JCTree.JCVariableDecl) var;
+      TypeInfo parameterType = factory.create(decl.sym.asType());
+      parameterTypes.add(parameterType);
+    }
+    return new MethodModel(scan(node.getBody(), p), new MethodSignature(node.getName().toString(), parameterTypes), node.getParameters().stream().map(param -> param.getName().toString()).collect(Collectors.toList()));
   }
 }

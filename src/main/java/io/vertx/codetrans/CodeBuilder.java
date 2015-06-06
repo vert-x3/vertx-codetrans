@@ -153,7 +153,7 @@ public interface CodeBuilder {
     CodeBuilder builder = this;
     return new ExpressionModel(builder) {
       @Override
-      public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodRef method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
+      public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
         if (s.equals(method.getName())) {
           return f.apply(argumentModels);
         } else {
@@ -167,7 +167,7 @@ public interface CodeBuilder {
     CodeBuilder builder = this;
     return new ExpressionModel(builder) {
       @Override
-      public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodRef method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
+      public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
         return f.apply(method.getName(), argumentModels);
       }
     };

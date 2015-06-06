@@ -30,7 +30,7 @@ public class ExpressionModel extends CodeModel {
     }
   }
 
-  public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodRef method, TypeInfo returnType,
+  public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodSignature method, TypeInfo returnType,
                                             List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
     if (method.getName().equals("equals") && method.getParameterTypes().size() == 1) {
       return builder.render(writer -> {

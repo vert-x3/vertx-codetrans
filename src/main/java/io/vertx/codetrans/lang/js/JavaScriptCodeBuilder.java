@@ -37,7 +37,11 @@ class JavaScriptCodeBuilder implements CodeBuilder {
       writer.append("var ").append(module.getSimpleName()).append(" = require(\"").
           append(module.getModuleName()).append("-js/").append(Helper.convertCamelCaseToUnderscores(module.getSimpleName())).append("\");\n");
     }
-    for (Map.Entry<String, MethodModel> member : unit.getMembers().entrySet()) {
+    for (Map.Entry<String, StatementModel> field : unit.getFields().entrySet()) {
+      field.getValue().render(writer);
+      writer.append(";\n");
+    }
+    for (Map.Entry<String, MethodModel> member : unit.getMethods().entrySet()) {
       writer.append("var ").append(member.getKey()).append(" = function(");
       for (Iterator<String> it = member.getValue().getParameterNames().iterator();it.hasNext();) {
         String paramName = it.next();

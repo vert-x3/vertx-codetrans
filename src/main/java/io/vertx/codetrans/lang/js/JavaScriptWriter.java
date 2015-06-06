@@ -10,7 +10,7 @@ import io.vertx.codetrans.ExpressionModel;
 import io.vertx.codetrans.JsonArrayLiteralModel;
 import io.vertx.codetrans.JsonObjectLiteralModel;
 import io.vertx.codetrans.Member;
-import io.vertx.codetrans.MethodRef;
+import io.vertx.codetrans.MethodSignature;
 import io.vertx.codetrans.StatementModel;
 import io.vertx.codetrans.ThisModel;
 
@@ -254,7 +254,7 @@ class JavaScriptWriter extends CodeWriter {
   }
 
   @Override
-  public void renderMethodInvocation(ExpressionModel expression, TypeInfo receiverType, MethodRef method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
+  public void renderMethodInvocation(ExpressionModel expression, TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
     List<TypeInfo> parameterTypes = method.getParameterTypes();
     for (int i = 0;i < parameterTypes.size();i++) {
       TypeInfo parameterType = parameterTypes.get(i);

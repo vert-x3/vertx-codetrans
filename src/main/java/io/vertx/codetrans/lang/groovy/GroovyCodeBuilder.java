@@ -32,6 +32,9 @@ class GroovyCodeBuilder implements CodeBuilder {
   @Override
   public String render(RunnableCompilationUnit unit) {
     GroovyWriter writer = newWriter();
+    if (unit.getFields().size() > 0) {
+      writer.append("import groovy.transform.Field\n");
+    }
     for (TypeInfo.Class importedType : imports) {
       String fqn = importedType.getName();
       if (importedType instanceof TypeInfo.Class.Api) {
@@ -39,9 +42,14 @@ class GroovyCodeBuilder implements CodeBuilder {
       }
       writer.append("import ").append(fqn).append('\n');
     }
-    for (Map.Entry<String, MethodModel> member : unit.getMembers().entrySet()) {
-      writer.append("def ").append(member.getKey()).append("(");
-      for (Iterator<String> it = member.getValue().getParameterNames().iterator();it.hasNext();) {
+    for (Map.Entry<String, StatementModel> field : unit.getFields().entrySet()) {
+      writer.append("@Field ");
+      field.getValue().render(writer);
+      writer.append("\n");
+    }
+    for (Map.Entry<String, MethodModel> method : unit.getMethods().entrySet()) {
+      writer.append("def ").append(method.getKey()).append("(");
+      for (Iterator<String> it = method.getValue().getParameterNames().iterator();it.hasNext();) {
         String paramName = it.next();
         writer.append(paramName);
         if (it.hasNext()) {
@@ -50,7 +58,7 @@ class GroovyCodeBuilder implements CodeBuilder {
       }
       writer.append(") {\n");
       writer.indent();
-      member.getValue().render(writer);
+      method.getValue().render(writer);
       writer.unindent();
       writer.append("}\n");
     }

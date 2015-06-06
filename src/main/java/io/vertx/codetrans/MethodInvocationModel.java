@@ -11,12 +11,12 @@ public class MethodInvocationModel extends ExpressionModel {
 
   final ExpressionModel expression;
   final TypeInfo receiverType;
-  final MethodRef method;
+  final MethodSignature method;
   final TypeInfo returnType;
   final List<ExpressionModel> argumentModels;
   final List<TypeInfo> argumentTypes;
 
-  public MethodInvocationModel(CodeBuilder builder, ExpressionModel expression, TypeInfo receiverType, MethodRef method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
+  public MethodInvocationModel(CodeBuilder builder, ExpressionModel expression, TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
     super(builder);
     this.expression = expression;
     this.receiverType = receiverType;
