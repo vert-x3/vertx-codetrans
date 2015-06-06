@@ -164,7 +164,7 @@ public class JsonTest extends ConversionTestBase {
     runJavaScript("json/JsObject", "encodePrettily");
     Assert.assertEquals("{\"foo\":\"foo_value\"}", o);
     runGroovy("json/JsObject", "encodePrettily");
-    Assert.assertEquals("[foo:foo_value]", o);
+    Assert.assertEquals("{\"foo\":\"foo_value\"}", o);
     runRuby("json/JsObject", "encodePrettily");
     Assert.assertEquals("{\"foo\":\"foo_value\"}", o);
   }
