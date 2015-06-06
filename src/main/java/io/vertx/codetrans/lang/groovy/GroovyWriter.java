@@ -45,6 +45,19 @@ class GroovyWriter extends CodeWriter {
   }
 
   @Override
+  public void renderTryCatch(StatementModel tryBlock, StatementModel catchBlock) {
+    append("try {\n");
+    indent();
+    tryBlock.render(this);
+    unindent();
+    append("} catch(Exception e) {\n");
+    indent();
+    catchBlock.render(this);
+    unindent();
+    append("}\n");
+  }
+
+  @Override
   public void renderLongLiteral(String value) {
     renderChars(value);
     append('L');

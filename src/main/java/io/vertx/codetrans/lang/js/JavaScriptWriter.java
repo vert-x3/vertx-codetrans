@@ -55,6 +55,19 @@ class JavaScriptWriter extends CodeWriter {
   }
 
   @Override
+  public void renderTryCatch(StatementModel tryBlock, StatementModel catchBlock) {
+    append("try {\n");
+    indent();
+    tryBlock.render(this);
+    unindent();
+    append("} catch(err) {\n");
+    indent();
+    catchBlock.render(this);
+    unindent();
+    append("}\n");
+  }
+
+  @Override
   public void renderThis() {
   }
 

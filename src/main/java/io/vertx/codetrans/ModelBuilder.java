@@ -24,6 +24,7 @@ import com.sun.source.tree.ReturnTree;
 import com.sun.source.tree.StatementTree;
 import com.sun.source.tree.ThrowTree;
 import com.sun.source.tree.Tree;
+import com.sun.source.tree.TryTree;
 import com.sun.source.tree.UnaryTree;
 import com.sun.source.tree.VariableTree;
 import com.sun.source.util.TreePath;
@@ -137,6 +138,16 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
         decl.name.toString(),
         initializer
     );
+  }
+
+  @Override
+  public CodeModel visitTry(TryTree node, VisitContext context) {
+    if (node.getCatches().size() != 1) {
+      throw new UnsupportedOperationException("Expecting a single catch block");
+    }
+    StatementModel tryBlock = scan(node.getBlock(), context);
+    StatementModel catchBlock = scan(node.getCatches().get(0).getBlock(), context);
+    return new TryCatchModel(tryBlock, catchBlock);
   }
 
   @Override

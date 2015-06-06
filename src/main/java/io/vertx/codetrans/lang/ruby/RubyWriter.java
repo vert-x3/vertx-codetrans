@@ -171,6 +171,19 @@ class RubyWriter extends CodeWriter {
   }
 
   @Override
+  public void renderTryCatch(StatementModel tryBlock, StatementModel catchBlock) {
+    append("begin\n");
+    indent();
+    tryBlock.render(this);
+    unindent();
+    append("rescue\n");
+    indent();
+    catchBlock.render(this);
+    unindent();
+    append("end\n");
+  }
+
+  @Override
   public void renderMethodReference(ExpressionModel expression, String methodName) {
     if (!(expression instanceof ThisModel)) {
       expression.render(this);

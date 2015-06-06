@@ -162,6 +162,8 @@ public abstract class CodeWriter implements Appendable {
     block.render(this);
   }
 
+  public abstract void renderTryCatch(StatementModel tryBlock, StatementModel catchBlock);
+
   public void renderMemberSelect(ExpressionModel expression, String identifier) {
     expression.render(this);
     append('.').append(identifier);
