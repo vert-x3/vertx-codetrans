@@ -22,14 +22,14 @@ public class DataObjectModel extends ExpressionModel {
     if (DataObjectLiteralModel.isSet(methodName)) {
       return builder.render(writer -> {
         writer.renderDataObjectAssign(expression,
-            builder.render(DataObjectLiteralModel.unwrapSet(methodName)),
+            DataObjectLiteralModel.unwrapSet(methodName),
             argumentModels.get(0));
       });
     }
     if (DataObjectLiteralModel.isGet(methodName)) {
       return builder.render(writer -> {
         writer.renderDataObjectMemberSelect(expression,
-            builder.render(DataObjectLiteralModel.unwrapSet(methodName)));
+            DataObjectLiteralModel.unwrapSet(methodName));
       });
     }
     throw new UnsupportedOperationException("Unsupported method " + method + " on object model");

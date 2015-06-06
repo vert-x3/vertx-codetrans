@@ -22,7 +22,8 @@ public class JsonObjectModel extends ExpressionModel {
     switch (methodName) {
       case "put":
         return builder.render(writer -> {
-          writer.renderJsonObjectAssign(expression, argumentModels.get(0), argumentModels.get(1));
+          LiteralModel.String name = (LiteralModel.String) argumentModels.get(0);
+          writer.renderJsonObjectAssign(expression, name.value, argumentModels.get(1));
         });
       case "encodePrettily": {
         return builder.jsonObjectEncoder(expression);
@@ -38,7 +39,8 @@ public class JsonObjectModel extends ExpressionModel {
       case "getValue":
         if (argumentModels.size() == 1) {
           return builder.render(writer -> {
-            writer.renderJsonObjectMemberSelect(expression, argumentModels.get(0));
+            LiteralModel.String name = (LiteralModel.String) argumentModels.get(0);
+            writer.renderJsonObjectMemberSelect(expression, name.value);
           });
         } else {
           throw unsupported("Invalid arguments " + argumentModels);

@@ -282,9 +282,9 @@ public abstract class CodeWriter implements Appendable {
 
   public abstract void renderDataObject(DataObjectLiteralModel model);
 
-  public abstract void renderJsonObjectAssign(ExpressionModel expression, ExpressionModel name, ExpressionModel value);
+  public abstract void renderJsonObjectAssign(ExpressionModel expression, String name, ExpressionModel value);
 
-  public abstract void renderDataObjectAssign(ExpressionModel expression, ExpressionModel name, ExpressionModel value);
+  public abstract void renderDataObjectAssign(ExpressionModel expression, String name, ExpressionModel value);
 
   public abstract void renderJsonObjectToString(ExpressionModel expression);
 
@@ -294,9 +294,9 @@ public abstract class CodeWriter implements Appendable {
     throw new UnsupportedOperationException("todo");
   }
 
-  public abstract void renderJsonObjectMemberSelect(ExpressionModel expression, ExpressionModel name);
+  public abstract void renderJsonObjectMemberSelect(ExpressionModel expression, String name);
 
-  public abstract void renderDataObjectMemberSelect(ExpressionModel expression, ExpressionModel name);
+  public abstract void renderDataObjectMemberSelect(ExpressionModel expression, String name);
 
   public void renderJsonArrayGet(ExpressionModel expression, ExpressionModel index) {
     expression.render(this);

@@ -332,21 +332,17 @@ class RubyWriter extends CodeWriter {
   }
 
   @Override
-  public void renderJsonObjectAssign(ExpressionModel expression, ExpressionModel name, ExpressionModel value) {
+  public void renderJsonObjectAssign(ExpressionModel expression, String name, ExpressionModel value) {
     expression.render(this);
-    append("[");
-    name.render(this);
-    append("] = ");
+    append("['");
+    append(name);
+    append("'] = ");
     value.render(this);
   }
 
   @Override
-  public void renderDataObjectAssign(ExpressionModel expression, ExpressionModel name, ExpressionModel value) {
-    renderJsonObjectAssign(expression, builder.render(writer2 -> {
-      writer2.append("'");
-      name.render(writer2);
-      writer2.append("'");
-    }), value);
+  public void renderDataObjectAssign(ExpressionModel expression, String name, ExpressionModel value) {
+    renderJsonObjectAssign(expression, name, value);
   }
 
   @Override
@@ -372,20 +368,16 @@ class RubyWriter extends CodeWriter {
   }
 
   @Override
-  public void renderJsonObjectMemberSelect(ExpressionModel expression, ExpressionModel name) {
+  public void renderJsonObjectMemberSelect(ExpressionModel expression, String name) {
     expression.render(this);
-    append("[");
-    name.render(this);
-    append("]");
+    append("['");
+    append(name);
+    append("']");
   }
 
   @Override
-  public void renderDataObjectMemberSelect(ExpressionModel expression, ExpressionModel name) {
-    renderJsonObjectMemberSelect(expression, builder.render(writer2 -> {
-      writer2.append("'");
-      name.render(writer2);
-      writer2.append("'");
-    }));
+  public void renderDataObjectMemberSelect(ExpressionModel expression, String name) {
+    renderJsonObjectMemberSelect(expression, name);
   }
 
   @Override
