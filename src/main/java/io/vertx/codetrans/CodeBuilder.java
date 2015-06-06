@@ -62,7 +62,9 @@ public interface CodeBuilder {
     return new ApiTypeModel(this, type);
   }
 
-  ExpressionModel javaType(TypeInfo.Class type);
+  default ExpressionModel javaType(TypeInfo.Class type) {
+    return new JavaType(this, type);
+  }
 
   default EnumExpressionModel enumType(TypeInfo.Class.Enum type) {
     return new EnumExpressionModel(this, type);

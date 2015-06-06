@@ -4,13 +4,11 @@ import com.sun.source.tree.LambdaExpressionTree;
 import io.vertx.codegen.TypeInfo;
 import io.vertx.codetrans.ApiTypeModel;
 import io.vertx.codetrans.CodeModel;
-import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.EnumExpressionModel;
 import io.vertx.codetrans.ExpressionModel;
 import io.vertx.codetrans.LambdaExpressionModel;
 import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.MethodModel;
-import io.vertx.codetrans.MethodRef;
 import io.vertx.codetrans.RunnableCompilationUnit;
 import io.vertx.codetrans.StatementModel;
 
@@ -70,11 +68,6 @@ class GroovyCodeBuilder implements CodeBuilder {
   public ApiTypeModel apiType(TypeInfo.Class.Api type) {
     imports.add(type);
     return CodeBuilder.super.apiType(type);
-  }
-
-  @Override
-  public ExpressionModel javaType(TypeInfo.Class type) {
-    return render(type.getName());
   }
 
   @Override

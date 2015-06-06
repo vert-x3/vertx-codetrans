@@ -76,8 +76,12 @@ class RubyWriter extends CodeWriter {
 
   @Override
   public void renderApiType(TypeInfo.Class.Api apiType) {
-    String expr = Case.CAMEL.format(Case.KEBAB.parse(apiType.getModule().getName())) + "::" + apiType.getSimpleName();
-    append(expr);
+    append(Case.CAMEL.format(Case.KEBAB.parse(apiType.getModule().getName())) + "::" + apiType.getSimpleName());
+  }
+
+  @Override
+  public void renderJavaType(TypeInfo.Class javaType) {
+    append("Java::" + Case.CAMEL.format(Case.QUALIFIED.parse(javaType.getPackageName())) + "::" + javaType.getSimpleName());
   }
 
   @Override

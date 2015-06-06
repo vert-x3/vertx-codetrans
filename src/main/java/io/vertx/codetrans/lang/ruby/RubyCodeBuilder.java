@@ -73,12 +73,6 @@ class RubyCodeBuilder implements CodeBuilder {
   }
 
   @Override
-  public ExpressionModel javaType(TypeInfo.Class type) {
-    return render(
-        "Java::" + Case.CAMEL.format(Case.QUALIFIED.parse(type.getPackageName())) + "::" + type.getSimpleName());
-  }
-
-  @Override
   public ExpressionModel asyncResult(String identifier) {
     return forMethodInvocation((member, args) -> {
       switch (member) {

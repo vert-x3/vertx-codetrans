@@ -315,6 +315,8 @@ public abstract class CodeWriter implements Appendable {
 
   public abstract void renderApiType(TypeInfo.Class.Api apiType);
 
+  public abstract void renderJavaType(TypeInfo.Class apiType);
+
   public void renderFragment(String fragment) {
     FragmentParser renderer = new FragmentParser() {
       @Override

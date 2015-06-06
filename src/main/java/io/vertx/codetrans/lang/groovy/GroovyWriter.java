@@ -94,6 +94,11 @@ class GroovyWriter extends CodeWriter {
   }
 
   @Override
+  public void renderJavaType(TypeInfo.Class javaType) {
+    append(javaType.getName());
+  }
+
+  @Override
   public void renderEnumConstant(TypeInfo.Class.Enum type, String constant) {
     append(type.getSimpleName()).append('.').append(constant);
   }

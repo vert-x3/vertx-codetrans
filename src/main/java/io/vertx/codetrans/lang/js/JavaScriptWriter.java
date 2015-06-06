@@ -225,6 +225,11 @@ class JavaScriptWriter extends CodeWriter {
   }
 
   @Override
+  public void renderJavaType(TypeInfo.Class javaType) {
+    append("Java.type(\"" + javaType.getName() + "\")");
+  }
+
+  @Override
   public void renderMethodInvocation(ExpressionModel expression, TypeInfo receiverType, MethodRef method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
     List<TypeInfo> parameterTypes = method.getParameterTypes();
     for (int i = 0;i < parameterTypes.size();i++) {

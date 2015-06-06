@@ -63,11 +63,6 @@ class JavaScriptCodeBuilder implements CodeBuilder {
   }
 
   @Override
-  public ExpressionModel javaType(TypeInfo.Class type) {
-    return render("Java.type(\"" + type.getName() + "\")");
-  }
-
-  @Override
   public ExpressionModel console(ExpressionModel expression) {
     return render(renderer -> {
       renderer.append("console.log(");
