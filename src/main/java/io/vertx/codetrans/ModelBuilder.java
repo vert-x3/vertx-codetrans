@@ -18,6 +18,7 @@ import com.sun.source.tree.MemberSelectTree;
 import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.MethodTree;
 import com.sun.source.tree.NewClassTree;
+import com.sun.source.tree.ParameterizedTypeTree;
 import com.sun.source.tree.ParenthesizedTree;
 import com.sun.source.tree.StatementTree;
 import com.sun.source.tree.ThrowTree;
@@ -77,6 +78,11 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
 
   public ExpressionModel scan(ExpressionTree tree, VisitContext context) {
     return (ExpressionModel) scan((Tree) tree, context);
+  }
+
+  @Override
+  public ExpressionModel visitParameterizedType(ParameterizedTypeTree tree, VisitContext context) {
+    return (ExpressionModel) scan((Tree) tree.getType(), context);
   }
 
   @Override
@@ -321,6 +327,16 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
         } else if (type.getKind() == ClassKind.ENUM) {
           return context.builder.enumType((TypeInfo.Class.Enum) type);
         } else {
+          if (type.getName().equals("java.util.HashMap")) {
+            return context.builder.forNew(args -> {
+              switch (args.size()) {
+                case 0:
+                  return new MapModel(context.builder, context.builder.mapConstructor()); // Somehow should use "as"
+                default:
+                  throw new UnsupportedOperationException();
+              }
+            });
+          }
           return context.builder.javaType(type);
         }
       }
@@ -376,7 +392,6 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     ExpressionModel fieldExpression = expression.onField(node.getIdentifier().toString());
     return fieldExpression.as(fieldType);
   }
-
 
   @Override
   public CodeModel visitMemberReference(MemberReferenceTree node, VisitContext p) {

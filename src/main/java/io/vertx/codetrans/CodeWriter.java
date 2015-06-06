@@ -305,6 +305,8 @@ public abstract class CodeWriter implements Appendable {
     append(']');
   }
 
+  public abstract void renderNewMap();
+
   public abstract void renderAsyncResultSucceeded(String name);
 
   public abstract void renderAsyncResultFailed(String name);

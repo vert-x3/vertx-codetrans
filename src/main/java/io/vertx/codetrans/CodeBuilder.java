@@ -82,6 +82,10 @@ public interface CodeBuilder {
 
   StatementModel forLoop(StatementModel initializer, ExpressionModel condition, ExpressionModel update, StatementModel body);
 
+  default ExpressionModel mapConstructor() {
+    return render(CodeWriter::renderNewMap);
+  }
+
   default ExpressionModel jsonArrayEncoder(ExpressionModel expression) {
     return render(writer -> {
       writer.renderJsonArrayToString(expression);

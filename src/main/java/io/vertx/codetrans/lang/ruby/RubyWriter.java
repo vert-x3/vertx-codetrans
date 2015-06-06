@@ -341,6 +341,11 @@ class RubyWriter extends CodeWriter {
   }
 
   @Override
+  public void renderNewMap() {
+    append("Hash.new()");
+  }
+
+  @Override
   public void renderDataObjectAssign(ExpressionModel expression, String name, ExpressionModel value) {
     renderJsonObjectAssign(expression, name, value);
   }

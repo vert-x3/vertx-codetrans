@@ -134,6 +134,11 @@ class GroovyWriter extends CodeWriter {
     }
   }
 
+  @Override
+  public void renderNewMap() {
+    append("[:]");
+  }
+
   public void renderDataObject(DataObjectLiteralModel model) {
     renderJsonObject(model.getMembers());
   }

@@ -19,6 +19,7 @@ public class CollectionTest extends ConversionTestBase {
   public void testMapGetOnVariable() {
     runAll("collection/MapGet", "getOnVariable", () -> {
       assertEquals("foo_value", o);
+      o = null;
     });
   }
 
@@ -26,6 +27,7 @@ public class CollectionTest extends ConversionTestBase {
   public void testMapGetOnMethodReturn() {
     runAll("collection/MapGet", "getOnMethodReturn", () -> {
       assertEquals("foo_value", o);
+      o = null;
     });
   }
 
@@ -33,6 +35,7 @@ public class CollectionTest extends ConversionTestBase {
   public void testMapForEach() {
     runAll("collection/MapForEach", "forEach", () -> {
       assertEquals("foo -> foo_value", o.toString());
+      o = null;
     });
   }
 
@@ -47,5 +50,13 @@ public class CollectionTest extends ConversionTestBase {
     sharedMap = new HashMap<>();
     runRuby("collection/MapPut", "put");
     assertEquals(Collections.singletonMap("foo", "foo_value"), sharedMap);
+  }
+
+  @Test
+  public void testMapNew() {
+    runAll("collection/MapNew", "newMap", () -> {
+      assertEquals(Collections.emptyMap(), o);
+      o = null;
+    });
   }
 }

@@ -56,7 +56,11 @@ class JavaScriptWriter extends CodeWriter {
 
   @Override
   public void renderThis() {
+  }
 
+  @Override
+  public void renderNewMap() {
+    append("{}");
   }
 
   public void renderDataObject(DataObjectLiteralModel model) {
