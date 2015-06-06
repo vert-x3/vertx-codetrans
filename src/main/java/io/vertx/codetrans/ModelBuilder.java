@@ -409,7 +409,8 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     List<ExpressionModel> argumentModels = node.getArguments().stream().map(argument -> scan(argument, context)).collect(Collectors.toList());
     TypeInfo returnType = factory.create(((JCTree) node).type);
 
-    //
+    // We don't go for scanning here as it would complicate things and need to introduce
+    // extra models
     Symbol.MethodSymbol sym;
     ExpressionModel memberSelectExpression;
     String methodName;
@@ -417,7 +418,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     if (node.getMethodSelect() instanceof IdentifierTree) {
       JCTree.JCIdent def = (JCTree.JCIdent) node.getMethodSelect();
       methodName = def.getName().toString();
-      memberSelectExpression = context.builder.thisModel(); // todo : see if we can resolve via scannning
+      memberSelectExpression = context.builder.thisModel();
       sym = (Symbol.MethodSymbol) def.sym;
       addToRefedMethods = true;
     } else {
