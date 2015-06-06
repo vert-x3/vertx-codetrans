@@ -12,6 +12,7 @@ import io.vertx.codetrans.DataObjectLiteralModel;
 import io.vertx.codetrans.ExpressionModel;
 import io.vertx.codetrans.FragmentParser;
 import io.vertx.codetrans.Helper;
+import io.vertx.codetrans.IdentifierKind;
 import io.vertx.codetrans.JsonArrayLiteralModel;
 import io.vertx.codetrans.JsonObjectLiteralModel;
 import io.vertx.codetrans.LambdaExpressionModel;
@@ -364,6 +365,14 @@ class RubyWriter extends CodeWriter {
       name.render(writer2);
       writer2.append("'");
     }));
+  }
+
+  @Override
+  public void renderIdentifier(String name, IdentifierKind kind) {
+    if (kind == IdentifierKind.FIELD) {
+      name = "$" + name;
+    }
+    super.renderIdentifier(name, kind);
   }
 
   /**

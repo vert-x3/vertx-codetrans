@@ -73,7 +73,7 @@ class RubyCodeBuilder implements CodeBuilder {
   }
 
   @Override
-  public ExpressionModel classExpression(TypeInfo.Class type) {
+  public ExpressionModel javaType(TypeInfo.Class type) {
     return render(
         "Java::" + Case.CAMEL.format(Case.QUALIFIED.parse(type.getPackageName())) + "::" + type.getSimpleName());
   }
@@ -147,14 +147,6 @@ class RubyCodeBuilder implements CodeBuilder {
       renderer.append("puts ");
       expression.render(renderer);
     });
-  }
-
-  @Override
-  public ExpressionModel variable(TypeInfo type, boolean local, String name) {
-    if (!local) {
-      name = "$" + name;
-    }
-    return CodeBuilder.super.variable(type, true, name);
   }
 
   @Override

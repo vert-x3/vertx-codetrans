@@ -73,7 +73,7 @@ class GroovyCodeBuilder implements CodeBuilder {
   }
 
   @Override
-  public ExpressionModel classExpression(TypeInfo.Class type) {
+  public ExpressionModel javaType(TypeInfo.Class type) {
     return render(type.getName());
   }
 

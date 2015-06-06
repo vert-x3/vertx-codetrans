@@ -152,6 +152,10 @@ public abstract class CodeWriter implements Appendable {
     expression.render(this);
   }
 
+  public void renderIdentifier(String name, IdentifierKind kind) {
+    append(name);
+  }
+
   public abstract void renderStatement(StatementModel statement);
 
   public void renderBlock(BlockModel block) {

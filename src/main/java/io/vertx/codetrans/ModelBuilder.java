@@ -40,7 +40,6 @@ import javax.lang.model.util.Types;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -322,7 +321,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
         } else if (type.getKind() == ClassKind.ENUM) {
           return context.builder.enumType((TypeInfo.Class.Enum) type);
         } else {
-          return context.builder.classExpression(type);
+          return context.builder.javaType(type);
         }
       }
     } else {
@@ -335,10 +334,11 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
         TypeInfo type = factory.create(ident.type);
         switch (kind) {
           case LOCAL_VARIABLE:
+            return context.builder.identifier(name, IdentifierKind.VARIABLE).as(type);
           case PARAMETER:
-            return context.builder.variable(type, true, name);
+            return context.builder.identifier(name, IdentifierKind.PARAMETER).as(type);
           case FIELD:
-            return context.builder.variable(type, false, name);
+            return context.builder.identifier(name, IdentifierKind.FIELD).as(type);
           default:
             throw new UnsupportedOperationException("Unsupported kind " + kind);
         }

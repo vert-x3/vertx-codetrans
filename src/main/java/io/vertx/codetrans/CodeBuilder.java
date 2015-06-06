@@ -16,9 +16,7 @@ public interface CodeBuilder {
 
   CodeWriter newWriter();
 
-  default String render(RunnableCompilationUnit unit) {
-    throw new UnsupportedOperationException();
-  }
+  String render(RunnableCompilationUnit unit);
 
   default ExpressionModel nullLiteral() {
     return new LiteralModel.Null(this);
@@ -56,8 +54,6 @@ public interface CodeBuilder {
     return new BinaryExpressionModel(this, left, op, right);
   }
 
-  ExpressionModel classExpression(TypeInfo.Class type);
-
   ExpressionModel asyncResult(String identifier);
 
   ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, TypeInfo.Parameterized resultType, String resultName, CodeModel body);
@@ -66,12 +62,14 @@ public interface CodeBuilder {
     return new ApiTypeModel(this, type);
   }
 
+  ExpressionModel javaType(TypeInfo.Class type);
+
   default EnumExpressionModel enumType(TypeInfo.Class.Enum type) {
     return new EnumExpressionModel(this, type);
   }
 
-  default ExpressionModel variable(TypeInfo type, boolean local, String name) {
-    return render(name).as(type);
+  default ExpressionModel identifier(String name, IdentifierKind kind) {
+    return new IdentifierModel(this, name, kind);
   }
 
   StatementModel variableDecl(TypeInfo type, String name, ExpressionModel initializer);
