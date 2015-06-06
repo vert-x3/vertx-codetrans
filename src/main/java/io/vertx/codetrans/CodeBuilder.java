@@ -102,24 +102,8 @@ public interface CodeBuilder {
 
   //
 
-  ExpressionModel console(ExpressionModel expression);
-
   default ExpressionModel thisModel() {
     return new ThisModel(this);
-  }
-
-  default ExpressionModel forFieldSelect(String expected, Supplier<ExpressionModel> f) {
-    CodeBuilder builder = this;
-    return new ExpressionModel(builder) {
-      @Override
-      public ExpressionModel onField(String identifier) {
-        if (expected.equals(identifier)) {
-          return f.get();
-        } else {
-          throw unsupported();
-        }
-      }
-    };
   }
 
   default ExpressionModel forParenthesized(ExpressionModel expression) {

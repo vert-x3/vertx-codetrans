@@ -148,6 +148,13 @@ class GroovyWriter extends CodeWriter {
   }
 
   @Override
+  public void renderConsoleLog(ExpressionModel log) {
+    append("println(");
+    log.render(this);
+    append(")");
+  }
+
+  @Override
   public void renderNewMap() {
     append("[:]");
   }

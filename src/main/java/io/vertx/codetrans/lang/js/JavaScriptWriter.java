@@ -203,6 +203,13 @@ class JavaScriptWriter extends CodeWriter {
   }
 
   @Override
+  public void renderConsoleLog(ExpressionModel log) {
+    append("console.log(");
+    log.render(this);
+    append(")");
+  }
+
+  @Override
   public void renderMapGet(ExpressionModel map, ExpressionModel key) {
     map.render(this);
     append('[');

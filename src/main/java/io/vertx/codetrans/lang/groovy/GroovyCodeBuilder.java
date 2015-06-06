@@ -122,13 +122,4 @@ class GroovyCodeBuilder implements CodeBuilder {
       renderer.append("}");
     });
   }
-
-  @Override
-  public ExpressionModel console(ExpressionModel expression) {
-    return render(renderer -> {
-      renderer.append("println(");
-      expression.render(renderer);
-      renderer.append(")");
-    });
-  }
 }

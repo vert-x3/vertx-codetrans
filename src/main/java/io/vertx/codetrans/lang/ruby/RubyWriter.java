@@ -453,6 +453,12 @@ class RubyWriter extends CodeWriter {
   }
 
   @Override
+  public void renderConsoleLog(ExpressionModel log) {
+    append("puts ");
+    log.render(this);
+  }
+
+  @Override
   public void renderMemberSelect(ExpressionModel expression, String identifier) {
     expression.render(this);
     append("::").append(identifier);

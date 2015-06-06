@@ -122,14 +122,6 @@ class RubyCodeBuilder implements CodeBuilder {
   }
 
   @Override
-  public ExpressionModel console(ExpressionModel expression) {
-    return render(renderer -> {
-      renderer.append("puts ");
-      expression.render(renderer);
-    });
-  }
-
-  @Override
   public ExpressionModel jsonArrayEncoder(ExpressionModel expression) {
     requires.add("json");
     return CodeBuilder.super.jsonArrayEncoder(expression);
