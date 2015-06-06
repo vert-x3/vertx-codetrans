@@ -9,7 +9,6 @@ import io.vertx.codetrans.expression.EnumExpressionModel;
 import io.vertx.codetrans.expression.ExpressionModel;
 import io.vertx.codetrans.expression.IdentifierKind;
 import io.vertx.codetrans.expression.IdentifierModel;
-import io.vertx.codetrans.expression.JavaType;
 import io.vertx.codetrans.expression.LiteralModel;
 import io.vertx.codetrans.expression.ThisModel;
 import io.vertx.codetrans.statement.StatementModel;
@@ -75,10 +74,6 @@ public interface CodeBuilder {
     return new ApiTypeModel(this, type);
   }
 
-  default ExpressionModel javaType(TypeInfo.Class type) {
-    return new JavaType(this, type);
-  }
-
   default EnumExpressionModel enumType(TypeInfo.Class.Enum type) {
     return new EnumExpressionModel(this, type);
   }
@@ -92,10 +87,6 @@ public interface CodeBuilder {
   StatementModel enhancedForLoop(String variableName, ExpressionModel expression, StatementModel body);
 
   StatementModel forLoop(StatementModel initializer, ExpressionModel condition, ExpressionModel update, StatementModel body);
-
-  default ExpressionModel mapConstructor() {
-    return render(CodeWriter::renderNewMap);
-  }
 
   default ExpressionModel jsonArrayEncoder(ExpressionModel expression) {
     return render(writer -> {
@@ -115,16 +106,6 @@ public interface CodeBuilder {
 
   default ExpressionModel thisModel() {
     return new ThisModel(this);
-  }
-
-  default ExpressionModel forNew(Function<List<ExpressionModel>, ExpressionModel> f) {
-    CodeBuilder builder = this;
-    return new ExpressionModel(builder) {
-      @Override
-      public ExpressionModel onNew(TypeInfo type, List<ExpressionModel> arguments) {
-        return f.apply(arguments);
-      }
-    };
   }
 
   default ExpressionModel forFieldSelect(String expected, Supplier<ExpressionModel> f) {

@@ -34,14 +34,17 @@ import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.tree.JCTree;
 import io.vertx.codegen.ClassKind;
 import io.vertx.codegen.TypeInfo;
-import io.vertx.codetrans.expression.DataObjectLiteralModel;
+import io.vertx.codetrans.expression.DataObjectClassModel;
 import io.vertx.codetrans.expression.ExpressionModel;
 import io.vertx.codetrans.expression.IdentifierKind;
-import io.vertx.codetrans.expression.JsonArrayLiteralModel;
-import io.vertx.codetrans.expression.JsonObjectLiteralModel;
+import io.vertx.codetrans.expression.JavaClassModel;
+import io.vertx.codetrans.expression.JsonArrayClassModel;
+import io.vertx.codetrans.expression.JsonObjectClassModel;
 import io.vertx.codetrans.expression.LambdaExpressionModel;
-import io.vertx.codetrans.expression.MapModel;
+import io.vertx.codetrans.expression.MapClassModel;
+import io.vertx.codetrans.expression.SystemModel;
 import io.vertx.codetrans.expression.ThisModel;
+import io.vertx.codetrans.expression.ThrowableClassModel;
 import io.vertx.codetrans.expression.ThrowableModel;
 import io.vertx.codetrans.statement.ConditionalBlockModel;
 import io.vertx.codetrans.statement.ReturnModel;
@@ -319,57 +322,27 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     }
     if (ident.sym instanceof TypeElement) {
       if (ident.type.equals(systemType)) {
-        return context.builder.forFieldSelect("out",
-            () ->
-                context.builder.forMethodInvocation("println", args -> context.builder.console(args.get(0))));
+        return new SystemModel(context.builder);
       } else {
-        if (typeUtils.isSubtype(ident.type, throwableType)) {
-          return context.builder.forNew(args -> {
-            if (args.size() == 0) {
-              return new ThrowableModel(context.builder, ident.type.toString(), null);
-            } else if (args.size() == 1) {
-              return new ThrowableModel(context.builder, ident.type.toString(), args.get(0));
-            }
-            throw new UnsupportedOperationException("Only empty or String throwable constructor are accepted");
-          });
-        }
         TypeInfo.Class type = (TypeInfo.Class) factory.create(ident.type);
+        if (typeUtils.isSubtype(ident.type, throwableType)) {
+          return new ThrowableClassModel(context.builder, type);
+        }
         if (type.getKind() == ClassKind.API) {
           return context.builder.apiType((TypeInfo.Class.Api) type);
         } else if (type.getKind() == ClassKind.JSON_OBJECT) {
-          return context.builder.forNew(args -> {
-            switch (args.size()) {
-              case 0:
-                return new JsonObjectLiteralModel(context.builder);
-              default:
-                throw new UnsupportedOperationException();
-            }
-          });
+          return new JsonObjectClassModel(context.builder);
         } else if (type.getKind() == ClassKind.JSON_ARRAY) {
-          return context.builder.forNew(args -> {
-            switch (args.size()) {
-              case 0:
-                return new JsonArrayLiteralModel(context.builder);
-              default:
-                throw new UnsupportedOperationException();
-            }
-          });
+          return new JsonArrayClassModel(context.builder);
         } else if (type.getKind() == ClassKind.DATA_OBJECT) {
-          return context.builder.forNew(args -> new DataObjectLiteralModel(context.builder, type));
+          return new DataObjectClassModel(context.builder, type);
         } else if (type.getKind() == ClassKind.ENUM) {
           return context.builder.enumType((TypeInfo.Class.Enum) type);
         } else {
           if (type.getName().equals("java.util.HashMap")) {
-            return context.builder.forNew(args -> {
-              switch (args.size()) {
-                case 0:
-                  return new MapModel(context.builder, context.builder.mapConstructor()); // Somehow should use "as"
-                default:
-                  throw new UnsupportedOperationException();
-              }
-            });
+            return new MapClassModel(context.builder);
           }
-          return context.builder.javaType(type);
+          return new JavaClassModel(context.builder, type);
         }
       }
     } else {
@@ -413,7 +386,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     List<ExpressionModel> arguments = node.getArguments().stream().map(arg -> scan(arg, context)).collect(Collectors.toList());
     JCTree.JCNewClass newClass = (JCTree.JCNewClass) node;
     TypeInfo type = factory.create(newClass.type);
-    return identifier.onNew(type, arguments);
+    return identifier.onNew(arguments);
   }
 
   @Override

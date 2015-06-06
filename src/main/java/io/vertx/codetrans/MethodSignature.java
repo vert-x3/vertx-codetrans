@@ -44,6 +44,6 @@ public class MethodSignature {
 
   @Override
   public String toString() {
-    return "MethodRef[name=" + name + ",parameters=" + parameterTypes + "]";
+    return "MethodSignature[name=" + name + ",parameters=" + parameterTypes + "]";
   }
 }

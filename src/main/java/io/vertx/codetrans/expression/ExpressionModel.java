@@ -57,10 +57,8 @@ public class ExpressionModel extends CodeModel {
     });
   }
 
-  public ExpressionModel onNew(TypeInfo type, List<ExpressionModel> arguments) {
-    return builder.render((renderer) -> {
-      renderer.renderNew(ExpressionModel.this, type, arguments);
-    });
+  public ExpressionModel onNew(List<ExpressionModel> arguments) {
+    throw new UnsupportedOperationException();
   }
 
   public ExpressionModel onPostFixIncrement() {

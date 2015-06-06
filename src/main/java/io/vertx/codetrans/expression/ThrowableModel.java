@@ -1,7 +1,10 @@
 package io.vertx.codetrans.expression;
 
+import io.vertx.codegen.TypeInfo;
 import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.expression.ExpressionModel;
+
+import java.util.List;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -24,4 +27,5 @@ public class ThrowableModel extends ExpressionModel {
   public ExpressionModel getReason() {
     return reason;
   }
+
 }
