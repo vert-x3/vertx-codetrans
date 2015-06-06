@@ -25,7 +25,8 @@ public class JsonObjectModel extends ExpressionModel {
           LiteralModel.String name = (LiteralModel.String) argumentModels.get(0);
           writer.renderJsonObjectAssign(expression, name.value, argumentModels.get(1));
         });
-      case "encodePrettily": {
+      case "encodePrettily":
+      case "encode": {
         return builder.jsonObjectEncoder(expression);
       }
       case "getString":

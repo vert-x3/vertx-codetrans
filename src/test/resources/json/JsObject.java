@@ -146,6 +146,12 @@ public class JsObject {
   }
 
   @CodeTranslate
+  public void encode() throws Exception {
+    JsonObject obj = new JsonObject().put("foo", "foo_value");
+    JsonTest.o = obj.encode();
+  }
+
+  @CodeTranslate
   public void getJsonObject() {
     JsonObject obj = JsonTest.object;
     obj = JsonConverter.fromJsonObject(obj);

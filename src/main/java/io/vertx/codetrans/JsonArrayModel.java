@@ -41,6 +41,7 @@ public class JsonArrayModel extends ExpressionModel {
         return new JsonObjectModel(builder, builder.render(writer -> {
           writer.renderJsonArrayGet(expression, argumentModels.get(0));
         }));
+      case "encode":
       case "encodePrettily": {
         return builder.jsonArrayEncoder(expression);
       }

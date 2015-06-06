@@ -169,6 +169,16 @@ public class JsonTest extends ConversionTestBase {
     Assert.assertEquals("{\"foo\":\"foo_value\"}", o);
   }
 
+  @Test
+  public void testJsonObjectEncode() {
+    runJavaScript("json/JsObject", "encode");
+    Assert.assertEquals("{\"foo\":\"foo_value\"}", o);
+    runGroovy("json/JsObject", "encode");
+    Assert.assertEquals("[foo:foo_value]", o);
+    runRuby("json/JsObject", "encode");
+    Assert.assertEquals("{\"foo\":\"foo_value\"}", o);
+  }
+
   // **
 
   @Test
@@ -319,5 +329,25 @@ public class JsonTest extends ConversionTestBase {
     runAll("json/JsArray", "addArray", () -> {
       Assert.assertEquals(expected, o);
     });
+  }
+
+  @Test
+  public void testJsonArrayEncodePrettily() {
+    runJavaScript("json/JsArray", "encodePrettily");
+    Assert.assertEquals("[\"foo\",\"bar\"]", o);
+    runGroovy("json/JsArray", "encodePrettily");
+    Assert.assertEquals("[foo, bar]", o);
+    runRuby("json/JsArray", "encodePrettily");
+    Assert.assertEquals("[\"foo\",\"bar\"]", o);
+  }
+
+  @Test
+  public void testJsonArrayEncode() {
+    runJavaScript("json/JsArray", "encode");
+    Assert.assertEquals("[\"foo\",\"bar\"]", o);
+    runGroovy("json/JsArray", "encode");
+    Assert.assertEquals("[foo, bar]", o);
+    runRuby("json/JsArray", "encode");
+    Assert.assertEquals("[\"foo\",\"bar\"]", o);
   }
 }

@@ -137,4 +137,16 @@ public class JsArray {
     arr.add(new JsonArray().add("the_array"));
     JsonTest.o = JsonConverter.toJsonArray(arr);
   }
+
+  @CodeTranslate
+  public void encodePrettily() throws Exception {
+    JsonArray arr = new JsonArray().add("foo").add("bar");
+    JsonTest.o = arr.encodePrettily();
+  }
+
+  @CodeTranslate
+  public void encode() throws Exception {
+    JsonArray arr = new JsonArray().add("foo").add("bar");
+    JsonTest.o = arr.encode();
+  }
 }
