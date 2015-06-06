@@ -85,6 +85,26 @@ class RubyWriter extends CodeWriter {
   }
 
   @Override
+  public void renderAsyncResultSucceeded(String name) {
+    append(name + "_err == nil");
+  }
+
+  @Override
+  public void renderAsyncResultFailed(String name) {
+    append(name + "_err != nil");
+  }
+
+  @Override
+  public void renderAsyncResultCause(String name) {
+    append(name + "_err");
+  }
+
+  @Override
+  public void renderAsyncResultValue(String name) {
+    append(name);
+  }
+
+  @Override
   public void renderConditionals(List<ConditionalBlockModel> conditionals, StatementModel otherwise) {
     for (int i = 0;i < conditionals.size();i++) {
       ConditionalBlockModel conditional = conditionals.get(i);

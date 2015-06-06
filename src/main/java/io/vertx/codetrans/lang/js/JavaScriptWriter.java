@@ -230,6 +230,26 @@ class JavaScriptWriter extends CodeWriter {
   }
 
   @Override
+  public void renderAsyncResultSucceeded(String name) {
+    append(name).append("_err == null");
+  }
+
+  @Override
+  public void renderAsyncResultFailed(String name) {
+    append(name).append("_err != null");
+  }
+
+  @Override
+  public void renderAsyncResultCause(String name) {
+    append(name).append("_err");
+  }
+
+  @Override
+  public void renderAsyncResultValue(String name) {
+    append(name);
+  }
+
+  @Override
   public void renderMethodInvocation(ExpressionModel expression, TypeInfo receiverType, MethodRef method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
     List<TypeInfo> parameterTypes = method.getParameterTypes();
     for (int i = 0;i < parameterTypes.size();i++) {

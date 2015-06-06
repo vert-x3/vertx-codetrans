@@ -54,7 +54,9 @@ public interface CodeBuilder {
     return new BinaryExpressionModel(this, left, op, right);
   }
 
-  ExpressionModel asyncResult(String identifier);
+  default ExpressionModel asyncResult(String identifier, TypeInfo type) {
+    return new AsyncResultModel(this, identifier, type);
+  }
 
   ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, TypeInfo.Parameterized resultType, String resultName, CodeModel body);
 

@@ -305,6 +305,14 @@ public abstract class CodeWriter implements Appendable {
     append(']');
   }
 
+  public abstract void renderAsyncResultSucceeded(String name);
+
+  public abstract void renderAsyncResultFailed(String name);
+
+  public abstract void renderAsyncResultCause(String name);
+
+  public abstract void renderAsyncResultValue(String name);
+
   public abstract void renderLambda(LambdaExpressionTree.BodyKind bodyKind, List<TypeInfo> parameterTypes, List<String> parameterNames, CodeModel body);
 
   public abstract void renderEnumConstant(TypeInfo.Class.Enum type, String constant);

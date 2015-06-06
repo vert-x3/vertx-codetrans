@@ -530,7 +530,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
           Symbol.ClassSymbol sym = (Symbol.ClassSymbol) clazz.sym;
           TypeInfo type = factory.create(sym.type);
           if (type.getKind() == ClassKind.ASYNC_RESULT) {
-            ExpressionModel result = context.builder.asyncResult(last.name.toString());
+            ExpressionModel result = context.builder.asyncResult(last.name.toString(), ((TypeInfo.Parameterized)(type)).getArgs().get(0));
             CodeModel body = scan(node.getBody(), context.putAlias(last.sym, result));
             TypeInfo.Parameterized parameterized = (TypeInfo.Parameterized) type;
             return context.builder.asyncResultHandler(node.getBodyKind(), parameterized, last.name.toString(), body);

@@ -73,24 +73,6 @@ class RubyCodeBuilder implements CodeBuilder {
   }
 
   @Override
-  public ExpressionModel asyncResult(String identifier) {
-    return forMethodInvocation((member, args) -> {
-      switch (member) {
-        case "succeeded":
-          return render(identifier + "_err == nil");
-        case "result":
-          return render(identifier);
-        case "cause":
-          return render(identifier + "_err");
-        case "failed":
-          return render(identifier + "_err != nil");
-        default:
-          throw new UnsupportedOperationException("Not implemented");
-      }
-    });
-  }
-
-  @Override
   public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, TypeInfo.Parameterized resultType, String resultName, CodeModel body) {
     return new LambdaExpressionModel(this, bodyKind, Arrays.asList(resultType.getArgs().get(0), TypeInfo.create(Throwable.class)), Arrays.asList(resultName, resultName + "_err"), body);
   }

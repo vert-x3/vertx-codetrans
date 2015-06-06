@@ -71,11 +71,6 @@ class GroovyCodeBuilder implements CodeBuilder {
   }
 
   @Override
-  public ExpressionModel asyncResult(String identifier) {
-    return render(renderer -> renderer.append(identifier));
-  }
-
-  @Override
   public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, TypeInfo.Parameterized resultType, String resultName, CodeModel body) {
     return new LambdaExpressionModel(this, bodyKind, Collections.singletonList(resultType), Collections.singletonList(resultName), body);
   }

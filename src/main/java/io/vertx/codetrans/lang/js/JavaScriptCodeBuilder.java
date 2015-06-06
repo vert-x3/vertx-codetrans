@@ -116,22 +116,4 @@ class JavaScriptCodeBuilder implements CodeBuilder {
       renderer.append("}");
     });
   }
-
-  @Override
-  public ExpressionModel asyncResult(String identifier) {
-    return forMethodInvocation((member, args) -> {
-      switch (member) {
-        case "succeeded":
-          return render(identifier + "_err == null");
-        case "result":
-          return render(identifier);
-        case "cause":
-          return render(identifier + "_err");
-        case "failed":
-          return render(identifier + "_err != null");
-        default:
-          throw new UnsupportedOperationException("Not implemented");
-      }
-    });
-  }
 }

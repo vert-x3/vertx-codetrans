@@ -99,6 +99,26 @@ class GroovyWriter extends CodeWriter {
   }
 
   @Override
+  public void renderAsyncResultSucceeded(String name) {
+    append(name).append(".succeeded()");
+  }
+
+  @Override
+  public void renderAsyncResultFailed(String name) {
+    append(name).append(".failed()");
+  }
+
+  @Override
+  public void renderAsyncResultCause(String name) {
+    append(name).append(".cause()");
+  }
+
+  @Override
+  public void renderAsyncResultValue(String name) {
+    append(name).append(".result()");
+  }
+
+  @Override
   public void renderEnumConstant(TypeInfo.Class.Enum type, String constant) {
     append(type.getSimpleName()).append('.').append(constant);
   }
