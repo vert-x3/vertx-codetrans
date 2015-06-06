@@ -92,4 +92,21 @@ public class ControlTest extends ConversionTestBase {
       collected.clear();
     });
   }
+
+  @Test
+  public void testReturnVoid() throws Exception {
+    o = null;
+    runAll("control/Return", "returnVoid", () -> {
+      Assert.assertNull(o);
+    });
+  }
+
+  @Test
+  public void testReturnValue() throws Exception {
+    o = null;
+    runAll("control/Return", "returnValue", () -> {
+      Assert.assertEquals("the_returned_value", o);
+      o = null;
+    });
+  }
 }

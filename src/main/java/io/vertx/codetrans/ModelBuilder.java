@@ -20,6 +20,7 @@ import com.sun.source.tree.MethodTree;
 import com.sun.source.tree.NewClassTree;
 import com.sun.source.tree.ParameterizedTypeTree;
 import com.sun.source.tree.ParenthesizedTree;
+import com.sun.source.tree.ReturnTree;
 import com.sun.source.tree.StatementTree;
 import com.sun.source.tree.ThrowTree;
 import com.sun.source.tree.Tree;
@@ -79,6 +80,12 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
 
   public ExpressionModel scan(ExpressionTree tree, VisitContext context) {
     return (ExpressionModel) scan((Tree) tree, context);
+  }
+
+  @Override
+  public CodeModel visitReturn(ReturnTree node, VisitContext context) {
+    ExpressionModel expression = scan(node.getExpression(), context);
+    return new ReturnModel(expression);
   }
 
   @Override
