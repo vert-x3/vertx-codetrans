@@ -39,7 +39,8 @@ public class JsonObjectLiteralModel extends ExpressionModel {
     String methodName = method.getName();
     switch (methodName) {
       case "put":
-        return new JsonObjectLiteralModel(builder, Helper.append(entries, new Member.Single(argumentModels.get(0)).append(argumentModels.get(1))));
+        LiteralModel.String name = (LiteralModel.String) argumentModels.get(0);
+        return new JsonObjectLiteralModel(builder, Helper.append(entries, new Member.Single(name.value).append(argumentModels.get(1))));
       default:
         throw new UnsupportedOperationException("Method " + method + " not yet implemented");
     }

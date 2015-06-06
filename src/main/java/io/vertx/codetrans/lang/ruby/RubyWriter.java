@@ -262,18 +262,15 @@ class RubyWriter extends CodeWriter {
 
   @Override
   public void renderJsonObject(JsonObjectLiteralModel jsonObject) {
-    renderJsonObject(jsonObject.getMembers(), this, true);
+    renderJsonObject(jsonObject.getMembers(), this);
   }
 
-  private void renderJsonObject(Iterable<Member> members, CodeWriter writer, boolean unquote) {
+  private void renderJsonObject(Iterable<Member> members, CodeWriter writer) {
     append("{\n");
     indent();
     for (Iterator<Member> iterator = members.iterator();iterator.hasNext();) {
       Member member = iterator.next();
-      String name = member.getName().render(getBuilder());
-      if (unquote) {
-        name = io.vertx.codetrans.Helper.unwrapQuotedString(name);
-      }
+      String name = member.getName();
       append("'").append(name).append("' => ");
       if (member instanceof Member.Single) {
         ((Member.Single) member).getValue().render(this);
@@ -307,7 +304,7 @@ class RubyWriter extends CodeWriter {
 
   @Override
   public void renderDataObject(DataObjectLiteralModel model) {
-    renderJsonObject(model.getMembers(), this, false);
+    renderJsonObject(model.getMembers(), this);
   }
 
   @Override

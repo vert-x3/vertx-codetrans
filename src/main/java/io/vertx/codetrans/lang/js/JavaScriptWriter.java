@@ -60,26 +60,23 @@ class JavaScriptWriter extends CodeWriter {
   }
 
   public void renderDataObject(DataObjectLiteralModel model) {
-    renderJsonObject(model.getMembers(), false);
+    renderJsonObject(model.getMembers());
   }
 
   public void renderJsonObject(JsonObjectLiteralModel jsonObject) {
-    renderJsonObject(jsonObject.getMembers(), true);
+    renderJsonObject(jsonObject.getMembers());
   }
 
   public void renderJsonArray(JsonArrayLiteralModel jsonArray) {
     renderJsonArray(jsonArray.getValues());
   }
 
-  private void renderJsonObject(Iterable<Member> members, boolean unquote) {
+  private void renderJsonObject(Iterable<Member> members) {
     append("{\n");
     indent();
     for (Iterator<Member> iterator = members.iterator();iterator.hasNext();) {
       Member member = iterator.next();
-      String name = member.getName().render(getBuilder());
-      if (unquote) {
-        name = io.vertx.codetrans.Helper.unwrapQuotedString(name);
-      }
+      String name = member.getName();
       append("\"").append(name).append("\" : ");
       if (member instanceof Member.Single) {
         ((Member.Single) member).getValue().render(this);

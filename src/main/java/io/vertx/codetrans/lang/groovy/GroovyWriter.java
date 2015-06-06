@@ -110,27 +110,24 @@ class GroovyWriter extends CodeWriter {
   }
 
   public void renderDataObject(DataObjectLiteralModel model) {
-    renderJsonObject(model.getMembers(), false);
+    renderJsonObject(model.getMembers());
   }
 
   public void renderJsonObject(JsonObjectLiteralModel jsonObject) {
-    renderJsonObject(jsonObject.getMembers(), true);
+    renderJsonObject(jsonObject.getMembers());
   }
 
   public void renderJsonArray(JsonArrayLiteralModel jsonArray) {
     renderJsonArray(jsonArray.getValues());
   }
 
-  private void renderJsonObject(Iterable<Member> members, boolean unquote) {
+  private void renderJsonObject(Iterable<Member> members) {
     Iterator<Member> iterator = members.iterator();
     if (iterator.hasNext()) {
       append("[\n").indent();
       while (iterator.hasNext()) {
         Member member = iterator.next();
-        String name = member.getName().render(builder);
-        if (unquote) {
-          name = Helper.unwrapQuotedString(name);
-        }
+        String name = member.getName();
         append(name);
         append(":");
         if (member instanceof Member.Single) {

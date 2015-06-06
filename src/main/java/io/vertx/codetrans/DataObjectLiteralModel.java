@@ -37,10 +37,10 @@ public class DataObjectLiteralModel extends ExpressionModel {
     Function<String, Member> memberFactory;
     if (isSet(methodName)) {
       name = unwrapSet(methodName);
-      memberFactory = $ -> new Member.Single(builder.render(name));
+      memberFactory = $ -> new Member.Single(name);
     } else if (isAdd(methodName)) {
       name = unwrapAdd(methodName);
-      memberFactory = $ -> new Member.Array(builder.render(name));
+      memberFactory = $ -> new Member.Array(name);
     } else {
       throw unsupported("Method " + method);
     }
