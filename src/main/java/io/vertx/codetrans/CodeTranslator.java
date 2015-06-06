@@ -8,6 +8,7 @@ import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.util.Context;
 import io.vertx.codegen.TypeInfo;
+import io.vertx.codetrans.statement.StatementModel;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
@@ -19,10 +20,8 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Types;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**

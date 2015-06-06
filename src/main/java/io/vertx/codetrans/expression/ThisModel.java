@@ -1,4 +1,8 @@
-package io.vertx.codetrans;
+package io.vertx.codetrans.expression;
+
+import io.vertx.codetrans.CodeBuilder;
+import io.vertx.codetrans.CodeWriter;
+import io.vertx.codetrans.expression.ExpressionModel;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>

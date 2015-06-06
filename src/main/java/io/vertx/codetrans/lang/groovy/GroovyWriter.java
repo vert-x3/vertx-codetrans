@@ -2,16 +2,16 @@ package io.vertx.codetrans.lang.groovy;
 
 import com.sun.source.tree.LambdaExpressionTree;
 import io.vertx.codegen.TypeInfo;
-import io.vertx.codetrans.BinaryExpressionModel;
+import io.vertx.codetrans.expression.BinaryExpressionModel;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
-import io.vertx.codetrans.DataObjectLiteralModel;
-import io.vertx.codetrans.ExpressionModel;
+import io.vertx.codetrans.expression.DataObjectLiteralModel;
+import io.vertx.codetrans.expression.ExpressionModel;
 import io.vertx.codetrans.Helper;
-import io.vertx.codetrans.JsonArrayLiteralModel;
-import io.vertx.codetrans.JsonObjectLiteralModel;
-import io.vertx.codetrans.Member;
-import io.vertx.codetrans.StatementModel;
+import io.vertx.codetrans.expression.JsonArrayLiteralModel;
+import io.vertx.codetrans.expression.JsonObjectLiteralModel;
+import io.vertx.codetrans.expression.Member;
+import io.vertx.codetrans.statement.StatementModel;
 
 import java.util.Arrays;
 import java.util.Iterator;

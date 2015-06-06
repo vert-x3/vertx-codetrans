@@ -1,7 +1,11 @@
-package io.vertx.codetrans;
+package io.vertx.codetrans.expression;
 
 import io.vertx.codegen.ClassKind;
 import io.vertx.codegen.TypeInfo;
+import io.vertx.codetrans.CodeBuilder;
+import io.vertx.codetrans.CodeWriter;
+import io.vertx.codetrans.Helper;
+import io.vertx.codetrans.MethodSignature;
 
 import java.util.Collections;
 import java.util.List;
@@ -9,26 +13,26 @@ import java.util.List;
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class JsonArrayLiteralModel extends ExpressionModel {
+public class JsonObjectLiteralModel extends ExpressionModel {
 
-  private List<ExpressionModel> values;
+  private final List<Member> entries;
 
-  public JsonArrayLiteralModel(CodeBuilder builder) {
+  public JsonObjectLiteralModel(CodeBuilder builder) {
     this(builder, Collections.emptyList());
   }
 
-  private JsonArrayLiteralModel(CodeBuilder builder, List<ExpressionModel> values) {
+  private JsonObjectLiteralModel(CodeBuilder builder, List<Member> entries) {
     super(builder);
-    this.values = values;
+    this.entries = entries;
   }
 
-  public List<ExpressionModel> getValues() {
-    return values;
+  public Iterable<Member> getMembers() {
+    return entries;
   }
 
   @Override
   public ExpressionModel as(TypeInfo type) {
-    if (type.getKind() != ClassKind.JSON_ARRAY) {
+    if (type.getKind() != ClassKind.JSON_OBJECT) {
       throw new UnsupportedOperationException();
     }
     return this;
@@ -38,8 +42,9 @@ public class JsonArrayLiteralModel extends ExpressionModel {
   public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
     String methodName = method.getName();
     switch (methodName) {
-      case "add":
-        return new JsonArrayLiteralModel(builder, Helper.append(values, argumentModels.get(0)));
+      case "put":
+        LiteralModel.String name = (LiteralModel.String) argumentModels.get(0);
+        return new JsonObjectLiteralModel(builder, Helper.append(entries, new Member.Single(name.value).append(argumentModels.get(1))));
       default:
         throw new UnsupportedOperationException("Method " + method + " not yet implemented");
     }
@@ -47,6 +52,6 @@ public class JsonArrayLiteralModel extends ExpressionModel {
 
   @Override
   public void render(CodeWriter writer) {
-    writer.renderJsonArray(this);
+    writer.renderJsonObject(this);
   }
 }

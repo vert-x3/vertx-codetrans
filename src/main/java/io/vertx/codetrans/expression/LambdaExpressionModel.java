@@ -1,7 +1,11 @@
-package io.vertx.codetrans;
+package io.vertx.codetrans.expression;
 
 import com.sun.source.tree.LambdaExpressionTree;
 import io.vertx.codegen.TypeInfo;
+import io.vertx.codetrans.CodeBuilder;
+import io.vertx.codetrans.CodeModel;
+import io.vertx.codetrans.CodeWriter;
+import io.vertx.codetrans.expression.ExpressionModel;
 
 import java.util.List;
 

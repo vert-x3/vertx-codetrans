@@ -2,15 +2,15 @@ package io.vertx.codetrans.lang.groovy;
 
 import com.sun.source.tree.LambdaExpressionTree;
 import io.vertx.codegen.TypeInfo;
-import io.vertx.codetrans.ApiTypeModel;
+import io.vertx.codetrans.expression.ApiTypeModel;
 import io.vertx.codetrans.CodeModel;
-import io.vertx.codetrans.EnumExpressionModel;
-import io.vertx.codetrans.ExpressionModel;
-import io.vertx.codetrans.LambdaExpressionModel;
+import io.vertx.codetrans.expression.EnumExpressionModel;
+import io.vertx.codetrans.expression.ExpressionModel;
+import io.vertx.codetrans.expression.LambdaExpressionModel;
 import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.MethodModel;
 import io.vertx.codetrans.RunnableCompilationUnit;
-import io.vertx.codetrans.StatementModel;
+import io.vertx.codetrans.statement.StatementModel;
 
 import java.util.Collections;
 import java.util.Iterator;

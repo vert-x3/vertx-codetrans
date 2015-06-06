@@ -1,6 +1,7 @@
 package io.vertx.codetrans;
 
 import com.sun.tools.javac.code.Symbol;
+import io.vertx.codetrans.expression.ExpressionModel;
 
 import java.util.Collections;
 import java.util.HashMap;

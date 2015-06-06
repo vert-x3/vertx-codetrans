@@ -1,4 +1,7 @@
-package io.vertx.codetrans;
+package io.vertx.codetrans.statement;
+
+import io.vertx.codetrans.CodeModel;
+import io.vertx.codetrans.CodeWriter;
 
 import java.util.List;
 import java.util.function.Consumer;

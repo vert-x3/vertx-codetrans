@@ -1,6 +1,9 @@
 package io.vertx.codetrans;
 
 import io.vertx.codegen.TypeInfo;
+import io.vertx.codetrans.expression.BinaryExpressionModel;
+import io.vertx.codetrans.expression.ExpressionModel;
+import io.vertx.codetrans.expression.LiteralModel;
 import io.vertx.core.Handler;
 
 import java.util.ArrayList;
@@ -31,7 +34,7 @@ public class Helper {
       return true;
     } else if (expression instanceof BinaryExpressionModel) {
       BinaryExpressionModel binary = (BinaryExpressionModel) expression;
-      return binary.op.equals("+") && (isString(binary.left) || isString(binary.right));
+      return binary.getOp().equals("+") && (isString(binary.getLeft()) || isString(binary.getRight()));
     }
     return false;
   }
@@ -52,8 +55,8 @@ public class Helper {
       writer.append('"');
     }
 
-    renderInterpolatedString(expression.left, writer, beginInterpolation, endInterpolation);
-    renderInterpolatedString(expression.right, writer, beginInterpolation, endInterpolation);
+    renderInterpolatedString(expression.getLeft(), writer, beginInterpolation, endInterpolation);
+    renderInterpolatedString(expression.getRight(), writer, beginInterpolation, endInterpolation);
     if (!prev) {
       writer.append('"');
     }
@@ -64,7 +67,7 @@ public class Helper {
                                                String beginInterpolation, String endInterpolation) {
     if (expression instanceof LiteralModel.String) {
       LiteralModel.String string = (LiteralModel.String) expression;
-      writer.renderChars(string.value);
+      writer.renderChars(string.getValue());
     } else if (Helper.isString(expression)) {
       expression.render(writer);
     } else {

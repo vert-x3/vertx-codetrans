@@ -1,5 +1,7 @@
 package io.vertx.codetrans;
 
+import io.vertx.codetrans.statement.StatementModel;
+
 import java.util.Map;
 
 /**

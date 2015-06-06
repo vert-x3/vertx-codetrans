@@ -1,6 +1,7 @@
-package io.vertx.codetrans;
+package io.vertx.codetrans.expression;
 
 import io.vertx.codegen.TypeInfo;
+import io.vertx.codetrans.CodeBuilder;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>

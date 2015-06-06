@@ -2,6 +2,14 @@ package io.vertx.codetrans;
 
 import com.sun.source.tree.LambdaExpressionTree;
 import io.vertx.codegen.TypeInfo;
+import io.vertx.codetrans.expression.BinaryExpressionModel;
+import io.vertx.codetrans.expression.DataObjectLiteralModel;
+import io.vertx.codetrans.expression.ExpressionModel;
+import io.vertx.codetrans.expression.IdentifierKind;
+import io.vertx.codetrans.expression.JsonArrayLiteralModel;
+import io.vertx.codetrans.expression.JsonObjectLiteralModel;
+import io.vertx.codetrans.statement.ConditionalBlockModel;
+import io.vertx.codetrans.statement.StatementModel;
 
 import java.util.List;
 
@@ -110,10 +118,10 @@ public abstract class CodeWriter implements Appendable {
     for (int i = 0;i < conditionals.size();i++) {
       ConditionalBlockModel conditional = conditionals.get(i);
       append(i == 0 ? "if " : " else if ");
-      conditional.condition.render(this);
+      conditional.getCondition().render(this);
       append(" {\n");
       indent();
-      conditional.body.render(this);
+      conditional.getBody().render(this);
       unindent();
       append("}");
     }
@@ -193,9 +201,9 @@ public abstract class CodeWriter implements Appendable {
   }
 
   public void renderBinary(BinaryExpressionModel expression) {
-    expression.left.render(this);
-    append(" ").append(expression.op).append(" ");
-    expression.right.render(this);
+    expression.getLeft().render(this);
+    append(" ").append(expression.getOp()).append(" ");
+    expression.getRight().render(this);
   }
 
   public void renderNullLiteral() {
