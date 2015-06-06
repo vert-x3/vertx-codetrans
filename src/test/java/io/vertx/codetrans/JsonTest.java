@@ -161,22 +161,18 @@ public class JsonTest extends ConversionTestBase {
 
   @Test
   public void testJsonObjectEncodePrettily() {
-    runJavaScript("json/JsObject", "encodePrettily");
-    Assert.assertEquals("{\"foo\":\"foo_value\"}", o);
-    runGroovy("json/JsObject", "encodePrettily");
-    Assert.assertEquals("[foo:foo_value]", o);
-    runRuby("json/JsObject", "encodePrettily");
-    Assert.assertEquals("{\"foo\":\"foo_value\"}", o);
+    runAll("json/JsObject", "encodePrettily", () -> {
+      Assert.assertEquals("{\"foo\":\"foo_value\"}", o);
+      o = null;
+    });
   }
 
   @Test
   public void testJsonObjectEncode() {
-    runJavaScript("json/JsObject", "encode");
-    Assert.assertEquals("{\"foo\":\"foo_value\"}", o);
-    runGroovy("json/JsObject", "encode");
-    Assert.assertEquals("[foo:foo_value]", o);
-    runRuby("json/JsObject", "encode");
-    Assert.assertEquals("{\"foo\":\"foo_value\"}", o);
+    runAll("json/JsObject", "encode", () -> {
+      Assert.assertEquals("{\"foo\":\"foo_value\"}", o);
+      o = null;
+    });
   }
 
   // **
@@ -333,21 +329,17 @@ public class JsonTest extends ConversionTestBase {
 
   @Test
   public void testJsonArrayEncodePrettily() {
-    runJavaScript("json/JsArray", "encodePrettily");
-    Assert.assertEquals("[\"foo\",\"bar\"]", o);
-    runGroovy("json/JsArray", "encodePrettily");
-    Assert.assertEquals("[foo, bar]", o);
-    runRuby("json/JsArray", "encodePrettily");
-    Assert.assertEquals("[\"foo\",\"bar\"]", o);
+    runAll("json/JsArray", "encodePrettily", () -> {
+      Assert.assertEquals("[\"foo\",\"bar\"]", o);
+      o = null;
+    });
   }
 
   @Test
   public void testJsonArrayEncode() {
-    runJavaScript("json/JsArray", "encode");
-    Assert.assertEquals("[\"foo\",\"bar\"]", o);
-    runGroovy("json/JsArray", "encode");
-    Assert.assertEquals("[foo, bar]", o);
-    runRuby("json/JsArray", "encode");
-    Assert.assertEquals("[\"foo\",\"bar\"]", o);
+    runAll("json/JsArray", "encode", () -> {
+      Assert.assertEquals("[\"foo\",\"bar\"]", o);
+      o = null;
+    });
   }
 }

@@ -219,14 +219,16 @@ class GroovyWriter extends CodeWriter {
 
   @Override
   public void renderJsonObjectToString(ExpressionModel expression) {
+    append("groovy.json.JsonOutput.toJson(");
     expression.render(this);
-    append(".toString()");
+    append(")");
   }
 
   @Override
   public void renderJsonArrayToString(ExpressionModel expression) {
+    append("groovy.json.JsonOutput.toJson(");
     expression.render(this);
-    append(".toString()");
+    append(")");
   }
 
   @Override
