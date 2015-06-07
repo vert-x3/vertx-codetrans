@@ -13,10 +13,7 @@ import io.vertx.codetrans.expression.LiteralModel;
 import io.vertx.codetrans.expression.ThisModel;
 import io.vertx.codetrans.statement.StatementModel;
 
-import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -118,31 +115,6 @@ public interface CodeBuilder {
     });
   }
 
-  default ExpressionModel forMethodInvocation(String methodName, Function<List<ExpressionModel>, ExpressionModel> f) {
-    String s = methodName;
-    CodeBuilder builder = this;
-    return new ExpressionModel(builder) {
-      @Override
-      public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
-        if (s.equals(method.getName())) {
-          return f.apply(argumentModels);
-        } else {
-          return super.onMethodInvocation(receiverType, method, returnType, argumentModels, argumenTypes);
-        }
-      }
-    };
-  }
-
-  default ExpressionModel forMethodInvocation(BiFunction<String, List<ExpressionModel>, ExpressionModel> f) {
-    CodeBuilder builder = this;
-    return new ExpressionModel(builder) {
-      @Override
-      public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
-        return f.apply(method.getName(), argumentModels);
-      }
-    };
-  }
-
   default ExpressionModel render(Consumer<CodeWriter> c) {
     CodeBuilder builder = this;
     return new ExpressionModel(builder) {
@@ -159,20 +131,6 @@ public interface CodeBuilder {
       @Override
       public void render(CodeWriter writer) {
         writer.append(f.get());
-      }
-    };
-  }
-
-  default ExpressionModel render(String s) {
-    CodeBuilder builder = this;
-    return new ExpressionModel(builder) {
-      @Override
-      public String render(CodeBuilder builder) {
-        return s;
-      }
-      @Override
-      public void render(CodeWriter writer) {
-        writer.append(s);
       }
     };
   }
