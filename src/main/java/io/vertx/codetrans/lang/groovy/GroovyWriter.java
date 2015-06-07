@@ -2,12 +2,10 @@ package io.vertx.codetrans.lang.groovy;
 
 import com.sun.source.tree.LambdaExpressionTree;
 import io.vertx.codegen.TypeInfo;
-import io.vertx.codetrans.expression.BinaryExpressionModel;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.expression.DataObjectLiteralModel;
 import io.vertx.codetrans.expression.ExpressionModel;
-import io.vertx.codetrans.Helper;
 import io.vertx.codetrans.expression.JsonArrayLiteralModel;
 import io.vertx.codetrans.expression.JsonObjectLiteralModel;
 import io.vertx.codetrans.expression.Member;
@@ -30,12 +28,19 @@ class GroovyWriter extends CodeWriter {
   }
 
   @Override
-  public void renderBinary(BinaryExpressionModel expression) {
-    if (Helper.isString(expression)) {
-      Helper.renderInterpolatedString(expression, this, "${", "}");
-    } else {
-      super.renderBinary(expression);
+  public void renderStringLiteral(List<?> parts) {
+    append('"');
+    for (Object part : parts) {
+      if (part instanceof ExpressionModel) {
+        append("${");
+        ExpressionModel ex = (ExpressionModel) part;
+        ex.render(this);
+        append("}");
+      } else {
+        append(part.toString());
+      }
     }
+    append('"');
   }
 
   @Override

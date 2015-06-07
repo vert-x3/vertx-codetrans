@@ -1,9 +1,6 @@
 package io.vertx.codetrans;
 
 import io.vertx.codegen.TypeInfo;
-import io.vertx.codetrans.expression.BinaryExpressionModel;
-import io.vertx.codetrans.expression.ExpressionModel;
-import io.vertx.codetrans.expression.LiteralModel;
 import io.vertx.core.Handler;
 
 import java.util.ArrayList;
@@ -18,61 +15,6 @@ public class Helper {
     ArrayList<E> copy = new ArrayList<>(list);
     copy.add(last);
     return copy;
-  }
-
-  public static boolean isString(ExpressionModel expression) {
-    if (expression instanceof LiteralModel.String) {
-      return true;
-    } else if (expression instanceof BinaryExpressionModel) {
-      BinaryExpressionModel binary = (BinaryExpressionModel) expression;
-      return binary.getOp().equals("+") && (isString(binary.getLeft()) || isString(binary.getRight()));
-    }
-    return false;
-  }
-
-  private static boolean string;
-
-  /**
-   * Render an interpolated string.
-   *
-   * @param expression the binary string expression
-   * @param writer the writer
-   */
-  public static void renderInterpolatedString(BinaryExpressionModel expression, CodeWriter writer,
-                                       String beginInterpolation, String endInterpolation) {
-    boolean prev = string;
-    if (!string) {
-      string = true;
-      writer.append('"');
-    }
-
-    renderInterpolatedString(expression.getLeft(), writer, beginInterpolation, endInterpolation);
-    renderInterpolatedString(expression.getRight(), writer, beginInterpolation, endInterpolation);
-    if (!prev) {
-      writer.append('"');
-    }
-    string = prev;
-  }
-
-  private static void renderInterpolatedString(ExpressionModel expression, CodeWriter writer,
-                                               String beginInterpolation, String endInterpolation) {
-    if (expression instanceof LiteralModel.String) {
-      LiteralModel.String string = (LiteralModel.String) expression;
-      writer.renderChars(string.getValue());
-    } else if (Helper.isString(expression)) {
-      expression.render(writer);
-    } else {
-      boolean prev = string;
-      if (string) {
-        string = false;
-        writer.append(beginInterpolation);
-      }
-      expression.render(writer);
-      if (prev) {
-        writer.append(endInterpolation);
-      }
-      string = prev;
-    }
   }
 
   public static boolean isHandler(TypeInfo type) {

@@ -4,7 +4,6 @@ import com.sun.source.tree.LambdaExpressionTree;
 import io.vertx.codegen.Case;
 import io.vertx.codegen.ClassKind;
 import io.vertx.codegen.TypeInfo;
-import io.vertx.codetrans.expression.BinaryExpressionModel;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.statement.ConditionalBlockModel;
@@ -45,6 +44,21 @@ class RubyWriter extends CodeWriter {
     append(")");
   }
 
+  @Override
+  public void renderStringLiteral(List parts) {
+    append('"');
+    for (Object part : parts) {
+      if (part instanceof ExpressionModel) {
+        append("#{");
+        ExpressionModel ex = (ExpressionModel) part;
+        ex.render(this);
+        append("}");
+      } else {
+        append(part.toString());
+      }
+    }
+    append('"');
+  }
   @Override
   public void renderFragment(String fragment) {
     FragmentParser renderer = new FragmentParser() {
@@ -153,15 +167,6 @@ class RubyWriter extends CodeWriter {
   @Override
   public void renderNullLiteral() {
     append("nil");
-  }
-
-  @Override
-  public void renderBinary(BinaryExpressionModel expression) {
-    if (Helper.isString(expression)) {
-      Helper.renderInterpolatedString(expression, this, "#{", "}");
-    } else {
-      super.renderBinary(expression);
-    }
   }
 
   @Override

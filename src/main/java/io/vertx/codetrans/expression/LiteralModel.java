@@ -3,6 +3,8 @@ package io.vertx.codetrans.expression;
 import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.CodeWriter;
 
+import java.util.List;
+
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
@@ -27,6 +29,16 @@ public class LiteralModel {
     public String(CodeBuilder builder, java.lang.String value) {
       super(builder);
       this.value = value;
+    }
+
+    @Override
+    public boolean isStringDecl() {
+      return true;
+    }
+
+    @Override
+    void collectParts(List<Object> parts) {
+      parts.add(value);
     }
 
     public java.lang.String getValue() {

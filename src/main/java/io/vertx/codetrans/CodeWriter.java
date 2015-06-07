@@ -11,6 +11,7 @@ import io.vertx.codetrans.expression.JsonObjectLiteralModel;
 import io.vertx.codetrans.statement.ConditionalBlockModel;
 import io.vertx.codetrans.statement.StatementModel;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -198,6 +199,23 @@ public abstract class CodeWriter implements Appendable {
       argumentModels.get(i).render(this);
     }
     append(')');
+  }
+
+  public void renderStringLiteral(List<?> parts) {
+    for (Iterator<?> it = parts.iterator();it.hasNext();) {
+      Object part = it.next();
+      if (part instanceof ExpressionModel) {
+        ExpressionModel ex =  (ExpressionModel) part;
+        ex.render(this);
+      } else {
+        append("\"");
+        append(part.toString());
+        append("\"");
+      }
+      if (it.hasNext()) {
+        append(" + ");
+      }
+    }
   }
 
   public void renderBinary(BinaryExpressionModel expression) {

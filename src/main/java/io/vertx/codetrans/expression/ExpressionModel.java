@@ -3,6 +3,7 @@ package io.vertx.codetrans.expression;
 import io.vertx.codegen.TypeInfo;
 import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.CodeModel;
+import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.MethodSignature;
 
 import java.util.List;
@@ -31,6 +32,14 @@ public class ExpressionModel extends CodeModel {
       default:
         return this;
     }
+  }
+
+  boolean isStringDecl() {
+    return false;
+  }
+
+  void collectParts(List<Object> parts) {
+    parts.add(this);
   }
 
   public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodSignature method, TypeInfo returnType,
