@@ -14,15 +14,6 @@ import java.util.List;
  */
 public class Helper {
 
-  public static String unwrapQuotedString(String s) {
-    int len = s.length();
-    if (len > 2 && s.charAt(0) == '"' && s.charAt(len - 1) == '"') {
-      return s.substring(1, len - 1);
-    } else {
-      throw new IllegalArgumentException("Illegal quoted string " + s);
-    }
-  }
-
   public static <E> List<E> append(List<E> list, E last) {
     ArrayList<E> copy = new ArrayList<>(list);
     copy.add(last);
