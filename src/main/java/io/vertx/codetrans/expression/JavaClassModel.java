@@ -34,4 +34,5 @@ public class JavaClassModel extends ExpressionModel {
   public void render(CodeWriter writer) {
     writer.renderJavaType(type);
   }
+
 }

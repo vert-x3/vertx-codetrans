@@ -42,6 +42,7 @@ import io.vertx.codetrans.expression.JsonArrayClassModel;
 import io.vertx.codetrans.expression.JsonObjectClassModel;
 import io.vertx.codetrans.expression.LambdaExpressionModel;
 import io.vertx.codetrans.expression.MapClassModel;
+import io.vertx.codetrans.expression.ParenthesizedModel;
 import io.vertx.codetrans.expression.SystemModel;
 import io.vertx.codetrans.expression.ThisModel;
 import io.vertx.codetrans.expression.ThrowableClassModel;
@@ -400,7 +401,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
   @Override
   public CodeModel visitParenthesized(ParenthesizedTree node, VisitContext context) {
     ExpressionModel expression = scan(node.getExpression(), context);
-    return context.builder.forParenthesized(expression);
+    return new ParenthesizedModel(context.builder, expression);
   }
 
   @Override

@@ -106,12 +106,6 @@ public interface CodeBuilder {
     return new ThisModel(this);
   }
 
-  default ExpressionModel forParenthesized(ExpressionModel expression) {
-    return render((renderer) -> {
-      renderer.renderParenthesized(expression);
-    });
-  }
-
   default ExpressionModel forConditionalExpression(ExpressionModel condition, ExpressionModel trueExpression, ExpressionModel falseExpression) {
     return render((renderer) -> {
       renderer.renderConditionalExpression(condition, trueExpression, falseExpression);
