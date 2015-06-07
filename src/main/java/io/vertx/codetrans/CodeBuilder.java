@@ -124,14 +124,4 @@ public interface CodeBuilder {
       }
     };
   }
-
-  default ExpressionModel render(Supplier<String> f) {
-    CodeBuilder builder = this;
-    return new ExpressionModel(builder) {
-      @Override
-      public void render(CodeWriter writer) {
-        writer.append(f.get());
-      }
-    };
-  }
 }
