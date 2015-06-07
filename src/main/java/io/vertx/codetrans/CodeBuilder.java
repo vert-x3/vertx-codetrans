@@ -9,7 +9,6 @@ import io.vertx.codetrans.expression.EnumExpressionModel;
 import io.vertx.codetrans.expression.ExpressionModel;
 import io.vertx.codetrans.expression.IdentifierKind;
 import io.vertx.codetrans.expression.IdentifierModel;
-import io.vertx.codetrans.expression.LiteralModel;
 import io.vertx.codetrans.expression.ThisModel;
 import io.vertx.codetrans.statement.StatementModel;
 
@@ -23,38 +22,6 @@ public interface CodeBuilder {
   CodeWriter newWriter();
 
   String render(RunnableCompilationUnit unit);
-
-  default ExpressionModel nullLiteral() {
-    return new LiteralModel.Null(this);
-  }
-
-  default ExpressionModel stringLiteral(String value) {
-    return new LiteralModel.String(this, value);
-  }
-
-  default ExpressionModel booleanLiteral(String value) {
-    return new LiteralModel.Boolean(this, value);
-  }
-
-  default ExpressionModel integerLiteral(String value) {
-    return new LiteralModel.Integer(this, value);
-  }
-
-  default ExpressionModel longLiteral(String value) {
-    return new LiteralModel.Long(this, value);
-  }
-
-  default ExpressionModel characterLiteral(char value) {
-    return new LiteralModel.Character(this, value);
-  }
-
-  default ExpressionModel floatLiteral(String value) {
-    return new LiteralModel.Float(this, value);
-  }
-
-  default ExpressionModel doubleLiteral(String value) {
-    return new LiteralModel.Double(this, value);
-  }
 
   default ExpressionModel combine(ExpressionModel left, String op, ExpressionModel right) {
     return new BinaryExpressionModel(this, left, op, right);

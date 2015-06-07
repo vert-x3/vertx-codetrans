@@ -42,6 +42,7 @@ import io.vertx.codetrans.expression.JavaClassModel;
 import io.vertx.codetrans.expression.JsonArrayClassModel;
 import io.vertx.codetrans.expression.JsonObjectClassModel;
 import io.vertx.codetrans.expression.LambdaExpressionModel;
+import io.vertx.codetrans.expression.StringLiteralModel;
 import io.vertx.codetrans.expression.MapClassModel;
 import io.vertx.codetrans.expression.ParenthesizedModel;
 import io.vertx.codetrans.expression.SystemModel;
@@ -296,21 +297,35 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
   public ExpressionModel visitLiteral(LiteralTree node, VisitContext context) {
     switch (node.getKind()) {
       case NULL_LITERAL:
-        return context.builder.nullLiteral();
+        return context.builder.render(writer -> {
+          writer.renderNullLiteral();
+        });
       case STRING_LITERAL:
-        return context.builder.stringLiteral(node.getValue().toString());
+        return new StringLiteralModel(context.builder, node.getValue().toString());
       case BOOLEAN_LITERAL:
-        return context.builder.booleanLiteral(node.getValue().toString());
+        return context.builder.render(writer -> {
+          writer.renderBooleanLiteral(node.getValue().toString());
+        });
       case INT_LITERAL:
-        return context.builder.integerLiteral(node.getValue().toString());
+        return context.builder.render(writer -> {
+          writer.renderIntegerLiteral(node.getValue().toString());
+        });
       case LONG_LITERAL:
-        return context.builder.longLiteral(node.getValue().toString());
+        return context.builder.render(writer -> {
+          writer.renderLongLiteral(node.getValue().toString());
+        });
       case CHAR_LITERAL:
-        return context.builder.characterLiteral(node.getValue().toString().charAt(0));
+        return context.builder.render(writer -> {
+          writer.renderCharLiteral(node.getValue().toString().charAt(0));
+        });
       case FLOAT_LITERAL:
-        return context.builder.floatLiteral(node.getValue().toString());
+        return context.builder.render(writer -> {
+          writer.renderFloatLiteral(node.getValue().toString());
+        });
       case DOUBLE_LITERAL:
-        return context.builder.doubleLiteral(node.getValue().toString());
+        return context.builder.render(writer -> {
+          writer.renderDoubleLiteral(node.getValue().toString());
+        });
       default:
         throw new UnsupportedOperationException("Literal " + node.getKind().name() + " not yet implemented");
     }
