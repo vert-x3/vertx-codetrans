@@ -34,6 +34,7 @@ import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.tree.JCTree;
 import io.vertx.codegen.ClassKind;
 import io.vertx.codegen.TypeInfo;
+import io.vertx.codetrans.expression.ClassModel;
 import io.vertx.codetrans.expression.DataObjectClassModel;
 import io.vertx.codetrans.expression.ExpressionModel;
 import io.vertx.codetrans.expression.IdentifierKind;
@@ -383,10 +384,9 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
 
   @Override
   public CodeModel visitNewClass(NewClassTree node, VisitContext context) {
-    ExpressionModel identifier = scan(node.getIdentifier(), context);
+    ClassModel identifier = (ClassModel) scan(node.getIdentifier(), context);
     List<ExpressionModel> arguments = node.getArguments().stream().map(arg -> scan(arg, context)).collect(Collectors.toList());
     JCTree.JCNewClass newClass = (JCTree.JCNewClass) node;
-    TypeInfo type = factory.create(newClass.type);
     return identifier.onNew(arguments);
   }
 

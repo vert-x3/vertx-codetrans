@@ -14,7 +14,6 @@ import io.vertx.codetrans.expression.ThisModel;
 import io.vertx.codetrans.statement.StatementModel;
 
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>

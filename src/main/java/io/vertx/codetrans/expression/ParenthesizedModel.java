@@ -40,11 +40,6 @@ public class ParenthesizedModel extends ExpressionModel {
   }
 
   @Override
-  public ExpressionModel onNew(List<ExpressionModel> arguments) {
-    return expression.onNew(arguments);
-  }
-
-  @Override
   public ExpressionModel onPostFixIncrement() {
     return expression.onPostFixIncrement();
   }

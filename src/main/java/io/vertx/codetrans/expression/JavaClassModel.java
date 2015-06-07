@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class JavaClassModel extends ExpressionModel {
+public class JavaClassModel extends ClassModel {
 
   final TypeInfo.Class type;
 
