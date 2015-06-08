@@ -406,8 +406,13 @@ class RubyWriter extends CodeWriter {
 
   @Override
   public void renderIdentifier(String name, IdentifierKind kind) {
-    if (kind == IdentifierKind.GLOBAL) {
-      name = "$" + name;
+    switch (kind) {
+      case GLOBAL:
+        name = "$" + name;
+        break;
+      case FIELD:
+        name = "@" + name;
+        break;
     }
     super.renderIdentifier(name, kind);
   }

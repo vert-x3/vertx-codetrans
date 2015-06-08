@@ -42,6 +42,7 @@ class RubyCodeBuilder implements CodeBuilder {
       writer.append("require '").append(require).append("'\n");
     }
     for (Map.Entry<String, StatementModel> field : unit.getFields().entrySet()) {
+      writer.append("@");
       field.getValue().render(writer);
       writer.append("\n");
     }

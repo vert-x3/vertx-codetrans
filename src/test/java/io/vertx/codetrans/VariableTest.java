@@ -36,4 +36,12 @@ public class VariableTest extends ConversionTestBase {
       o = null;
     });
   }
+
+  @Test
+  public void testMemberExpressionAccessedByMethod() throws Exception {
+    runAll("variable/Variable", "memberExpressionAccessedByMethod", () -> {
+      Assert.assertEquals("member_value", o);
+      o = null;
+    });
+  }
 }

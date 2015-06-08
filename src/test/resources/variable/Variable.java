@@ -28,4 +28,13 @@ public class Variable extends AbstractVerticle {
   public void memberExpression() throws Exception {
     VariableTest.o = member;
   }
+
+  @CodeTranslate
+  public void memberExpressionAccessedByMethod() throws Exception {
+    accessMember();
+  }
+
+  private void accessMember() {
+    VariableTest.o = member;
+  }
 }
