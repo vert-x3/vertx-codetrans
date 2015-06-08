@@ -69,6 +69,7 @@ class JavaScriptWriter extends CodeWriter {
 
   @Override
   public void renderThis() {
+    append("this");
   }
 
   @Override

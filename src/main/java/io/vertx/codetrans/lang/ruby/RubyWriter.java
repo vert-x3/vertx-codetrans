@@ -86,6 +86,7 @@ class RubyWriter extends CodeWriter {
 
   @Override
   public void renderThis() {
+    append("self");
   }
 
   @Override
