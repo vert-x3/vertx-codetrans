@@ -9,4 +9,7 @@ class CollectionFactory {
     map.put("foo", "foo_value")
     return map;
   }
+  public static Map wrapMap(Map map) {
+    return map;
+  }
 }

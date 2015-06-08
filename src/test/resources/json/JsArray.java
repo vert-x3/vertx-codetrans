@@ -18,31 +18,31 @@ public class JsArray {
   }
 
   @CodeTranslate
-  public void addArray() throws Exception {
+  public void addArrayFromConstructor() throws Exception {
     JsonArray arr = new JsonArray().add(new JsonArray().add("foo"));
     JsonTest.o = JsonConverter.toJsonArray(arr);
   }
 
   @CodeTranslate
-  public void addBoolean() throws Exception {
+  public void addBooleanFromConstructor() throws Exception {
     JsonArray arr = new JsonArray().add(true).add(false);
     JsonTest.o = JsonConverter.toJsonArray(arr);
   }
 
   @CodeTranslate
-  public void addNumber() throws Exception {
+  public void addNumberFromConstructor() throws Exception {
     JsonArray arr = new JsonArray().add(8080);
     JsonTest.o = JsonConverter.toJsonArray(arr);
   }
 
   @CodeTranslate
-  public void addObject() throws Exception {
+  public void addObjectFromConstructor() throws Exception {
     JsonArray arr = new JsonArray().add(new JsonObject().put("foo", "foo_value"));
     JsonTest.o = JsonConverter.toJsonArray(arr);
   }
 
   @CodeTranslate
-  public void addString() throws Exception {
+  public void addStringFromConstructor() throws Exception {
     JsonArray arr = new JsonArray().add("foo");
     JsonTest.o = JsonConverter.toJsonArray(arr);
   }
@@ -90,16 +90,63 @@ public class JsArray {
   }
 
   @CodeTranslate
-  public void getJsonArray() throws Exception {
+  public void getArray() throws Exception {
     JsonArray arr = JsonTest.array;
     arr = JsonConverter.fromJsonArray(arr);
     JsonTest.o = arr.getJsonArray(0).encodePrettily();
   }
 
   @CodeTranslate
-  public void getJsonObject() throws Exception {
+  public void getObject() throws Exception {
     JsonArray arr = JsonTest.array;
     arr = JsonConverter.fromJsonArray(arr);
     JsonTest.o = arr.getJsonObject(0).encodePrettily();
+  }
+
+  @CodeTranslate
+  public void addBoolean() throws Exception {
+    JsonArray arr = new JsonArray();
+    arr.add(true);
+    JsonTest.o = JsonConverter.toJsonArray(arr);
+  }
+
+  @CodeTranslate
+  public void addNumber() throws Exception {
+    JsonArray arr = new JsonArray();
+    arr.add(8080);
+    JsonTest.o = JsonConverter.toJsonArray(arr);
+  }
+
+  @CodeTranslate
+  public void addObject() throws Exception {
+    JsonArray arr = new JsonArray();
+    arr.add(new JsonObject().put("foo", "foo_value"));
+    JsonTest.o = JsonConverter.toJsonArray(arr);
+  }
+
+  @CodeTranslate
+  public void addString() throws Exception {
+    JsonArray arr = new JsonArray();
+    arr.add("the_string");
+    JsonTest.o = JsonConverter.toJsonArray(arr);
+  }
+
+  @CodeTranslate
+  public void addArray() throws Exception {
+    JsonArray arr = new JsonArray();
+    arr.add(new JsonArray().add("the_array"));
+    JsonTest.o = JsonConverter.toJsonArray(arr);
+  }
+
+  @CodeTranslate
+  public void encodePrettily() throws Exception {
+    JsonArray arr = new JsonArray().add("foo").add("bar");
+    JsonTest.o = arr.encodePrettily();
+  }
+
+  @CodeTranslate
+  public void encode() throws Exception {
+    JsonArray arr = new JsonArray().add("foo").add("bar");
+    JsonTest.o = arr.encode();
   }
 }

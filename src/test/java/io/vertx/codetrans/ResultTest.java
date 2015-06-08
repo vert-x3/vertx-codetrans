@@ -1,5 +1,6 @@
 package io.vertx.codetrans;
 
+import io.vertx.codetrans.lang.groovy.GroovyLang;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

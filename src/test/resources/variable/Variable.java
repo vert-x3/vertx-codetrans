@@ -2,11 +2,12 @@ package variable;
 
 import io.vertx.codetrans.annotations.CodeTranslate;
 import io.vertx.codetrans.VariableTest;
+import io.vertx.core.AbstractVerticle;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class Variable {
+public class Variable extends AbstractVerticle {
 
   @CodeTranslate
   public void declare() throws Exception {
@@ -16,10 +17,15 @@ public class Variable {
     VariableTest.o = b;
   }
 
-  private String global;
-
   @CodeTranslate
   public void globalExpression() throws Exception {
-    VariableTest.o = global;
+    VariableTest.o = vertx;
+  }
+
+  private String member = "member_value";
+
+  @CodeTranslate
+  public void memberExpression() throws Exception {
+    VariableTest.o = member;
   }
 }

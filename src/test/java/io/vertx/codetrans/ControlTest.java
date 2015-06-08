@@ -13,6 +13,14 @@ import java.util.List;
  */
 public class ControlTest extends ConversionTestBase {
 
+  public static void throwRuntimeException() {
+    throw new RuntimeException();
+  }
+
+  public static void throwCheckedException() throws Exception {
+    throw new Exception();
+  }
+
   public static String o;
 
   @Test
@@ -90,6 +98,41 @@ public class ControlTest extends ConversionTestBase {
     runAll("control/ForLoop", () -> {
       Assert.assertEquals(Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7", "8", "9"), collected);
       collected.clear();
+    });
+  }
+
+  @Test
+  public void testReturnVoid() throws Exception {
+    o = null;
+    runAll("control/Return", "returnVoid", () -> {
+      Assert.assertNull(o);
+    });
+  }
+
+  @Test
+  public void testReturnValue() throws Exception {
+    o = null;
+    runAll("control/Return", "returnValue", () -> {
+      Assert.assertEquals("the_returned_value", o);
+      o = null;
+    });
+  }
+
+  @Test
+  public void testCatchCheckedException() throws Exception {
+    o = null;
+    runAll("control/TryCatch", "catchCheckedException", () -> {
+      Assert.assertEquals("caught", o);
+      o = null;
+    });
+  }
+
+  @Test
+  public void testCatchRuntimeException() throws Exception {
+    o = null;
+    runAll("control/TryCatch", "catchRuntimeException", () -> {
+      Assert.assertEquals("caught", o);
+      o = null;
     });
   }
 }

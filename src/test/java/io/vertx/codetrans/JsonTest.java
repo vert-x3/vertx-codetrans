@@ -161,12 +161,18 @@ public class JsonTest extends ConversionTestBase {
 
   @Test
   public void testJsonObjectEncodePrettily() {
-    runJavaScript("json/JsObject", "encodePrettily");
-    Assert.assertEquals("{\"foo\":\"foo_value\"}", o);
-    runGroovy("json/JsObject", "encodePrettily");
-    Assert.assertEquals("[foo:foo_value]", o);
-    runRuby("json/JsObject", "encodePrettily");
-    Assert.assertEquals("{\"foo\":\"foo_value\"}", o);
+    runAll("json/JsObject", "encodePrettily", () -> {
+      Assert.assertEquals("{\"foo\":\"foo_value\"}", o);
+      o = null;
+    });
+  }
+
+  @Test
+  public void testJsonObjectEncode() {
+    runAll("json/JsObject", "encode", () -> {
+      Assert.assertEquals("{\"foo\":\"foo_value\"}", o);
+      o = null;
+    });
   }
 
   // **
@@ -179,36 +185,36 @@ public class JsonTest extends ConversionTestBase {
   }
 
   @Test
-  public void testJsonArrayAddString() {
-    runAll("json/JsArray", "addString", () -> {
+  public void testJsonArrayAddStringFromConstructor() {
+    runAll("json/JsArray", "addStringFromConstructor", () -> {
       Assert.assertEquals(new JsonArray().add("foo"), o);
     });
   }
 
   @Test
-  public void testJsonArrayAddBoolean() {
-    runAll("json/JsArray", "addBoolean", () -> {
+  public void testJsonArrayAddBooleanFromConstructor() {
+    runAll("json/JsArray", "addBooleanFromConstructor", () -> {
       Assert.assertEquals(new JsonArray().add(true).add(false), o);
     });
   }
 
   @Test
-  public void testJsonArrayAddNumber() {
-    runAll("json/JsArray", "addNumber", () -> {
+  public void testJsonArrayAddNumberFromConstructor() {
+    runAll("json/JsArray", "addNumberFromConstructor", () -> {
       Assert.assertEquals(new JsonArray().add(8080), o);
     });
   }
 
   @Test
-  public void testJsonArrayAddArray() {
-    runAll("json/JsArray", "addArray", () -> {
+  public void testJsonArrayAddArrayFromConstructor() {
+    runAll("json/JsArray", "addArrayFromConstructor", () -> {
       Assert.assertEquals(new JsonArray().add(new JsonArray().add("foo")), o);
     });
   }
 
   @Test
-  public void testJsonArrayAddObject() {
-    runAll("json/JsArray", "addObject", () -> {
+  public void testJsonArrayAddObjectFromConstructor() {
+    runAll("json/JsArray", "addObjectFromConstructor", () -> {
       Assert.assertEquals(new JsonArray().add(new JsonObject().put("foo", "foo_value")), o);
     });
   }
@@ -264,20 +270,76 @@ public class JsonTest extends ConversionTestBase {
   }
 
   @Test
-  public void testJsonArrayGetJsonObject() {
+  public void testJsonArrayGetObject() {
     JsonObject expected = new JsonObject().put("foo", "bar");
     array = new JsonArray().add(expected);
-    runAll("json/JsArray", "getJsonObject", () -> {
+    runAll("json/JsArray", "getObject", () -> {
       Assert.assertEquals(expected, new JsonObject((String) o));
     });
   }
 
   @Test
-  public void testJsonArrayGetJsonArray() {
+  public void testJsonArrayGetArray() {
     JsonArray expected = new JsonArray().add(1).add(2).add(3);
     array = new JsonArray().add(expected);
-    runAll("json/JsArray", "getJsonArray", () -> {
+    runAll("json/JsArray", "getArray", () -> {
       Assert.assertEquals(expected, new JsonArray((String) o));
+    });
+  }
+
+  @Test
+  public void testJsonArrayAddObject() {
+    JsonArray expected = new JsonArray().add(new JsonObject().put("foo", "foo_value"));
+    runAll("json/JsArray", "addObject", () -> {
+      Assert.assertEquals(expected, o);
+    });
+  }
+
+  @Test
+  public void testJsonArrayAddString() {
+    JsonArray expected = new JsonArray().add("the_string");
+    runAll("json/JsArray", "addString", () -> {
+      Assert.assertEquals(expected, o);
+    });
+  }
+
+  @Test
+  public void testJsonArrayAddNumber() {
+    JsonArray expected = new JsonArray().add(8080);
+    runAll("json/JsArray", "addNumber", () -> {
+      Assert.assertEquals(expected, o);
+    });
+  }
+
+  @Test
+  public void testJsonArrayAddBoolean() {
+    JsonArray expected = new JsonArray().add(true);
+    runAll("json/JsArray", "addBoolean", () -> {
+      Assert.assertEquals(expected, o);
+    });
+  }
+
+  @Test
+  public void testJsonArrayAddArray() {
+    JsonArray expected = new JsonArray().add(new JsonArray().add("the_array"));
+    runAll("json/JsArray", "addArray", () -> {
+      Assert.assertEquals(expected, o);
+    });
+  }
+
+  @Test
+  public void testJsonArrayEncodePrettily() {
+    runAll("json/JsArray", "encodePrettily", () -> {
+      Assert.assertEquals("[\"foo\",\"bar\"]", o);
+      o = null;
+    });
+  }
+
+  @Test
+  public void testJsonArrayEncode() {
+    runAll("json/JsArray", "encode", () -> {
+      Assert.assertEquals("[\"foo\",\"bar\"]", o);
+      o = null;
     });
   }
 }

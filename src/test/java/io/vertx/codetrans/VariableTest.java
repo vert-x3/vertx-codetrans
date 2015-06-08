@@ -11,7 +11,7 @@ import java.util.Collections;
 public class VariableTest extends ConversionTestBase {
 
   public static final String constant = "foo";
-  public static String o;
+  public static Object o;
 
   @Test
   public void testDeclareVariable() throws Exception {
@@ -23,8 +23,16 @@ public class VariableTest extends ConversionTestBase {
 
   @Test
   public void testGlobalExpression() throws Exception {
-    runAll("variable/Variable", "globalExpression", Collections.singletonMap("global", "the_global_value"), () -> {
-      Assert.assertEquals("the_global_value", o);
+    runAll("variable/Variable", "globalExpression", Collections.singletonMap("vertx", "vertx_object"), () -> {
+      Assert.assertEquals("vertx_object", o);
+      o = null;
+    });
+  }
+
+  @Test
+  public void testMemberExpression() throws Exception {
+    runAll("variable/Variable", "memberExpression", () -> {
+      Assert.assertEquals("member_value", o);
       o = null;
     });
   }

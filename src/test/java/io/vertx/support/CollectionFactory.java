@@ -13,4 +13,8 @@ public interface CollectionFactory {
   public static Map createMap() {
     throw new AssertionError("stub");
   }
+
+  public static Map wrapMap(Map map) {
+    throw new AssertionError("stub");
+  }
 }

@@ -1,6 +1,8 @@
 package io.vertx.codetrans;
 
 import groovy.lang.GString;
+import io.vertx.codetrans.lang.groovy.GroovyLang;
+import io.vertx.codetrans.lang.js.JavaScriptLang;
 import io.vertx.support.TheEnum;
 import org.jruby.RubySymbol;
 import org.junit.Before;
@@ -66,7 +68,7 @@ public class LiteralExpressionTest extends ConversionTestBase {
       assertEquals(expected, result.toString());
     });
     for (Lang lang : langs()) {
-      CodeWriter writer = new CodeWriter(lang);
+      CodeWriter writer = lang.codeBuilder().newWriter();
       writer.renderChars(expected);
       assertEquals("\\n\\r\\t\\f\\b\\\"\\\\'\\u0000A\\u007F", writer.getBuffer().toString());
     }

@@ -18,10 +18,13 @@ import com.sun.source.tree.MemberSelectTree;
 import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.MethodTree;
 import com.sun.source.tree.NewClassTree;
+import com.sun.source.tree.ParameterizedTypeTree;
 import com.sun.source.tree.ParenthesizedTree;
+import com.sun.source.tree.ReturnTree;
 import com.sun.source.tree.StatementTree;
 import com.sun.source.tree.ThrowTree;
 import com.sun.source.tree.Tree;
+import com.sun.source.tree.TryTree;
 import com.sun.source.tree.UnaryTree;
 import com.sun.source.tree.VariableTree;
 import com.sun.source.util.TreePath;
@@ -31,6 +34,25 @@ import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.tree.JCTree;
 import io.vertx.codegen.ClassKind;
 import io.vertx.codegen.TypeInfo;
+import io.vertx.codetrans.expression.ClassModel;
+import io.vertx.codetrans.expression.DataObjectClassModel;
+import io.vertx.codetrans.expression.ExpressionModel;
+import io.vertx.codetrans.expression.IdentifierKind;
+import io.vertx.codetrans.expression.JavaClassModel;
+import io.vertx.codetrans.expression.JsonArrayClassModel;
+import io.vertx.codetrans.expression.JsonObjectClassModel;
+import io.vertx.codetrans.expression.LambdaExpressionModel;
+import io.vertx.codetrans.expression.StringLiteralModel;
+import io.vertx.codetrans.expression.MapClassModel;
+import io.vertx.codetrans.expression.ParenthesizedModel;
+import io.vertx.codetrans.expression.SystemModel;
+import io.vertx.codetrans.expression.ThisModel;
+import io.vertx.codetrans.expression.ThrowableClassModel;
+import io.vertx.codetrans.expression.ThrowableModel;
+import io.vertx.codetrans.statement.ConditionalBlockModel;
+import io.vertx.codetrans.statement.ReturnModel;
+import io.vertx.codetrans.statement.StatementModel;
+import io.vertx.codetrans.statement.TryCatchModel;
 
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
@@ -42,6 +64,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
@@ -57,7 +80,6 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
   private final DeclaredType throwableType;
   private final Types typeUtils;
   private final TypeInfo.Factory factory;
-  private final Lang lang;
 
   public ModelBuilder(Trees trees, TreePath path, DeclaredType systemType, DeclaredType throwableType, TypeInfo.Factory factory, Types typeUtils, Lang lang) {
     this.path = path;
@@ -66,61 +88,71 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     this.throwableType = throwableType;
     this.factory = factory;
     this.typeUtils = typeUtils;
-    this.lang = lang;
   }
 
-  public CodeModel build(TreePath path) {
-    return scan(path, new VisitContext());
+  public CodeModel build(TreePath path, VisitContext context) {
+    return scan(path, context);
   }
 
-  public StatementModel scan(StatementTree tree, VisitContext visitContext) {
-    return (StatementModel) scan((Tree) tree, visitContext);
+  public StatementModel scan(StatementTree tree, VisitContext context) {
+    return (StatementModel) scan((Tree) tree, context);
   }
 
-  public ExpressionModel scan(ExpressionTree tree, VisitContext visitContext) {
-    return (ExpressionModel) scan((Tree) tree, visitContext);
+  public ExpressionModel scan(ExpressionTree tree, VisitContext context) {
+    return (ExpressionModel) scan((Tree) tree, context);
   }
 
   @Override
-  public CodeModel visitForLoop(ForLoopTree node, VisitContext p) {
+  public CodeModel visitReturn(ReturnTree node, VisitContext context) {
+    ExpressionModel expression = scan(node.getExpression(), context);
+    return new ReturnModel(expression);
+  }
+
+  @Override
+  public ExpressionModel visitParameterizedType(ParameterizedTypeTree tree, VisitContext context) {
+    return (ExpressionModel) scan((Tree) tree.getType(), context);
+  }
+
+  @Override
+  public CodeModel visitForLoop(ForLoopTree node, VisitContext context) {
     if (node.getInitializer().size() != 1) {
       throw new UnsupportedOperationException();
     }
     if (node.getUpdate().size() != 1) {
       throw new UnsupportedOperationException();
     }
-    StatementModel initializer = scan(node.getInitializer().get(0), p);
-    ExpressionModel update = scan(node.getUpdate().get(0).getExpression(), p);
-    StatementModel body = scan(node.getStatement(), p);
-    ExpressionModel condition = scan(node.getCondition(), p);
-    return lang.forLoop(initializer, condition, update, body);
+    StatementModel initializer = scan(node.getInitializer().get(0), context);
+    ExpressionModel update = scan(node.getUpdate().get(0).getExpression(), context);
+    StatementModel body = scan(node.getStatement(), context);
+    ExpressionModel condition = scan(node.getCondition(), context);
+    return context.builder.forLoop(initializer, condition, update, body);
   }
 
   @Override
-  public CodeModel visitEnhancedForLoop(EnhancedForLoopTree node, VisitContext p) {
-    ExpressionModel expression = scan(node.getExpression(), p);
-    StatementModel body = scan(node.getStatement(), p);
-    return lang.enhancedForLoop(node.getVariable().getName().toString(), expression, body);
+  public CodeModel visitEnhancedForLoop(EnhancedForLoopTree node, VisitContext context) {
+    ExpressionModel expression = scan(node.getExpression(), context);
+    StatementModel body = scan(node.getStatement(), context);
+    return context.builder.enhancedForLoop(node.getVariable().getName().toString(), expression, body);
   }
 
   @Override
   public CodeModel visitAssignment(AssignmentTree node, VisitContext context) {
     ExpressionModel variable = scan(node.getVariable(), context);
     ExpressionModel expression = scan(node.getExpression(), context);
-    return ExpressionModel.forAssign(variable, expression);
+    return context.builder.forAssign(variable, expression);
   }
 
   @Override
-  public StatementModel visitVariable(VariableTree node, VisitContext p) {
+  public StatementModel visitVariable(VariableTree node, VisitContext context) {
     JCTree.JCVariableDecl decl = (JCTree.JCVariableDecl) node;
     ExpressionModel initializer;
     if (node.getInitializer() != null) {
-      initializer = scan(node.getInitializer(), p);
+      initializer = scan(node.getInitializer(), context);
     } else {
       initializer = null;
     }
     TypeInfo type = factory.create(decl.type);
-    return lang.variableDecl(
+    return context.builder.variableDecl(
         type,
         decl.name.toString(),
         initializer
@@ -128,34 +160,44 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
   }
 
   @Override
-  public StatementModel visitIf(IfTree node, VisitContext visitContext) {
+  public CodeModel visitTry(TryTree node, VisitContext context) {
+    if (node.getCatches().size() != 1) {
+      throw new UnsupportedOperationException("Expecting a single catch block");
+    }
+    StatementModel tryBlock = scan(node.getBlock(), context);
+    StatementModel catchBlock = scan(node.getCatches().get(0).getBlock(), context);
+    return new TryCatchModel(tryBlock, catchBlock);
+  }
+
+  @Override
+  public StatementModel visitIf(IfTree node, VisitContext context) {
     List<ConditionalBlockModel> conditionals = new ArrayList<>();
-    StatementModel otherwise = build(conditionals, node, visitContext);
+    StatementModel otherwise = build(conditionals, node, context);
     return StatementModel.conditionals(conditionals, otherwise);
   }
 
-  private StatementModel build(List<ConditionalBlockModel> conditionals, IfTree node, VisitContext visitContext) {
-    ExpressionModel condition = scan(node.getCondition(), visitContext);
-    StatementModel body = scan(node.getThenStatement(), visitContext);
+  private StatementModel build(List<ConditionalBlockModel> conditionals, IfTree node, VisitContext context) {
+    ExpressionModel condition = scan(node.getCondition(), context);
+    StatementModel body = scan(node.getThenStatement(), context);
     conditionals.add(new ConditionalBlockModel(condition, body));
     StatementTree elseStatement = node.getElseStatement();
     if (elseStatement != null) {
       if (elseStatement instanceof IfTree) {
         IfTree next = (IfTree) elseStatement;
-        return build(conditionals, next, visitContext);
+        return build(conditionals, next, context);
       } else {
-        return scan(node.getElseStatement(), visitContext);
+        return scan(node.getElseStatement(), context);
       }
     }
     return null;
   }
 
   @Override
-  public CodeModel visitConditionalExpression(ConditionalExpressionTree node, VisitContext visitContext) {
-    ExpressionModel condition = scan(node.getCondition(), visitContext);
-    ExpressionModel trueExpression = scan(node.getTrueExpression(), visitContext);
-    ExpressionModel falseExpression = scan(node.getFalseExpression(), visitContext);
-    return ExpressionModel.forConditionalExpression(condition, trueExpression, falseExpression);
+  public CodeModel visitConditionalExpression(ConditionalExpressionTree node, VisitContext context) {
+    ExpressionModel condition = scan(node.getCondition(), context);
+    ExpressionModel trueExpression = scan(node.getTrueExpression(), context);
+    ExpressionModel falseExpression = scan(node.getFalseExpression(), context);
+    return context.builder.forConditionalExpression(condition, trueExpression, falseExpression);
   }
 
   @Override
@@ -192,9 +234,9 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
   }
 
   @Override
-  public ExpressionModel visitBinary(BinaryTree node, VisitContext p) {
-    ExpressionModel left = scan(node.getLeftOperand(), p);
-    ExpressionModel right = scan(node.getRightOperand(), p);
+  public ExpressionModel visitBinary(BinaryTree node, VisitContext context) {
+    ExpressionModel left = scan(node.getLeftOperand(), context);
+    ExpressionModel right = scan(node.getRightOperand(), context);
     String op;
     switch (node.getKind()) {
       case CONDITIONAL_AND:
@@ -248,28 +290,42 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
       default:
         throw new UnsupportedOperationException("Binary operator " + node.getKind().name() + " not yet implemented");
     }
-    return lang.combine(left, op, right);
+    return context.builder.combine(left, op, right);
   }
 
   @Override
-  public ExpressionModel visitLiteral(LiteralTree node, VisitContext p) {
+  public ExpressionModel visitLiteral(LiteralTree node, VisitContext context) {
     switch (node.getKind()) {
       case NULL_LITERAL:
-        return lang.nullLiteral();
+        return context.builder.render(writer -> {
+          writer.renderNullLiteral();
+        });
       case STRING_LITERAL:
-        return lang.stringLiteral(node.getValue().toString());
+        return new StringLiteralModel(context.builder, node.getValue().toString());
       case BOOLEAN_LITERAL:
-        return ExpressionModel.render(renderer -> renderer.getLang().renderBooleanLiteral(node.getValue().toString(), renderer));
+        return context.builder.render(writer -> {
+          writer.renderBooleanLiteral(node.getValue().toString());
+        });
       case INT_LITERAL:
-        return ExpressionModel.render(renderer -> renderer.getLang().renderIntegerLiteral(node.getValue().toString(), renderer));
+        return context.builder.render(writer -> {
+          writer.renderIntegerLiteral(node.getValue().toString());
+        });
       case LONG_LITERAL:
-        return ExpressionModel.render(renderer -> renderer.getLang().renderLongLiteral(node.getValue().toString(), renderer));
+        return context.builder.render(writer -> {
+          writer.renderLongLiteral(node.getValue().toString());
+        });
       case CHAR_LITERAL:
-        return ExpressionModel.render(renderer -> renderer.getLang().renderCharLiteral(node.getValue().toString().charAt(0), renderer));
+        return context.builder.render(writer -> {
+          writer.renderCharLiteral(node.getValue().toString().charAt(0));
+        });
       case FLOAT_LITERAL:
-        return ExpressionModel.render(renderer -> renderer.getLang().renderFloatLiteral(node.getValue().toString(), renderer));
+        return context.builder.render(writer -> {
+          writer.renderFloatLiteral(node.getValue().toString());
+        });
       case DOUBLE_LITERAL:
-        return ExpressionModel.render(renderer -> renderer.getLang().renderDoubleLiteral(node.getValue().toString(), renderer));
+        return context.builder.render(writer -> {
+          writer.renderDoubleLiteral(node.getValue().toString());
+        });
       default:
         throw new UnsupportedOperationException("Literal " + node.getKind().name() + " not yet implemented");
     }
@@ -278,54 +334,32 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
   @Override
   public ExpressionModel visitIdentifier(IdentifierTree node, VisitContext context) {
     JCTree.JCIdent ident = (JCTree.JCIdent) node;
+    if (node.getName().toString().equals("this")) {
+      return new ThisModel(context.builder);
+    }
     if (ident.sym instanceof TypeElement) {
       if (ident.type.equals(systemType)) {
-        return ExpressionModel.forFieldSelect("out", () ->
-            ExpressionModel.forMethodInvocation("println", args -> lang.console(args.get(0)))
-        );
+        return new SystemModel(context.builder);
       } else {
-        if (typeUtils.isSubtype(ident.type, throwableType)) {
-          return ExpressionModel.forNew(args -> {
-            if (args.size() == 0) {
-              return new ThrowableModel(ident.type.toString(), null);
-            } else if (args.size() == 1) {
-              return new ThrowableModel(ident.type.toString(), args.get(0));
-            }
-            throw new UnsupportedOperationException("Only empty or String throwable constructor are accepted");
-          });
-        }
         TypeInfo.Class type = (TypeInfo.Class) factory.create(ident.type);
+        if (typeUtils.isSubtype(ident.type, throwableType)) {
+          return new ThrowableClassModel(context.builder, type);
+        }
         if (type.getKind() == ClassKind.API) {
-          return new ExpressionModel() {
-            @Override
-            public ExpressionModel onMethodInvocation(TypeInfo receiverType, String methodName, TypeInfo returnType, List<TypeInfo> parameterTypes, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
-              return lang.staticFactory(type, methodName, returnType, parameterTypes, argumentModels, argumenTypes);
-            }
-          };
+          return context.builder.apiType((TypeInfo.Class.Api) type);
         } else if (type.getKind() == ClassKind.JSON_OBJECT) {
-          return ExpressionModel.forNew(args -> {
-            switch (args.size()) {
-              case 0:
-                return new JsonObjectLiteralModel();
-              default:
-                throw new UnsupportedOperationException();
-            }
-          });
+          return new JsonObjectClassModel(context.builder);
         } else if (type.getKind() == ClassKind.JSON_ARRAY) {
-          return ExpressionModel.forNew(args -> {
-            switch (args.size()) {
-              case 0:
-                return new JsonArrayLiteralModel();
-              default:
-                throw new UnsupportedOperationException();
-            }
-          });
+          return new JsonArrayClassModel(context.builder);
         } else if (type.getKind() == ClassKind.DATA_OBJECT) {
-          return ExpressionModel.forNew(args -> new DataObjectLiteralModel(type));
+          return new DataObjectClassModel(context.builder, type);
         } else if (type.getKind() == ClassKind.ENUM) {
-          return new EnumExpressionModel((TypeInfo.Class.Enum) type);
+          return context.builder.enumType((TypeInfo.Class.Enum) type);
         } else {
-          return lang.classExpression(type);
+          if (type.getName().equals("java.util.HashMap")) {
+            return new MapClassModel(context.builder);
+          }
+          return new JavaClassModel(context.builder, type);
         }
       }
     } else {
@@ -338,10 +372,24 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
         TypeInfo type = factory.create(ident.type);
         switch (kind) {
           case LOCAL_VARIABLE:
+            return context.builder.identifier(name, IdentifierKind.VARIABLE).as(type);
           case PARAMETER:
-            return lang.variable(type, true, name);
+            return context.builder.identifier(name, IdentifierKind.PARAMETER).as(type);
           case FIELD:
-            return lang.variable(type, false, name);
+            AtomicReference<IdentifierKind> resolvedKind = new AtomicReference<>(IdentifierKind.GLOBAL);
+            new TreePathScanner<Void, Void>() {
+              @Override
+              public Void visitVariable(VariableTree node, Void aVoid) {
+                if (node.getName().toString().equals(name)) {
+                  resolvedKind.set(IdentifierKind.FIELD);
+                }
+                return null;
+              };
+            }.scan(path.getParentPath(), null);
+            if (resolvedKind.get() == IdentifierKind.FIELD) {
+              context.getReferencedFields().add(name);
+            }
+            return context.builder.identifier(name, resolvedKind.get()).as(type);
           default:
             throw new UnsupportedOperationException("Unsupported kind " + kind);
         }
@@ -350,26 +398,25 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
   }
 
   @Override
-  public CodeModel visitNewClass(NewClassTree node, VisitContext visitContext) {
-    ExpressionModel identifier = scan(node.getIdentifier(), visitContext);
-    List<ExpressionModel> arguments = node.getArguments().stream().map(arg -> scan(arg, visitContext)).collect(Collectors.toList());
+  public CodeModel visitNewClass(NewClassTree node, VisitContext context) {
+    ClassModel identifier = (ClassModel) scan(node.getIdentifier(), context);
+    List<ExpressionModel> arguments = node.getArguments().stream().map(arg -> scan(arg, context)).collect(Collectors.toList());
     JCTree.JCNewClass newClass = (JCTree.JCNewClass) node;
-    TypeInfo type = factory.create(newClass.type);
-    return identifier.onNew(type, arguments);
+    return identifier.onNew(arguments);
   }
 
   @Override
-  public CodeModel visitThrow(ThrowTree node, VisitContext visitContext) {
-    ThrowableModel throwableExpression = (ThrowableModel) scan(node.getExpression(), visitContext);
+  public CodeModel visitThrow(ThrowTree node, VisitContext context) {
+    ThrowableModel throwableExpression = (ThrowableModel) scan(node.getExpression(), context);
     return StatementModel.render(writer -> {
-      writer.getLang().renderThrow(throwableExpression.getType(), throwableExpression.getReason(), writer);
+      writer.renderThrow(throwableExpression.getType(), throwableExpression.getReason());
     });
   }
 
   @Override
-  public CodeModel visitParenthesized(ParenthesizedTree node, VisitContext visitContext) {
-    ExpressionModel expression = scan(node.getExpression(), visitContext);
-    return ExpressionModel.forParenthesized(expression);
+  public CodeModel visitParenthesized(ParenthesizedTree node, VisitContext context) {
+    ExpressionModel expression = scan(node.getExpression(), context);
+    return new ParenthesizedModel(context.builder, expression);
   }
 
   @Override
@@ -380,11 +427,13 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     return fieldExpression.as(fieldType);
   }
 
-
   @Override
   public CodeModel visitMemberReference(MemberReferenceTree node, VisitContext p) {
     if (node.getMode() == MemberReferenceTree.ReferenceMode.INVOKE) {
       ExpressionModel expression = scan(node.getQualifierExpression(), p);
+      if (expression instanceof ThisModel) {
+        p.getReferencedMethods().add(node.getName().toString());
+      }
       ExpressionModel methodReferenceExpression = expression.onMethodReference(node.getName().toString());
       return methodReferenceExpression;
     } else {
@@ -393,29 +442,11 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
   }
 
   @Override
-  public ExpressionModel visitMethodInvocation(MethodInvocationTree node, VisitContext p) {
-    if (node.getMethodSelect() instanceof IdentifierTree) {
-      throw new UnsupportedOperationException("Invoking a method of the same class is not supported");
-    }
-    // Is there a case it would not be a member select expression ?
-    JCTree.JCFieldAccess memberSelect = (JCTree.JCFieldAccess) node.getMethodSelect();
-    ExpressionModel memberSelectExpression = scan(memberSelect.getExpression(), p);
-    String methodName = memberSelect.getIdentifier().toString();
-    List<ExpressionModel> argumentModels = node.getArguments().stream().map(argument -> scan(argument, p)).collect(Collectors.toList());
-    TypeInfo returnType = factory.create(((JCTree) node).type);
-    JCTree.JCMethodInvocation abc = (JCTree.JCMethodInvocation) node;
-
-    // Compute the parameter types
-    Symbol.MethodSymbol sym = (Symbol.MethodSymbol) memberSelect.sym;
-    List<TypeInfo> parameterTypes = new ArrayList<>();
-    for (Symbol.VarSymbol var : sym.getParameters()) {
-      TypeInfo parameterType = factory.create(var.asType());
-      parameterTypes.add(parameterType);
-    }
+  public ExpressionModel visitMethodInvocation(MethodInvocationTree node, VisitContext context) {
 
     // Compute the argument types
     List<TypeInfo> argumentTypes = new ArrayList<>();
-    for (JCTree.JCExpression argument : abc.getArguments()) {
+    for (JCTree.JCExpression argument : ((JCTree.JCMethodInvocation) node).getArguments()) {
       TypeInfo argumentType = null;
       if (argument.type.getKind() != TypeKind.NULL) {
         argumentType = factory.create(argument.type);
@@ -423,9 +454,45 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
       argumentTypes.add(argumentType);
     }
 
+    //
+    List<ExpressionModel> argumentModels = node.getArguments().stream().map(argument -> scan(argument, context)).collect(Collectors.toList());
+    TypeInfo returnType = factory.create(((JCTree) node).type);
+
+    // We don't go for scanning here as it would complicate things and need to introduce
+    // extra models
+    Symbol.MethodSymbol sym;
+    ExpressionModel memberSelectExpression;
+    String name;
+    boolean addToRefedMethods;
+    if (node.getMethodSelect() instanceof IdentifierTree) {
+      JCTree.JCIdent def = (JCTree.JCIdent) node.getMethodSelect();
+      name = def.getName().toString();
+      memberSelectExpression = context.builder.thisModel();
+      sym = (Symbol.MethodSymbol) def.sym;
+      addToRefedMethods = true;
+    } else {
+      // Is there a case it would not be a member select expression ?
+      JCTree.JCFieldAccess memberSelect = (JCTree.JCFieldAccess) node.getMethodSelect();
+      memberSelectExpression = scan(memberSelect.getExpression(), context);
+      name = memberSelect.getIdentifier().toString();
+      sym = (Symbol.MethodSymbol) memberSelect.sym;
+      addToRefedMethods = false;
+    }
+
+    // Compute the parameter types
+    List<TypeInfo> parameterTypes = new ArrayList<>();
+    for (Symbol.VarSymbol var : sym.getParameters()) {
+      TypeInfo parameterType = factory.create(var.asType());
+      parameterTypes.add(parameterType);
+    }
+
     TypeInfo type = factory.create(sym.owner.type);
-    ExpressionModel expression = memberSelectExpression.onMethodInvocation(type, methodName,
-        returnType, parameterTypes, argumentModels, argumentTypes);
+    MethodSignature signature = new MethodSignature(name, parameterTypes);
+    if (addToRefedMethods) {
+      context.getReferencedMethods().add(name);
+    }
+
+    ExpressionModel expression = memberSelectExpression.onMethodInvocation(type, signature, returnType, argumentModels, argumentTypes);
     return expression.as(returnType);
   }
 
@@ -481,23 +548,23 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return StatementModel.render(renderer -> {
-      renderer.getLang().renderBlock(new BlockModel() {
+    return StatementModel.render(writer -> {
+      writer.renderBlock(new BlockModel() {
         @Override
         public void render(CodeWriter writer) {
-          for (int i = 0;i < models.size();i++) {
+          for (int i = 0; i < models.size(); i++) {
             StatementModel model = models.get(i);
-            writer.getLang().renderFragment(fragments.get(i), writer);
-            writer.getLang().renderStatement(model, writer);
+            writer.renderFragment(fragments.get(i));
+            writer.renderStatement(model);
           }
-          writer.getLang().renderFragment(fragments.getLast(), writer);
+          writer.renderFragment(fragments.getLast());
         }
-      }, renderer);
+      });
     });
   }
 
   @Override
-  public ExpressionModel visitLambdaExpression(LambdaExpressionTree node, VisitContext p) {
+  public ExpressionModel visitLambdaExpression(LambdaExpressionTree node, VisitContext context) {
     List<String> parameterNames = node.getParameters().stream().map(parameter -> parameter.getName().toString()).collect(Collectors.toList());
     List<TypeInfo> parameterTypes = node.getParameters().stream().
         map(parameter -> factory.create(((JCTree.JCVariableDecl) parameter).type)).
@@ -512,20 +579,26 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
           Symbol.ClassSymbol sym = (Symbol.ClassSymbol) clazz.sym;
           TypeInfo type = factory.create(sym.type);
           if (type.getKind() == ClassKind.ASYNC_RESULT) {
-            ExpressionModel result = lang.asyncResult(last.name.toString());
-            CodeModel body = scan(node.getBody(), p.putAlias(last.sym, result));
+            ExpressionModel result = context.builder.asyncResult(last.name.toString(), ((TypeInfo.Parameterized)(type)).getArgs().get(0));
+            CodeModel body = scan(node.getBody(), context.putAlias(last.sym, result));
             TypeInfo.Parameterized parameterized = (TypeInfo.Parameterized) type;
-            return lang.asyncResultHandler(node.getBodyKind(), parameterized, last.name.toString(), body);
+            return context.builder.asyncResultHandler(node.getBodyKind(), parameterized, last.name.toString(), body);
           }
         }
       }
     }
-    CodeModel body = scan(node.getBody(), p);
-    return new LambdaExpressionModel(node.getBodyKind(), parameterTypes, parameterNames, body);
+    CodeModel body = scan(node.getBody(), context);
+    return new LambdaExpressionModel(context.builder, node.getBodyKind(), parameterTypes, parameterNames, body);
   }
 
   @Override
-  public CodeModel visitMethod(MethodTree node, VisitContext p) {
-    return scan(node.getBody(), p);
+  public MethodModel visitMethod(MethodTree node, VisitContext p) {
+    List<TypeInfo> parameterTypes = new ArrayList<>();
+    for (VariableTree var : node.getParameters()) {
+      JCTree.JCVariableDecl decl = (JCTree.JCVariableDecl) var;
+      TypeInfo parameterType = factory.create(decl.sym.asType());
+      parameterTypes.add(parameterType);
+    }
+    return new MethodModel(scan(node.getBody(), p), new MethodSignature(node.getName().toString(), parameterTypes), node.getParameters().stream().map(param -> param.getName().toString()).collect(Collectors.toList()));
   }
 }

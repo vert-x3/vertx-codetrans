@@ -1,5 +1,8 @@
 package io.vertx.codetrans;
 
+import io.vertx.codetrans.lang.groovy.GroovyLang;
+import io.vertx.codetrans.lang.js.JavaScriptLang;
+import io.vertx.codetrans.lang.ruby.RubyLang;
 import org.jruby.embed.EvalFailedException;
 import org.junit.Test;
 
