@@ -7,7 +7,7 @@ import io.vertx.codetrans.expression.AsyncResultModel;
 import io.vertx.codetrans.expression.BinaryExpressionModel;
 import io.vertx.codetrans.expression.EnumExpressionModel;
 import io.vertx.codetrans.expression.ExpressionModel;
-import io.vertx.codetrans.expression.IdentifierKind;
+import io.vertx.codetrans.expression.IdentifierScope;
 import io.vertx.codetrans.expression.IdentifierModel;
 import io.vertx.codetrans.expression.ThisModel;
 import io.vertx.codetrans.statement.StatementModel;
@@ -41,8 +41,8 @@ public interface CodeBuilder {
     return new EnumExpressionModel(this, type);
   }
 
-  default ExpressionModel identifier(String name, IdentifierKind kind) {
-    return new IdentifierModel(this, name, kind);
+  default ExpressionModel identifier(String name, IdentifierScope scope) {
+    return new IdentifierModel(this, name, scope);
   }
 
   StatementModel variableDecl(TypeInfo type, String name, ExpressionModel initializer);

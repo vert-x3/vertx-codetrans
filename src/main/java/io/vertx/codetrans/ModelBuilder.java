@@ -37,7 +37,7 @@ import io.vertx.codegen.TypeInfo;
 import io.vertx.codetrans.expression.ClassModel;
 import io.vertx.codetrans.expression.DataObjectClassModel;
 import io.vertx.codetrans.expression.ExpressionModel;
-import io.vertx.codetrans.expression.IdentifierKind;
+import io.vertx.codetrans.expression.IdentifierScope;
 import io.vertx.codetrans.expression.JavaClassModel;
 import io.vertx.codetrans.expression.JsonArrayClassModel;
 import io.vertx.codetrans.expression.JsonObjectClassModel;
@@ -372,24 +372,24 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
         TypeInfo type = factory.create(ident.type);
         switch (kind) {
           case LOCAL_VARIABLE:
-            return context.builder.identifier(name, IdentifierKind.VARIABLE).as(type);
+            return context.builder.identifier(name, IdentifierScope.VARIABLE).as(type);
           case PARAMETER:
-            return context.builder.identifier(name, IdentifierKind.PARAMETER).as(type);
+            return context.builder.identifier(name, IdentifierScope.PARAMETER).as(type);
           case FIELD:
-            AtomicReference<IdentifierKind> resolvedKind = new AtomicReference<>(IdentifierKind.GLOBAL);
+            AtomicReference<IdentifierScope> resolvedScope = new AtomicReference<>(IdentifierScope.GLOBAL);
             new TreePathScanner<Void, Void>() {
               @Override
               public Void visitVariable(VariableTree node, Void aVoid) {
                 if (node.getName().toString().equals(name)) {
-                  resolvedKind.set(IdentifierKind.FIELD);
+                  resolvedScope.set(IdentifierScope.FIELD);
                 }
                 return null;
               };
             }.scan(path.getParentPath(), null);
-            if (resolvedKind.get() == IdentifierKind.FIELD) {
+            if (resolvedScope.get() == IdentifierScope.FIELD) {
               context.getReferencedFields().add(name);
             }
-            return context.builder.identifier(name, resolvedKind.get()).as(type);
+            return context.builder.identifier(name, resolvedScope.get()).as(type);
           default:
             throw new UnsupportedOperationException("Unsupported kind " + kind);
         }

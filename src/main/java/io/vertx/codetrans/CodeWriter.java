@@ -5,7 +5,7 @@ import io.vertx.codegen.TypeInfo;
 import io.vertx.codetrans.expression.BinaryExpressionModel;
 import io.vertx.codetrans.expression.DataObjectLiteralModel;
 import io.vertx.codetrans.expression.ExpressionModel;
-import io.vertx.codetrans.expression.IdentifierKind;
+import io.vertx.codetrans.expression.IdentifierScope;
 import io.vertx.codetrans.expression.JsonArrayLiteralModel;
 import io.vertx.codetrans.expression.JsonObjectLiteralModel;
 import io.vertx.codetrans.statement.ConditionalBlockModel;
@@ -161,7 +161,7 @@ public abstract class CodeWriter implements Appendable {
     expression.render(this);
   }
 
-  public void renderIdentifier(String name, IdentifierKind kind) {
+  public void renderIdentifier(String name, IdentifierScope scope) {
     append(name);
   }
 

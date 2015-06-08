@@ -9,16 +9,16 @@ import io.vertx.codetrans.CodeWriter;
 public class IdentifierModel extends ExpressionModel {
 
   final String name;
-  final IdentifierKind kind;
+  final IdentifierScope scope;
 
-  public IdentifierModel(CodeBuilder builder, String name, IdentifierKind kind) {
+  public IdentifierModel(CodeBuilder builder, String name, IdentifierScope scope) {
     super(builder);
     this.name = name;
-    this.kind = kind;
+    this.scope = scope;
   }
 
   @Override
   public void render(CodeWriter writer) {
-    writer.renderIdentifier(name, kind);
+    writer.renderIdentifier(name, scope);
   }
 }

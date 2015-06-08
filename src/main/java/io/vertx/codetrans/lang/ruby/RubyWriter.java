@@ -11,7 +11,7 @@ import io.vertx.codetrans.expression.DataObjectLiteralModel;
 import io.vertx.codetrans.expression.ExpressionModel;
 import io.vertx.codetrans.FragmentParser;
 import io.vertx.codetrans.Helper;
-import io.vertx.codetrans.expression.IdentifierKind;
+import io.vertx.codetrans.expression.IdentifierScope;
 import io.vertx.codetrans.expression.JsonArrayLiteralModel;
 import io.vertx.codetrans.expression.JsonObjectLiteralModel;
 import io.vertx.codetrans.expression.LambdaExpressionModel;
@@ -405,8 +405,8 @@ class RubyWriter extends CodeWriter {
   }
 
   @Override
-  public void renderIdentifier(String name, IdentifierKind kind) {
-    switch (kind) {
+  public void renderIdentifier(String name, IdentifierScope scope) {
+    switch (scope) {
       case GLOBAL:
         name = "$" + name;
         break;
@@ -414,7 +414,7 @@ class RubyWriter extends CodeWriter {
         name = "@" + name;
         break;
     }
-    super.renderIdentifier(name, kind);
+    super.renderIdentifier(name, scope);
   }
 
   /**
