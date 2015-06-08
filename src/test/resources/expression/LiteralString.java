@@ -92,6 +92,13 @@ public class LiteralString {
   }
 
   @CodeTranslate
+  public void concat10() throws Exception {
+    int a = 0;
+    a = 2;
+    LiteralExpressionTest.result = "\n" + a;
+  }
+
+  @CodeTranslate
   public void escape() throws Exception {
     LiteralExpressionTest.result = "\n\r\t\f\b\"\\'\u0000A\u007F";
   }

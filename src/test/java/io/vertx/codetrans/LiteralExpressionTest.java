@@ -63,6 +63,9 @@ public class LiteralExpressionTest extends ConversionTestBase {
     runAll("expression/LiteralString", "concat9", () -> {
       assertEquals("_2_", result.toString());
     });
+    runAll("expression/LiteralString", "concat10", () -> {
+      assertEquals("\n2", result.toString());
+    });
     String expected = "\n\r\t\f\b\"\\'\u0000\u0041\u007F";
     runAll("expression/LiteralString", "escape", () -> {
       assertEquals(expected, result.toString());

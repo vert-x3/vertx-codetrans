@@ -54,7 +54,7 @@ class RubyWriter extends CodeWriter {
         ex.render(this);
         append("}");
       } else {
-        append(part.toString());
+        renderChars(part.toString());
       }
     }
     append('"');

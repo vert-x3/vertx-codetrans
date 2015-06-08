@@ -209,7 +209,7 @@ public abstract class CodeWriter implements Appendable {
         ex.render(this);
       } else {
         append("\"");
-        append(part.toString());
+        renderChars(part.toString());
         append("\"");
       }
       if (it.hasNext()) {
