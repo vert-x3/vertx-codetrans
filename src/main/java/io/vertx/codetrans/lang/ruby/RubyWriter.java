@@ -491,9 +491,15 @@ class RubyWriter extends CodeWriter {
   }
 
   @Override
-  public void renderConsoleLog(ExpressionModel log) {
+  public void renderSystemOutPrintln(ExpressionModel expression) {
     append("puts ");
-    log.render(this);
+    expression.render(this);
+  }
+
+  @Override
+  public void renderSystemErrPrintln(ExpressionModel expression) {
+    append("STDERR.puts ");
+    expression.render(this);
   }
 
   @Override

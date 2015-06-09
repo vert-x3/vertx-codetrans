@@ -209,9 +209,16 @@ class JavaScriptWriter extends CodeWriter {
   }
 
   @Override
-  public void renderConsoleLog(ExpressionModel log) {
+  public void renderSystemOutPrintln(ExpressionModel expression) {
     append("console.log(");
-    log.render(this);
+    expression.render(this);
+    append(")");
+  }
+
+  @Override
+  public void renderSystemErrPrintln(ExpressionModel expression) {
+    append("console.error(");
+    expression.render(this);
     append(")");
   }
 

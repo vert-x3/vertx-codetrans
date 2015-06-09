@@ -363,7 +363,9 @@ public abstract class CodeWriter implements Appendable {
 
   public abstract void renderEnumConstant(TypeInfo.Class.Enum type, String constant);
 
-  public abstract void renderConsoleLog(ExpressionModel log);
+  public abstract void renderSystemOutPrintln(ExpressionModel expression);
+
+  public abstract void renderSystemErrPrintln(ExpressionModel expression);
 
   public abstract void renderThrow(String throwableType, ExpressionModel reason);
 

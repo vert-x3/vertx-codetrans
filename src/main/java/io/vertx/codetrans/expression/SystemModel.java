@@ -14,7 +14,10 @@ public class SystemModel extends ClassModel {
   @Override
   public ExpressionModel onField(String identifier) {
     if (identifier.equals("out")) {
-      return new ConsoleModel(builder);
+      return new ConsoleModel(builder, true);
+    }
+    if (identifier.equals("err")) {
+      return new ConsoleModel(builder, false);
     }
     throw new UnsupportedOperationException("Cannot select " + identifier + " on java.lang.System");
   }

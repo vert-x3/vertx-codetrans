@@ -12,8 +12,11 @@ import java.util.List;
  */
 public class ConsoleModel extends ExpressionModel {
 
-  public ConsoleModel(CodeBuilder builder) {
+  final boolean out;
+
+  public ConsoleModel(CodeBuilder builder, boolean out) {
     super(builder);
+    this.out = out;
   }
 
   @Override
@@ -22,7 +25,11 @@ public class ConsoleModel extends ExpressionModel {
       return new ExpressionModel(builder) {
         @Override
         public void render(CodeWriter writer) {
-          writer.renderConsoleLog(argumentModels.get(0));
+          if (out) {
+            writer.renderSystemOutPrintln(argumentModels.get(0));
+          } else {
+            writer.renderSystemErrPrintln(argumentModels.get(0));
+          }
         }
       };
     }

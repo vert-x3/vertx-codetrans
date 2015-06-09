@@ -153,9 +153,16 @@ class GroovyWriter extends CodeWriter {
   }
 
   @Override
-  public void renderConsoleLog(ExpressionModel log) {
+  public void renderSystemOutPrintln(ExpressionModel expression) {
     append("println(");
-    log.render(this);
+    expression.render(this);
+    append(")");
+  }
+
+  @Override
+  public void renderSystemErrPrintln(ExpressionModel expression) {
+    append("System.err.println(");
+    expression.render(this);
     append(")");
   }
 
