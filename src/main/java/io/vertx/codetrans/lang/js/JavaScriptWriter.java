@@ -245,6 +245,18 @@ class JavaScriptWriter extends CodeWriter {
   }
 
   @Override
+  public void renderListLiteral(List<ExpressionModel> arguments) {
+    append("[");
+    for (Iterator<ExpressionModel> it = arguments.iterator();it.hasNext();) {
+      it.next().render(this);
+      if (it.hasNext()) {
+        append(", ");
+      }
+    }
+    append("]");
+  }
+
+  @Override
   public void renderMapGet(ExpressionModel map, ExpressionModel key) {
     map.render(this);
     append('[');

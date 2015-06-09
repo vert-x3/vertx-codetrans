@@ -301,6 +301,8 @@ public abstract class CodeWriter implements Appendable {
 
   public abstract void renderListGet(ExpressionModel list, ExpressionModel index);
 
+  public abstract void renderListLiteral(List<ExpressionModel> arguments);
+
   public abstract void renderMapGet(ExpressionModel map, ExpressionModel key);
 
   public abstract void renderMapPut(ExpressionModel map, ExpressionModel key, ExpressionModel value);

@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -109,9 +110,18 @@ public class CollectionTest extends ConversionTestBase {
 
   @Test
   public void testAsList() {
-    runAll("collection/ListApi", "asList", () -> {
-      assertEquals("foo", o);
-      o = null;
-    });
+    runGroovy("collection/ListApi", "asList");
+    assertEquals(Arrays.asList("foo", "bar", "juu"), o);
+    o = null;
+    runJavaScript("collection/ListApi", "asList");
+    ScriptObjectMirror so = (ScriptObjectMirror) o;
+    assertEquals(3, so.size());
+    assertEquals("foo", so.get(0));
+    assertEquals("bar", so.get(1));
+    assertEquals("juu", so.get(2));
+    o = null;
+    runRuby("collection/ListApi", "asList");
+    assertEquals(Arrays.asList("foo", "bar", "juu"), o);
+    o = null;
   }
 }

@@ -31,9 +31,11 @@ import com.sun.source.util.TreePath;
 import com.sun.source.util.TreePathScanner;
 import com.sun.source.util.Trees;
 import com.sun.tools.javac.code.Symbol;
+import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.tree.JCTree;
 import io.vertx.codegen.ClassKind;
 import io.vertx.codegen.TypeInfo;
+import io.vertx.codetrans.expression.ArraysModel;
 import io.vertx.codetrans.expression.ClassModel;
 import io.vertx.codetrans.expression.DataObjectClassModel;
 import io.vertx.codetrans.expression.ExpressionModel;
@@ -55,14 +57,19 @@ import io.vertx.codetrans.statement.ReturnModel;
 import io.vertx.codetrans.statement.StatementModel;
 import io.vertx.codetrans.statement.TryCatchModel;
 
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -337,10 +344,12 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
       return new ThisModel(context.builder);
     }
     if (ident.sym instanceof TypeElement) {
+      TypeInfo.Class type = (TypeInfo.Class) factory.create(ident.type);
       if (ident.type.equals(systemType)) {
         return new SystemModel(context.builder);
+      } else if (type.getName().equals("java.util.Arrays")) {
+        return new ArraysModel(context.builder);
       } else {
-        TypeInfo.Class type = (TypeInfo.Class) factory.create(ident.type);
         if (typeUtils.isSubtype(ident.type, throwableType)) {
           return new ThrowableClassModel(context.builder, type);
         }
@@ -458,6 +467,9 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
   @Override
   public ExpressionModel visitMethodInvocation(MethodInvocationTree node, VisitContext context) {
 
+    ExecutableElement exec = (ExecutableElement) trees.getElement(trees.getPath(path.getCompilationUnit(), node));
+    boolean varargs = exec.isVarArgs();
+
     // Compute the argument types
     List<TypeInfo> argumentTypes = new ArrayList<>();
     for (JCTree.JCExpression argument : ((JCTree.JCMethodInvocation) node).getArguments()) {
@@ -495,13 +507,19 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
 
     // Compute the parameter types
     List<TypeInfo> parameterTypes = new ArrayList<>();
-    for (Symbol.VarSymbol var : sym.getParameters()) {
-      TypeInfo parameterType = factory.create(var.asType());
+    for (Iterator<Symbol.VarSymbol> it = sym.getParameters().iterator();it.hasNext();) {
+      Symbol.VarSymbol var = it.next();
+      TypeMirror type = var.asType();
+      if (!it.hasNext() && varargs) {
+        ArrayType arrayType = (ArrayType) type;
+        type = arrayType.getComponentType();
+      }
+      TypeInfo parameterType = factory.create(type);
       parameterTypes.add(parameterType);
     }
 
     TypeInfo type = factory.create(sym.owner.type);
-    MethodSignature signature = new MethodSignature(name, parameterTypes);
+    MethodSignature signature = new MethodSignature(name, parameterTypes, varargs);
     if (addToRefedMethods) {
       context.getReferencedMethods().add(name);
     }
@@ -613,6 +631,6 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
       TypeInfo parameterType = factory.create(decl.sym.asType());
       parameterTypes.add(parameterType);
     }
-    return new MethodModel(scan(node.getBody(), p), new MethodSignature(node.getName().toString(), parameterTypes), node.getParameters().stream().map(param -> param.getName().toString()).collect(Collectors.toList()));
+    return new MethodModel(scan(node.getBody(), p), new MethodSignature(node.getName().toString(), parameterTypes, false), node.getParameters().stream().map(param -> param.getName().toString()).collect(Collectors.toList()));
   }
 }
