@@ -9,9 +9,9 @@ import io.vertx.codetrans.CodeWriter;
 public class IdentifierModel extends ExpressionModel {
 
   final String name;
-  final IdentifierScope scope;
+  final VariableScope scope;
 
-  public IdentifierModel(CodeBuilder builder, String name, IdentifierScope scope) {
+  public IdentifierModel(CodeBuilder builder, String name, VariableScope scope) {
     super(builder);
     this.name = name;
     this.scope = scope;

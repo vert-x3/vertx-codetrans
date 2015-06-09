@@ -3,7 +3,7 @@ package io.vertx.codetrans.expression;
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public enum IdentifierScope {
+public enum VariableScope {
 
   GLOBAL,
 

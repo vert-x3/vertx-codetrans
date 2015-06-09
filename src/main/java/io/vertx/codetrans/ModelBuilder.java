@@ -37,7 +37,7 @@ import io.vertx.codegen.TypeInfo;
 import io.vertx.codetrans.expression.ClassModel;
 import io.vertx.codetrans.expression.DataObjectClassModel;
 import io.vertx.codetrans.expression.ExpressionModel;
-import io.vertx.codetrans.expression.IdentifierScope;
+import io.vertx.codetrans.expression.VariableScope;
 import io.vertx.codetrans.expression.JavaClassModel;
 import io.vertx.codetrans.expression.JsonArrayClassModel;
 import io.vertx.codetrans.expression.JsonObjectClassModel;
@@ -153,7 +153,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     }
     TypeInfo type = factory.create(decl.type);
     ElementKind kind = decl.sym.getKind();
-    IdentifierScope scope = resolvescope(context, kind, decl.getName().toString());
+    VariableScope scope = resolvescope(context, kind, decl.getName().toString());
     return context.builder.variableDecl(scope, type, decl.name.toString(), initializer);
   }
 
@@ -368,34 +368,34 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
         ElementKind kind = ident.sym.getKind();
         String name = node.getName().toString();
         TypeInfo type = factory.create(ident.type);
-        IdentifierScope scope;
+        VariableScope scope;
         scope = resolvescope(context, kind, name);
         return context.builder.identifier(name, scope).as(type);
       }
     }
   }
 
-  private IdentifierScope resolvescope(VisitContext context, ElementKind kind, final String name) {
-    IdentifierScope scope;
+  private VariableScope resolvescope(VisitContext context, ElementKind kind, final String name) {
+    VariableScope scope;
     switch (kind) {
       case LOCAL_VARIABLE:
-        scope = IdentifierScope.VARIABLE;
+        scope = VariableScope.VARIABLE;
         break;
       case PARAMETER:
-        scope = IdentifierScope.PARAMETER;
+        scope = VariableScope.PARAMETER;
         break;
       case FIELD:
-        AtomicReference<IdentifierScope> resolvedScope = new AtomicReference<>(IdentifierScope.GLOBAL);
+        AtomicReference<VariableScope> resolvedScope = new AtomicReference<>(VariableScope.GLOBAL);
         new TreePathScanner<Void, Void>() {
           @Override
           public Void visitVariable(VariableTree node, Void aVoid) {
             if (node.getName().toString().equals(name)) {
-              resolvedScope.set(IdentifierScope.FIELD);
+              resolvedScope.set(VariableScope.FIELD);
             }
             return null;
           };
         }.scan(path.getParentPath(), null);
-        if (resolvedScope.get() == IdentifierScope.FIELD) {
+        if (resolvedScope.get() == VariableScope.FIELD) {
           context.getReferencedFields().add(name);
         }
         scope = resolvedScope.get();
