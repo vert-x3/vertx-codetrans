@@ -7,7 +7,9 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,24 +46,26 @@ public abstract class ConversionTestBase {
 
 
   public void runAll(String path, Runnable after) {
-    for (Lang lang : langs()) {
-      run(lang, path);
-      after.run();
-    }
+    runAll(path, "start", after);
   }
 
   public void runAll(String path, String method, Runnable after) {
-    for (Lang lang : langs()) {
-      run(lang, path, method);
-      after.run();
-    }
+    runAll(path, method, Collections.emptyMap(), after);
   }
 
   public void runAll(String path, String method, Map<String, Object> globals, Runnable after) {
-    for (Lang lang : langs()) {
-      run(lang, path, method, globals);
-      after.run();
-    }
+    script(Arrays.asList(langs()), path, method).values().forEach(
+        script -> {
+          try {
+            script.run(globals);
+            after.run();
+          } catch (Exception e) {
+            System.out.println("Script evaluation failed");
+            System.out.println(script.getSource());
+            throw new AssertionError(e);
+          }
+        }
+    );
   }
 
   public void run(Lang lang, String path) {
@@ -69,30 +73,42 @@ public abstract class ConversionTestBase {
   }
 
   public Result convert(Lang lang, String path, String method) {
-    return convert(lang, path).get(method);
+    return convert(lang, path, path.replace('/', '.'), method);
   }
 
-  public static Map<String, Result> convert(Lang lang, String path) {
+  public static Result convert(Lang lang, String path, String fqn, String method) {
+    return convert(Collections.singletonList(lang), path, fqn, method).get(lang);
+  }
+
+  public static Map<Lang, Result> convert(List<Lang> lang, String path, String fqn, String method) {
     try {
-      return ConvertingProcessor.convert(ClassIdentifierExpressionTest.class.getClassLoader(), lang, path + ".java");
+      return ConvertingProcessor.convert(ClassIdentifierExpressionTest.class.getClassLoader(), lang, path + ".java", fqn, method);
     } catch (Exception e) {
       throw new AssertionError(e);
     }
   }
 
   public static Script script(Lang lang, String path, String method) {
-    Map<String, Result> results = convert(lang, path);
+    return script(Collections.singletonList(lang), path, method).get(lang);
+  }
+
+  public static Map<Lang, Script> script(List<Lang> langs, String path, String method) {
+    Map<Lang, Result> results = convert(langs, path, path.replace('/', '.'), method);
     Thread current = Thread.currentThread();
     ClassLoader prev = current.getContextClassLoader();
-    LoadingClassLoader loader = new LoadingClassLoader(current.getContextClassLoader(), results);
-    current.setContextClassLoader(loader);
-    try {
-      return lang.loadScript(loader, path + "_" + method);
-    } catch (Exception e) {
-      throw new AssertionError(e);
-    } finally {
-      current.setContextClassLoader(prev);
-    }
+    current.setContextClassLoader(current.getContextClassLoader());
+    Map<Lang, Script> scripts = new LinkedHashMap<>();
+    results.forEach((lang, result) -> {
+      try {
+        Script script = lang.loadScript(current.getContextClassLoader(), ((Result.Source) result).getValue());
+        scripts.put(lang, script);
+      } catch (Exception e) {
+        throw new AssertionError(e);
+      } finally {
+        current.setContextClassLoader(prev);
+      }
+    });
+    return scripts;
   }
 
   public void run(Lang lang, String path, String method) {

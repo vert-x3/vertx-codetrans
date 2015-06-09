@@ -5,7 +5,7 @@ package io.vertx.codetrans;
  */
 public interface Lang {
 
-  Script loadScript(ClassLoader loader, String path) throws Exception;
+  Script loadScript(ClassLoader loader, String source) throws Exception;
 
   String getExtension();
 

@@ -26,23 +26,19 @@ public class ConvertingProcessor extends AbstractProcessor {
   private static final Locale locale = Locale.getDefault();
   private static final Charset charset = Charset.forName("UTF-8");
 
-  public static Map<String, Result> convert(ClassLoader loader, Lang lang, String... sources) throws Exception {
-    String[] files = new String[sources.length];
-    int index = 0;
-    for (String source : sources) {
-      URL url = loader.getResource(source);
-      if (url == null) {
-        throw new Exception("Cannot resolve source " + source + "");
-      }
-      files[index++] = new File(url.toURI()).getAbsolutePath();
+  public static Map<Lang, Result> convert(ClassLoader loader, List<Lang> langs, String source, String fqn, String method) throws Exception {
+    URL url = loader.getResource(source);
+    if (url == null) {
+      throw new Exception("Cannot resolve source " + source + "");
     }
-    return convertFromFiles(loader, lang, files);
+    String file = new File(url.toURI()).getAbsolutePath();
+    return convertFromFiles(loader, langs, file, fqn, method);
   }
 
-  public static Map<String, Result> convertFromFiles(ClassLoader loader, Lang lang, String... files) throws Exception {
+  public static Map<Lang, Result> convertFromFiles(ClassLoader loader, List<Lang> lang, String file, String fqn, String method) throws Exception {
     DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
     StandardJavaFileManager manager = javac.getStandardFileManager(diagnostics, locale, charset);
-    Iterable<? extends JavaFileObject> fileObjects = manager.getJavaFileObjects(files);
+    Iterable<? extends JavaFileObject> fileObjects = manager.getJavaFileObjects(file);
     StringWriter out = new StringWriter();
     JavaCompiler.CompilationTask task = javac.getTask(
       out,
@@ -52,14 +48,14 @@ public class ConvertingProcessor extends AbstractProcessor {
       Collections.<String>emptyList(),
       fileObjects);
     task.setLocale(locale);
-    ConvertingProcessor processor = new ConvertingProcessor(lang);
+    ConvertingProcessor processor = new ConvertingProcessor(lang, fqn, method);
     task.setProcessors(Collections.<Processor>singletonList(processor));
     if (task.call()) {
       return processor.getResults();
     } else {
       StringWriter message = new StringWriter();
       PrintWriter writer = new PrintWriter(message);
-      writer.append("Compilation of ").append(Arrays.toString(files)).println(" failed:");
+      writer.append("Compilation of ").append(file).println(" failed:");
       for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics())  {
         writer.append(diagnostic.getMessage(locale));
       }
@@ -69,15 +65,19 @@ public class ConvertingProcessor extends AbstractProcessor {
     }
   }
 
-  private Map<String, Result> results = new HashMap<>();
-  private Lang lang;
+  private Map<Lang, Result> results = new LinkedHashMap<>();
+  private List<Lang> langs;
+  private final String fqn;
+  private final String method;
   private CodeTranslator translator;
 
-  public ConvertingProcessor(Lang lang) {
-    this.lang = lang;
+  public ConvertingProcessor(List<Lang> langs, String fqn, String method) {
+    this.langs = langs;
+    this.fqn = fqn;
+    this.method = method;
   }
 
-  public Map<String, Result> getResults() {
+  public Map<Lang, Result> getResults() {
     return results;
   }
 
@@ -97,14 +97,18 @@ public class ConvertingProcessor extends AbstractProcessor {
     for (Element annotatedElt : roundEnv.getElementsAnnotatedWith(CodeTranslate.class)) {
       ExecutableElement methodElt = (ExecutableElement) annotatedElt;
       TypeElement typeElt = (TypeElement) methodElt.getEnclosingElement();
-      Result result;
-      try {
-        String translation = translator.translate(methodElt, lang);
-        result = new Result.Source(translation);
-      } catch (Exception e) {
-        result = new Result.Failure(e);
+      if (typeElt.getQualifiedName().toString().equals(fqn) && methodElt.getSimpleName().toString().equals(method)) {
+        for (Lang lang : langs) {
+          Result result;
+          try {
+            String translation = translator.translate(methodElt, lang);
+            result = new Result.Source(translation);
+          } catch (Exception e) {
+            result = new Result.Failure(e);
+          }
+          results.put(lang, result);
+        }
       }
-      results.put(typeElt.toString().replace('.', '/') + "_" + methodElt.getSimpleName() + '.' + lang.getExtension(), result);
     }
     return false;
   }

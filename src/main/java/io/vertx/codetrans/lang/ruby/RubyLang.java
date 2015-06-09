@@ -6,9 +6,7 @@ import io.vertx.codetrans.CodeBuilder;
 import org.jruby.embed.LocalContextScope;
 import org.jruby.embed.ScriptingContainer;
 
-import java.io.InputStream;
 import java.util.Map;
-import java.util.Scanner;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -21,13 +19,7 @@ public class RubyLang implements Lang {
   }
 
   @Override
-  public Script loadScript(ClassLoader loader, String path) throws Exception {
-    String filename = path + ".rb";
-    InputStream in = loader.getResourceAsStream(filename);
-    if (in == null) {
-      throw new Exception("Could not find " + filename);
-    }
-    String source = new Scanner(in, "UTF-8").useDelimiter("\\A").next();
+  public Script loadScript(ClassLoader loader, String source) throws Exception {
     ScriptingContainer container = new ScriptingContainer(LocalContextScope.SINGLETHREAD);
     return new Script() {
       @Override
