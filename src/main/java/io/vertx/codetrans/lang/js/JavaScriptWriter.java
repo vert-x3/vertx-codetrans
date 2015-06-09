@@ -77,6 +77,11 @@ class JavaScriptWriter extends CodeWriter {
     append("{}");
   }
 
+  @Override
+  public void renderNewList() {
+    append("[]");
+  }
+
   public void renderDataObject(DataObjectLiteralModel model) {
     renderJsonObject(model.getMembers());
   }
@@ -208,6 +213,20 @@ class JavaScriptWriter extends CodeWriter {
     append("console.log(");
     log.render(this);
     append(")");
+  }
+
+  @Override
+  public void renderListAdd(ExpressionModel list, ExpressionModel value) {
+    list.render(this);
+    append(".push(");
+    value.render(this);
+    append(")");
+  }
+
+  @Override
+  public void renderListSize(ExpressionModel list) {
+    list.render(this);
+    append(".length");
   }
 
   @Override

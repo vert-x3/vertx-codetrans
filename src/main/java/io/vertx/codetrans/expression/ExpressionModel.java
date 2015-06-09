@@ -29,6 +29,8 @@ public class ExpressionModel extends CodeModel {
         return new DataObjectModel(builder, this);
       case MAP:
         return new MapModel(builder, this);
+      case LIST:
+        return new ListModel(builder, this);
       default:
         return this;
     }

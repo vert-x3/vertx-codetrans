@@ -1,6 +1,8 @@
 package io.vertx.codetrans;
 
 import static org.junit.Assert.*;
+
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -56,6 +58,43 @@ public class CollectionTest extends ConversionTestBase {
   public void testMapNew() {
     runAll("collection/MapNew", "newMap", () -> {
       assertEquals(Collections.emptyMap(), o);
+      o = null;
+    });
+  }
+
+  @Test
+  public void testListNew() {
+    runGroovy("collection/ListNew", "newArrayList");
+    assertEquals(Collections.emptyList(), o);
+    o = null;
+    runJavaScript("collection/ListNew", "newArrayList");
+    ScriptObjectMirror so = (ScriptObjectMirror) o;
+    assertEquals(0, so.size());
+    o = null;
+    runRuby("collection/ListNew", "newArrayList");
+    assertEquals(Collections.emptyList(), o);
+    o = null;
+  }
+
+  @Test
+  public void testListAdd() {
+    runGroovy("collection/ListAdd", "addToList");
+    assertEquals(Collections.singletonList("foo"), o);
+    o = null;
+    runJavaScript("collection/ListAdd", "addToList");
+    ScriptObjectMirror so = (ScriptObjectMirror) o;
+    assertEquals(1, so.size());
+    assertEquals("foo", so.get(0));
+    o = null;
+    runRuby("collection/ListAdd", "addToList");
+    assertEquals(Collections.singletonList("foo"), o);
+    o = null;
+  }
+
+  @Test
+  public void testListSize() {
+    runAll("collection/ListSize", "size", () -> {
+      assertEquals(1, ((Number) o).intValue());
       o = null;
     });
   }

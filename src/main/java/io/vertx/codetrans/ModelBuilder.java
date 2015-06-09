@@ -37,6 +37,7 @@ import io.vertx.codegen.TypeInfo;
 import io.vertx.codetrans.expression.ClassModel;
 import io.vertx.codetrans.expression.DataObjectClassModel;
 import io.vertx.codetrans.expression.ExpressionModel;
+import io.vertx.codetrans.expression.ListClassModel;
 import io.vertx.codetrans.expression.VariableScope;
 import io.vertx.codetrans.expression.JavaClassModel;
 import io.vertx.codetrans.expression.JsonArrayClassModel;
@@ -354,10 +355,14 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
         } else if (type.getKind() == ClassKind.ENUM) {
           return context.builder.enumType((TypeInfo.Class.Enum) type);
         } else {
-          if (type.getName().equals("java.util.HashMap")) {
-            return new MapClassModel(context.builder);
+          switch (type.getName()) {
+            case "java.util.HashMap":
+              return new MapClassModel(context.builder);
+            case "java.util.ArrayList":
+              return new ListClassModel(context.builder);
+            default:
+              return new JavaClassModel(context.builder, type);
           }
-          return new JavaClassModel(context.builder, type);
         }
       }
     } else {

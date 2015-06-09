@@ -280,6 +280,20 @@ class RubyWriter extends CodeWriter {
   }
 
   @Override
+  public void renderListAdd(ExpressionModel list, ExpressionModel value) {
+    list.render(this);
+    append(".push(");
+    value.render(this);
+    append(")");
+  }
+
+  @Override
+  public void renderListSize(ExpressionModel list) {
+    list.render(this);
+    append(".length");
+  }
+
+  @Override
   public void renderMapGet(ExpressionModel map, ExpressionModel key) {
     map.render(this);
     append('[');
@@ -362,6 +376,11 @@ class RubyWriter extends CodeWriter {
   @Override
   public void renderNewMap() {
     append("Hash.new()");
+  }
+
+  @Override
+  public void renderNewList() {
+    append("Array.new");
   }
 
   @Override

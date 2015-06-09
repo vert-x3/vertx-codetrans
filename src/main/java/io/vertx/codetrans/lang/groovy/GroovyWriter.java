@@ -164,6 +164,11 @@ class GroovyWriter extends CodeWriter {
     append("[:]");
   }
 
+  @Override
+  public void renderNewList() {
+    append("[]");
+  }
+
   public void renderDataObject(DataObjectLiteralModel model) {
     renderJsonObject(model.getMembers());
   }
@@ -259,6 +264,20 @@ class GroovyWriter extends CodeWriter {
   @Override
   public void renderDataObjectMemberSelect(ExpressionModel expression, String name) {
     renderJsonObjectMemberSelect(expression, name);
+  }
+
+  @Override
+  public void renderListAdd(ExpressionModel list, ExpressionModel value) {
+    list.render(this);
+    append(".add(");
+    value.render(this);
+    append(")");
+  }
+
+  @Override
+  public void renderListSize(ExpressionModel list) {
+    list.render(this);
+    append(".size()");
   }
 
   @Override
