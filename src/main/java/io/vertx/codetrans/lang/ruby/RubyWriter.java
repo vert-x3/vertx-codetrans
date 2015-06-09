@@ -294,6 +294,14 @@ class RubyWriter extends CodeWriter {
   }
 
   @Override
+  public void renderListGet(ExpressionModel list, ExpressionModel index) {
+    list.render(this);
+    append("[");
+    index.render(this);
+    append("]");
+  }
+
+  @Override
   public void renderMapGet(ExpressionModel map, ExpressionModel key) {
     map.render(this);
     append('[');

@@ -98,4 +98,12 @@ public class CollectionTest extends ConversionTestBase {
       o = null;
     });
   }
+
+  @Test
+  public void testListGet() {
+    runAll("collection/ListGet", "get", () -> {
+      assertEquals("foo", o);
+      o = null;
+    });
+  }
 }

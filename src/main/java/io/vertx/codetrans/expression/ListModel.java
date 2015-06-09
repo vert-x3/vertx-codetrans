@@ -31,6 +31,10 @@ public class ListModel extends ExpressionModel {
         return builder.render(writer -> {
           writer.renderListSize(expression);
         });
+      case "get":
+        return builder.render(writer -> {
+          writer.renderListGet(expression, argumentModels.get(0));
+        });
       default:
         throw new UnsupportedOperationException("List " + method + " method not supported");
     }
