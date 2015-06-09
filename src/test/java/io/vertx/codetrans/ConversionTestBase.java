@@ -100,9 +100,12 @@ public abstract class ConversionTestBase {
     Map<Lang, Script> scripts = new LinkedHashMap<>();
     results.forEach((lang, result) -> {
       try {
+        if (result instanceof Result.Failure) {
+          throw ((Result.Failure) result).getCause();
+        }
         Script script = lang.loadScript(current.getContextClassLoader(), ((Result.Source) result).getValue());
         scripts.put(lang, script);
-      } catch (Exception e) {
+      } catch (Throwable e) {
         throw new AssertionError(e);
       } finally {
         current.setContextClassLoader(prev);

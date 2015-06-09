@@ -64,36 +64,36 @@ public class CollectionTest extends ConversionTestBase {
 
   @Test
   public void testListNew() {
-    runGroovy("collection/ListNew", "newArrayList");
+    runGroovy("collection/ListApi", "newArrayList");
     assertEquals(Collections.emptyList(), o);
     o = null;
-    runJavaScript("collection/ListNew", "newArrayList");
+    runJavaScript("collection/ListApi", "newArrayList");
     ScriptObjectMirror so = (ScriptObjectMirror) o;
     assertEquals(0, so.size());
     o = null;
-    runRuby("collection/ListNew", "newArrayList");
+    runRuby("collection/ListApi", "newArrayList");
     assertEquals(Collections.emptyList(), o);
     o = null;
   }
 
   @Test
   public void testListAdd() {
-    runGroovy("collection/ListAdd", "addToList");
+    runGroovy("collection/ListApi", "add");
     assertEquals(Collections.singletonList("foo"), o);
     o = null;
-    runJavaScript("collection/ListAdd", "addToList");
+    runJavaScript("collection/ListApi", "add");
     ScriptObjectMirror so = (ScriptObjectMirror) o;
     assertEquals(1, so.size());
     assertEquals("foo", so.get(0));
     o = null;
-    runRuby("collection/ListAdd", "addToList");
+    runRuby("collection/ListApi", "add");
     assertEquals(Collections.singletonList("foo"), o);
     o = null;
   }
 
   @Test
   public void testListSize() {
-    runAll("collection/ListSize", "size", () -> {
+    runAll("collection/ListApi", "size", () -> {
       assertEquals(1, ((Number) o).intValue());
       o = null;
     });
@@ -101,7 +101,15 @@ public class CollectionTest extends ConversionTestBase {
 
   @Test
   public void testListGet() {
-    runAll("collection/ListGet", "get", () -> {
+    runAll("collection/ListApi", "get", () -> {
+      assertEquals("foo", o);
+      o = null;
+    });
+  }
+
+  @Test
+  public void testAsList() {
+    runAll("collection/ListApi", "asList", () -> {
       assertEquals("foo", o);
       o = null;
     });
