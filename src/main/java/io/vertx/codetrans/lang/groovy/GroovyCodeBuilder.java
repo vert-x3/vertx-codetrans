@@ -6,6 +6,7 @@ import io.vertx.codetrans.expression.ApiTypeModel;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.expression.EnumExpressionModel;
 import io.vertx.codetrans.expression.ExpressionModel;
+import io.vertx.codetrans.expression.IdentifierScope;
 import io.vertx.codetrans.expression.LambdaExpressionModel;
 import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.MethodModel;
@@ -84,7 +85,7 @@ class GroovyCodeBuilder implements CodeBuilder {
   }
 
   @Override
-  public StatementModel variableDecl(TypeInfo type, String name, ExpressionModel initializer) {
+  public StatementModel variableDecl(IdentifierScope scope, TypeInfo type, String name, ExpressionModel initializer) {
     return StatementModel.render(renderer -> {
       renderer.append("def ").append(name);
       if (initializer != null) {

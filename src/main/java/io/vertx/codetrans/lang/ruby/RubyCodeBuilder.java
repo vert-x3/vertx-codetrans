@@ -9,6 +9,7 @@ import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.expression.EnumExpressionModel;
 import io.vertx.codetrans.expression.ExpressionModel;
+import io.vertx.codetrans.expression.IdentifierScope;
 import io.vertx.codetrans.expression.LambdaExpressionModel;
 import io.vertx.codetrans.MethodModel;
 import io.vertx.codetrans.RunnableCompilationUnit;
@@ -42,7 +43,6 @@ class RubyCodeBuilder implements CodeBuilder {
       writer.append("require '").append(require).append("'\n");
     }
     for (Map.Entry<String, StatementModel> field : unit.getFields().entrySet()) {
-      writer.append("@");
       field.getValue().render(writer);
       writer.append("\n");
     }
@@ -83,10 +83,22 @@ class RubyCodeBuilder implements CodeBuilder {
   }
 
   @Override
-  public StatementModel variableDecl(TypeInfo type, String name, ExpressionModel initializer) {
+  public StatementModel variableDecl(IdentifierScope scope, TypeInfo type, String name, ExpressionModel initializer) {
     return StatementModel.render(renderer -> {
-      if (initializer != null) {
-        renderer.append(name);
+      switch (scope) {
+        case FIELD:
+          renderer.append('@');
+          renderer.append(name);
+          break;
+        case GLOBAL:
+          throw new UnsupportedOperationException("Does not make sense");
+        default:
+          if (initializer != null) {
+            renderer.append(name);
+          }
+          break;
+      }
+      if (initializer != null ) {
         renderer.append(" = ");
         initializer.render(renderer);
       }

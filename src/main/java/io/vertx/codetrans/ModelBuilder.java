@@ -152,11 +152,9 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
       initializer = null;
     }
     TypeInfo type = factory.create(decl.type);
-    return context.builder.variableDecl(
-        type,
-        decl.name.toString(),
-        initializer
-    );
+    ElementKind kind = decl.sym.getKind();
+    IdentifierScope scope = resolvescope(context, kind, decl.getName().toString());
+    return context.builder.variableDecl(scope, type, decl.name.toString(), initializer);
   }
 
   @Override
@@ -370,31 +368,42 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
         ElementKind kind = ident.sym.getKind();
         String name = node.getName().toString();
         TypeInfo type = factory.create(ident.type);
-        switch (kind) {
-          case LOCAL_VARIABLE:
-            return context.builder.identifier(name, IdentifierScope.VARIABLE).as(type);
-          case PARAMETER:
-            return context.builder.identifier(name, IdentifierScope.PARAMETER).as(type);
-          case FIELD:
-            AtomicReference<IdentifierScope> resolvedScope = new AtomicReference<>(IdentifierScope.GLOBAL);
-            new TreePathScanner<Void, Void>() {
-              @Override
-              public Void visitVariable(VariableTree node, Void aVoid) {
-                if (node.getName().toString().equals(name)) {
-                  resolvedScope.set(IdentifierScope.FIELD);
-                }
-                return null;
-              };
-            }.scan(path.getParentPath(), null);
-            if (resolvedScope.get() == IdentifierScope.FIELD) {
-              context.getReferencedFields().add(name);
-            }
-            return context.builder.identifier(name, resolvedScope.get()).as(type);
-          default:
-            throw new UnsupportedOperationException("Unsupported kind " + kind);
-        }
+        IdentifierScope scope;
+        scope = resolvescope(context, kind, name);
+        return context.builder.identifier(name, scope).as(type);
       }
     }
+  }
+
+  private IdentifierScope resolvescope(VisitContext context, ElementKind kind, final String name) {
+    IdentifierScope scope;
+    switch (kind) {
+      case LOCAL_VARIABLE:
+        scope = IdentifierScope.VARIABLE;
+        break;
+      case PARAMETER:
+        scope = IdentifierScope.PARAMETER;
+        break;
+      case FIELD:
+        AtomicReference<IdentifierScope> resolvedScope = new AtomicReference<>(IdentifierScope.GLOBAL);
+        new TreePathScanner<Void, Void>() {
+          @Override
+          public Void visitVariable(VariableTree node, Void aVoid) {
+            if (node.getName().toString().equals(name)) {
+              resolvedScope.set(IdentifierScope.FIELD);
+            }
+            return null;
+          };
+        }.scan(path.getParentPath(), null);
+        if (resolvedScope.get() == IdentifierScope.FIELD) {
+          context.getReferencedFields().add(name);
+        }
+        scope = resolvedScope.get();
+        break;
+      default:
+        throw new UnsupportedOperationException("Unsupported kind " + kind);
+    }
+    return scope;
   }
 
   @Override

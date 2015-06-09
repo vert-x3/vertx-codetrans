@@ -103,7 +103,7 @@ public class CodeTranslator {
         if (methods.containsKey(field)) {
           throw new UnsupportedOperationException("Duplicate field / method " + field);
         }
-        if (!methods.containsKey(field)) {
+        if (!fields.containsKey(field)) {
           pending.put(field, false);
         }
       }

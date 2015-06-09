@@ -29,6 +29,13 @@ public class Variable extends AbstractVerticle {
     VariableTest.o = member;
   }
 
+  private String uninitializedMember;
+
+  @CodeTranslate
+  public void uninitializedMemberExpression() throws Exception {
+    VariableTest.o = uninitializedMember;
+  }
+
   @CodeTranslate
   public void memberExpressionAccessedByMethod() throws Exception {
     accessMember();

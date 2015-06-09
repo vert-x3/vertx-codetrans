@@ -45,7 +45,7 @@ public interface CodeBuilder {
     return new IdentifierModel(this, name, scope);
   }
 
-  StatementModel variableDecl(TypeInfo type, String name, ExpressionModel initializer);
+  StatementModel variableDecl(IdentifierScope scope, TypeInfo type, String name, ExpressionModel initializer);
 
   StatementModel enhancedForLoop(String variableName, ExpressionModel expression, StatementModel body);
 
