@@ -79,7 +79,12 @@ class RubyCodeBuilder implements CodeBuilder {
 
   @Override
   public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, TypeInfo.Parameterized resultType, String resultName, CodeModel body) {
-    return new LambdaExpressionModel(this, bodyKind, Arrays.asList(resultType.getArgs().get(0), TypeInfo.create(Throwable.class)), Arrays.asList(resultName, resultName + "_err"), body);
+    return new LambdaExpressionModel(
+        this,
+        bodyKind,
+        Arrays.asList(TypeInfo.create(Throwable.class), resultType.getArgs().get(0)),
+        Arrays.asList(resultName + "_err", resultName),
+        body);
   }
 
   @Override
