@@ -8,6 +8,7 @@ import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.util.Context;
 import io.vertx.codegen.TypeInfo;
+import io.vertx.codegen.TypeUse;
 import io.vertx.codetrans.statement.StatementModel;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -47,13 +48,13 @@ public class CodeTranslator {
     this.typeUtils = processingEnv.getTypeUtils();
     this.factory = new TypeInfo.Factory(processingEnv.getElementUtils(), processingEnv.getTypeUtils()) {
       @Override
-      public TypeInfo create(TypeMirror type) {
+      public TypeInfo create(TypeUse use, TypeMirror type) {
         if (type.getKind() == TypeKind.WILDCARD) {
           WildcardType wildcardType = (WildcardType) type;
           if (wildcardType.getExtendsBound() != null) {
             return super.create(wildcardType.getExtendsBound());
           } else if (wildcardType.getSuperBound() != null) {
-            return super.create(wildcardType.getSuperBound());
+            return super.create(use, wildcardType.getSuperBound());
           }
         }
         return super.create(type);
