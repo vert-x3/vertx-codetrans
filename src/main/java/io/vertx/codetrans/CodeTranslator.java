@@ -57,7 +57,7 @@ public class CodeTranslator {
             return super.create(use, wildcardType.getSuperBound());
           }
         }
-        return super.create(type);
+        return super.create(use, type);
       }
     };
   }
