@@ -1,7 +1,10 @@
 package io.vertx.codetrans.lang.js;
 
 import com.sun.source.tree.LambdaExpressionTree;
-import io.vertx.codegen.TypeInfo;
+import io.vertx.codegen.type.ApiTypeInfo;
+import io.vertx.codegen.type.ClassTypeInfo;
+import io.vertx.codegen.type.EnumTypeInfo;
+import io.vertx.codegen.type.TypeInfo;
 import io.vertx.codetrans.expression.BinaryExpressionModel;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
@@ -194,7 +197,7 @@ class JavaScriptWriter extends CodeWriter {
   }
 
   @Override
-  public void renderEnumConstant(TypeInfo.Class.Enum type, String constant) {
+  public void renderEnumConstant(EnumTypeInfo type, String constant) {
     append('\'').append(constant).append('\'');
   }
 
@@ -291,12 +294,12 @@ class JavaScriptWriter extends CodeWriter {
   }
 
   @Override
-  public void renderApiType(TypeInfo.Class.Api apiType) {
+  public void renderApiType(ApiTypeInfo apiType) {
     append(apiType.getSimpleName());
   }
 
   @Override
-  public void renderJavaType(TypeInfo.Class javaType) {
+  public void renderJavaType(ClassTypeInfo javaType) {
     append("Java.type(\"" + javaType.getName() + "\")");
   }
 

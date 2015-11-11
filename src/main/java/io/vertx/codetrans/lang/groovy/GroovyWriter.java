@@ -1,7 +1,10 @@
 package io.vertx.codetrans.lang.groovy;
 
 import com.sun.source.tree.LambdaExpressionTree;
-import io.vertx.codegen.TypeInfo;
+import io.vertx.codegen.type.ApiTypeInfo;
+import io.vertx.codegen.type.ClassTypeInfo;
+import io.vertx.codegen.type.EnumTypeInfo;
+import io.vertx.codegen.type.TypeInfo;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.expression.DataObjectLiteralModel;
@@ -107,12 +110,12 @@ class GroovyWriter extends CodeWriter {
   }
 
   @Override
-  public void renderApiType(TypeInfo.Class.Api apiType) {
+  public void renderApiType(ApiTypeInfo apiType) {
     append(apiType.getSimpleName());
   }
 
   @Override
-  public void renderJavaType(TypeInfo.Class javaType) {
+  public void renderJavaType(ClassTypeInfo javaType) {
     append(javaType.getName());
   }
 
@@ -137,7 +140,7 @@ class GroovyWriter extends CodeWriter {
   }
 
   @Override
-  public void renderEnumConstant(TypeInfo.Class.Enum type, String constant) {
+  public void renderEnumConstant(EnumTypeInfo type, String constant) {
     append(type.getSimpleName()).append('.').append(constant);
   }
 

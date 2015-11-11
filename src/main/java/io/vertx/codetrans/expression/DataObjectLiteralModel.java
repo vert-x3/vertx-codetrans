@@ -1,6 +1,7 @@
 package io.vertx.codetrans.expression;
 
-import io.vertx.codegen.TypeInfo;
+import io.vertx.codegen.type.ClassTypeInfo;
+import io.vertx.codegen.type.TypeInfo;
 import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.MethodSignature;
@@ -16,14 +17,14 @@ import java.util.function.Function;
  */
 public class DataObjectLiteralModel extends ExpressionModel {
 
-  private final TypeInfo.Class type;
+  private final ClassTypeInfo type;
   private final Map<String, Member> members;
 
-  public DataObjectLiteralModel(CodeBuilder builder, TypeInfo.Class type) {
+  public DataObjectLiteralModel(CodeBuilder builder, ClassTypeInfo type) {
     this(builder, type, Collections.emptyMap());
   }
 
-  private DataObjectLiteralModel(CodeBuilder builder, TypeInfo.Class type, Map<String, Member> members) {
+  private DataObjectLiteralModel(CodeBuilder builder, ClassTypeInfo type, Map<String, Member> members) {
     super(builder);
     this.type = type;
     this.members = members;

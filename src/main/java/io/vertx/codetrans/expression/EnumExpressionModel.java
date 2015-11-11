@@ -1,6 +1,6 @@
 package io.vertx.codetrans.expression;
 
-import io.vertx.codegen.TypeInfo;
+import io.vertx.codegen.type.EnumTypeInfo;
 import io.vertx.codetrans.CodeBuilder;
 
 /**
@@ -8,14 +8,14 @@ import io.vertx.codetrans.CodeBuilder;
  */
 public class EnumExpressionModel extends ExpressionModel {
 
-  private final TypeInfo.Class.Enum type;
+  private final EnumTypeInfo type;
 
-  public EnumExpressionModel(CodeBuilder builder, TypeInfo.Class.Enum type) {
+  public EnumExpressionModel(CodeBuilder builder, EnumTypeInfo type) {
     super(builder);
     this.type = type;
   }
 
-  public TypeInfo getType() {
+  public EnumTypeInfo getType() {
     return type;
   }
 

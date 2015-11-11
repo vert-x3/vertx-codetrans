@@ -1,6 +1,6 @@
 package io.vertx.codetrans.lang.js;
 
-import io.vertx.codegen.TypeInfo;
+import io.vertx.codegen.type.ClassTypeInfo;
 import io.vertx.codetrans.Lang;
 import io.vertx.codetrans.Script;
 import io.vertx.codetrans.CodeBuilder;
@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class JavaScriptLang implements Lang {
 
-  LinkedHashSet<TypeInfo.Class> modules = new LinkedHashSet<>();
+  LinkedHashSet<ClassTypeInfo> modules = new LinkedHashSet<>();
 
   @Override
   public CodeBuilder codeBuilder() {

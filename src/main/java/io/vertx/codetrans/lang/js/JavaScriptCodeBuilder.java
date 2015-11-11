@@ -2,7 +2,11 @@ package io.vertx.codetrans.lang.js;
 
 import com.sun.source.tree.LambdaExpressionTree;
 import io.vertx.codegen.Helper;
-import io.vertx.codegen.TypeInfo;
+import io.vertx.codegen.type.ApiTypeInfo;
+import io.vertx.codegen.type.ClassTypeInfo;
+import io.vertx.codegen.type.ParameterizedTypeInfo;
+import io.vertx.codegen.type.TypeReflectionFactory;
+import io.vertx.codegen.type.TypeInfo;
 import io.vertx.codetrans.expression.ApiTypeModel;
 import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.CodeModel;
@@ -24,7 +28,7 @@ import java.util.Map;
  */
 class JavaScriptCodeBuilder implements CodeBuilder {
 
-  LinkedHashSet<TypeInfo.Class> modules = new LinkedHashSet<>();
+  LinkedHashSet<ClassTypeInfo> modules = new LinkedHashSet<>();
 
   @Override
   public CodeWriter newWriter() {
@@ -34,7 +38,7 @@ class JavaScriptCodeBuilder implements CodeBuilder {
   @Override
   public String render(RunnableCompilationUnit unit) {
     CodeWriter writer = newWriter();
-    for (TypeInfo.Class module : modules) {
+    for (ClassTypeInfo module : modules) {
       writer.append("var ").append(module.getSimpleName()).append(" = require(\"").
           append(module.getModuleName()).append("-js/").append(Helper.convertCamelCaseToUnderscores(module.getSimpleName())).append("\");\n");
     }
@@ -62,14 +66,14 @@ class JavaScriptCodeBuilder implements CodeBuilder {
   }
 
   @Override
-  public ApiTypeModel apiType(TypeInfo.Class.Api type) {
+  public ApiTypeModel apiType(ApiTypeInfo type) {
     modules.add(type);
     return CodeBuilder.super.apiType(type);
   }
 
   @Override
-  public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, TypeInfo.Parameterized resultType, String resultName, CodeModel body) {
-    return new LambdaExpressionModel(this, bodyKind, Arrays.asList(resultType.getArgs().get(0), TypeInfo.create(Throwable.class)), Arrays.asList(resultName, resultName + "_err"), body);
+  public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, ParameterizedTypeInfo resultType, String resultName, CodeModel body) {
+    return new LambdaExpressionModel(this, bodyKind, Arrays.asList(resultType.getArgs().get(0), TypeReflectionFactory.create(Throwable.class)), Arrays.asList(resultName, resultName + "_err"), body);
   }
 
   @Override

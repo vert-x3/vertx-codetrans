@@ -1,7 +1,11 @@
 package io.vertx.codetrans.lang.groovy;
 
 import com.sun.source.tree.LambdaExpressionTree;
-import io.vertx.codegen.TypeInfo;
+import io.vertx.codegen.type.TypeInfo;
+import io.vertx.codegen.type.ApiTypeInfo;
+import io.vertx.codegen.type.ClassTypeInfo;
+import io.vertx.codegen.type.EnumTypeInfo;
+import io.vertx.codegen.type.ParameterizedTypeInfo;
 import io.vertx.codetrans.expression.ApiTypeModel;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.expression.EnumExpressionModel;
@@ -23,7 +27,7 @@ import java.util.Map;
  */
 class GroovyCodeBuilder implements CodeBuilder {
 
-  LinkedHashSet<TypeInfo.Class> imports = new LinkedHashSet<>();
+  LinkedHashSet<ClassTypeInfo> imports = new LinkedHashSet<>();
 
   @Override
   public GroovyWriter newWriter() {
@@ -36,9 +40,9 @@ class GroovyCodeBuilder implements CodeBuilder {
     if (unit.getFields().size() > 0) {
       writer.append("import groovy.transform.Field\n");
     }
-    for (TypeInfo.Class importedType : imports) {
+    for (ClassTypeInfo importedType : imports) {
       String fqn = importedType.getName();
-      if (importedType instanceof TypeInfo.Class.Api) {
+      if (importedType instanceof ApiTypeInfo) {
         fqn = importedType.translateName("groovy");
       }
       writer.append("import ").append(fqn).append('\n');
@@ -68,19 +72,19 @@ class GroovyCodeBuilder implements CodeBuilder {
   }
 
   @Override
-  public EnumExpressionModel enumType(TypeInfo.Class.Enum type) {
+  public EnumExpressionModel enumType(EnumTypeInfo type) {
     imports.add(type);
     return CodeBuilder.super.enumType(type);
   }
 
   @Override
-  public ApiTypeModel apiType(TypeInfo.Class.Api type) {
+  public ApiTypeModel apiType(ApiTypeInfo type) {
     imports.add(type);
     return CodeBuilder.super.apiType(type);
   }
 
   @Override
-  public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, TypeInfo.Parameterized resultType, String resultName, CodeModel body) {
+  public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, ParameterizedTypeInfo resultType, String resultName, CodeModel body) {
     return new LambdaExpressionModel(this, bodyKind, Collections.singletonList(resultType), Collections.singletonList(resultName), body);
   }
 

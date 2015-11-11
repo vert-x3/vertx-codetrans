@@ -1,7 +1,10 @@
 package io.vertx.codetrans;
 
 import com.sun.source.tree.LambdaExpressionTree;
-import io.vertx.codegen.TypeInfo;
+import io.vertx.codegen.type.ApiTypeInfo;
+import io.vertx.codegen.type.EnumTypeInfo;
+import io.vertx.codegen.type.ParameterizedTypeInfo;
+import io.vertx.codegen.type.TypeInfo;
 import io.vertx.codetrans.expression.ApiTypeModel;
 import io.vertx.codetrans.expression.AsyncResultModel;
 import io.vertx.codetrans.expression.BinaryExpressionModel;
@@ -31,13 +34,13 @@ public interface CodeBuilder {
     return new AsyncResultModel(this, identifier, type);
   }
 
-  ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, TypeInfo.Parameterized resultType, String resultName, CodeModel body);
+  ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, ParameterizedTypeInfo resultType, String resultName, CodeModel body);
 
-  default ApiTypeModel apiType(TypeInfo.Class.Api type) {
+  default ApiTypeModel apiType(ApiTypeInfo type) {
     return new ApiTypeModel(this, type);
   }
 
-  default EnumExpressionModel enumType(TypeInfo.Class.Enum type) {
+  default EnumExpressionModel enumType(EnumTypeInfo type) {
     return new EnumExpressionModel(this, type);
   }
 

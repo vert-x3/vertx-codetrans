@@ -1,7 +1,10 @@
 package io.vertx.codetrans;
 
 import com.sun.source.tree.LambdaExpressionTree;
-import io.vertx.codegen.TypeInfo;
+import io.vertx.codegen.type.ApiTypeInfo;
+import io.vertx.codegen.type.ClassTypeInfo;
+import io.vertx.codegen.type.EnumTypeInfo;
+import io.vertx.codegen.type.TypeInfo;
 import io.vertx.codetrans.expression.BinaryExpressionModel;
 import io.vertx.codetrans.expression.DataObjectLiteralModel;
 import io.vertx.codetrans.expression.ExpressionModel;
@@ -363,7 +366,7 @@ public abstract class CodeWriter implements Appendable {
 
   public abstract void renderLambda(LambdaExpressionTree.BodyKind bodyKind, List<TypeInfo> parameterTypes, List<String> parameterNames, CodeModel body);
 
-  public abstract void renderEnumConstant(TypeInfo.Class.Enum type, String constant);
+  public abstract void renderEnumConstant(EnumTypeInfo type, String constant);
 
   public abstract void renderSystemOutPrintln(ExpressionModel expression);
 
@@ -373,9 +376,9 @@ public abstract class CodeWriter implements Appendable {
 
   public abstract void renderThis();
 
-  public abstract void renderApiType(TypeInfo.Class.Api apiType);
+  public abstract void renderApiType(ApiTypeInfo apiType);
 
-  public abstract void renderJavaType(TypeInfo.Class apiType);
+  public abstract void renderJavaType(ClassTypeInfo apiType);
 
   public void renderFragment(String fragment) {
     FragmentParser renderer = new FragmentParser() {

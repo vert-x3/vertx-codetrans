@@ -31,10 +31,15 @@ import com.sun.source.util.TreePath;
 import com.sun.source.util.TreePathScanner;
 import com.sun.source.util.Trees;
 import com.sun.tools.javac.code.Symbol;
-import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.tree.JCTree;
-import io.vertx.codegen.ClassKind;
-import io.vertx.codegen.TypeInfo;
+import io.vertx.codegen.type.ApiTypeInfo;
+import io.vertx.codegen.type.ClassKind;
+import io.vertx.codegen.type.ClassTypeInfo;
+import io.vertx.codegen.type.EnumTypeInfo;
+import io.vertx.codegen.type.TypeMirrorFactory;
+import io.vertx.codegen.type.ParameterizedTypeInfo;
+import io.vertx.codegen.type.TypeInfo;
+import io.vertx.codegen.type.TypeMirrorFactory;
 import io.vertx.codetrans.expression.ArraysModel;
 import io.vertx.codetrans.expression.ClassModel;
 import io.vertx.codetrans.expression.DataObjectClassModel;
@@ -87,9 +92,9 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
   private final DeclaredType systemType;
   private final DeclaredType throwableType;
   private final Types typeUtils;
-  private final TypeInfo.Factory factory;
+  private final TypeMirrorFactory factory;
 
-  public ModelBuilder(Trees trees, TreePath path, DeclaredType systemType, DeclaredType throwableType, TypeInfo.Factory factory, Types typeUtils, Lang lang) {
+  public ModelBuilder(Trees trees, TreePath path, DeclaredType systemType, DeclaredType throwableType, TypeMirrorFactory factory, Types typeUtils, Lang lang) {
     this.path = path;
     this.trees = trees;
     this.systemType = systemType;
@@ -344,7 +349,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
       return new ThisModel(context.builder);
     }
     if (ident.sym instanceof TypeElement) {
-      TypeInfo.Class type = (TypeInfo.Class) factory.create(ident.type);
+      ClassTypeInfo type = (ClassTypeInfo) factory.create(ident.type);
       if (ident.type.equals(systemType)) {
         return new SystemModel(context.builder);
       } else if (type.getName().equals("java.util.Arrays")) {
@@ -354,7 +359,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
           return new ThrowableClassModel(context.builder, type);
         }
         if (type.getKind() == ClassKind.API) {
-          return context.builder.apiType((TypeInfo.Class.Api) type);
+          return context.builder.apiType((ApiTypeInfo) type);
         } else if (type.getKind() == ClassKind.JSON_OBJECT) {
           return new JsonObjectClassModel(context.builder);
         } else if (type.getKind() == ClassKind.JSON_ARRAY) {
@@ -362,7 +367,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
         } else if (type.getKind() == ClassKind.DATA_OBJECT) {
           return new DataObjectClassModel(context.builder, type);
         } else if (type.getKind() == ClassKind.ENUM) {
-          return context.builder.enumType((TypeInfo.Class.Enum) type);
+          return context.builder.enumType((EnumTypeInfo) type);
         } else {
           switch (type.getName()) {
             case "java.util.HashMap":
@@ -611,9 +616,9 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
           Symbol.ClassSymbol sym = (Symbol.ClassSymbol) clazz.sym;
           TypeInfo type = factory.create(sym.type);
           if (type.getKind() == ClassKind.ASYNC_RESULT) {
-            ExpressionModel result = context.builder.asyncResult(last.name.toString(), ((TypeInfo.Parameterized)(type)).getArgs().get(0));
+            ExpressionModel result = context.builder.asyncResult(last.name.toString(), ((ParameterizedTypeInfo)(type)).getArgs().get(0));
             CodeModel body = scan(node.getBody(), context.putAlias(last.sym, result));
-            TypeInfo.Parameterized parameterized = (TypeInfo.Parameterized) type;
+            ParameterizedTypeInfo parameterized = (ParameterizedTypeInfo) type;
             return context.builder.asyncResultHandler(node.getBodyKind(), parameterized, last.name.toString(), body);
           }
         }

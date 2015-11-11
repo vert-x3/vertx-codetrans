@@ -2,8 +2,11 @@ package io.vertx.codetrans.lang.ruby;
 
 import com.sun.source.tree.LambdaExpressionTree;
 import io.vertx.codegen.Case;
-import io.vertx.codegen.ClassKind;
-import io.vertx.codegen.TypeInfo;
+import io.vertx.codegen.type.ClassKind;
+import io.vertx.codegen.type.ApiTypeInfo;
+import io.vertx.codegen.type.ClassTypeInfo;
+import io.vertx.codegen.type.EnumTypeInfo;
+import io.vertx.codegen.type.TypeInfo;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.statement.ConditionalBlockModel;
@@ -90,12 +93,12 @@ class RubyWriter extends CodeWriter {
   }
 
   @Override
-  public void renderApiType(TypeInfo.Class.Api apiType) {
+  public void renderApiType(ApiTypeInfo apiType) {
     append(Case.CAMEL.format(Case.KEBAB.parse(apiType.getModule().getName())) + "::" + apiType.getSimpleName());
   }
 
   @Override
-  public void renderJavaType(TypeInfo.Class javaType) {
+  public void renderJavaType(ClassTypeInfo javaType) {
     append("Java::" + Case.CAMEL.format(Case.QUALIFIED.parse(javaType.getPackageName())) + "::" + javaType.getSimpleName());
   }
 
@@ -488,7 +491,7 @@ class RubyWriter extends CodeWriter {
   }
 
   @Override
-  public void renderEnumConstant(TypeInfo.Class.Enum type, String constant) {
+  public void renderEnumConstant(EnumTypeInfo type, String constant) {
     append(':').append(constant);
   }
 
