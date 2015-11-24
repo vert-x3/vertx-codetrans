@@ -30,6 +30,10 @@ public class DataObjectLiteralModel extends ExpressionModel {
     this.members = members;
   }
 
+  public ClassTypeInfo getType() {
+    return type;
+  }
+
   public Iterable<Member> getMembers() {
     return members.values();
   }
