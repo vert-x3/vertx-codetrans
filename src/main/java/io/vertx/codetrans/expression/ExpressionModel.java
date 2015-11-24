@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class ExpressionModel extends CodeModel {
 
-  final CodeBuilder builder;
+  protected final CodeBuilder builder;
 
   public ExpressionModel(CodeBuilder builder) {
     this.builder = builder;
