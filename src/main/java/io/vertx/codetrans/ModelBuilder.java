@@ -68,6 +68,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
@@ -510,11 +511,13 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
       addToRefedMethods = false;
     }
 
+    //
+    ExecutableType methodType = (ExecutableType) typeUtils.asMemberOf((DeclaredType) sym.getEnclosingElement().asType(), sym);
+
     // Compute the parameter types
     List<TypeInfo> parameterTypes = new ArrayList<>();
-    for (Iterator<Symbol.VarSymbol> it = sym.getParameters().iterator();it.hasNext();) {
-      Symbol.VarSymbol var = it.next();
-      TypeMirror type = var.asType();
+    for (Iterator<? extends TypeMirror> it = methodType.getParameterTypes().iterator();it.hasNext();) {
+      TypeMirror type = it.next();
       if (!it.hasNext() && varargs) {
         ArrayType arrayType = (ArrayType) type;
         type = arrayType.getComponentType();
@@ -609,12 +612,10 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     int size = parameterNames.size();
     if (size > 0) {
       JCTree.JCVariableDecl last = (JCTree.JCVariableDecl) node.getParameters().get(size - 1);
-      if (last.vartype instanceof JCTree.JCTypeApply) {
-        JCTree.JCTypeApply typeApply = (JCTree.JCTypeApply) last.vartype;
-        if (typeApply.clazz instanceof JCTree.JCFieldAccess) {
-          JCTree.JCFieldAccess clazz = (JCTree.JCFieldAccess) typeApply.clazz;
-          Symbol.ClassSymbol sym = (Symbol.ClassSymbol) clazz.sym;
-          TypeInfo type = factory.create(sym.type);
+      if (last.vartype instanceof ParameterizedTypeTree) {
+        ParameterizedTypeTree typeApply = (ParameterizedTypeTree) last.getType();
+        if (typeApply.getType() instanceof MemberSelectTree) {
+          TypeInfo type = factory.create(last.getType().type);
           if (type.getKind() == ClassKind.ASYNC_RESULT) {
             ExpressionModel result = context.builder.asyncResult(last.name.toString(), ((ParameterizedTypeInfo)(type)).getArgs().get(0));
             CodeModel body = scan(node.getBody(), context.putAlias(last.sym, result));
