@@ -356,13 +356,13 @@ public abstract class CodeWriter implements Appendable {
 
   public abstract void renderNewList();
 
-  public abstract void renderAsyncResultSucceeded(String name);
+  public abstract void renderAsyncResultSucceeded(TypeInfo resultType, String name);
 
-  public abstract void renderAsyncResultFailed(String name);
+  public abstract void renderAsyncResultFailed(TypeInfo resultType, String name);
 
-  public abstract void renderAsyncResultCause(String name);
+  public abstract void renderAsyncResultCause(TypeInfo resultType, String name);
 
-  public abstract void renderAsyncResultValue(String name);
+  public abstract void renderAsyncResultValue(TypeInfo resultType, String name);
 
   public abstract void renderLambda(LambdaExpressionTree.BodyKind bodyKind, List<TypeInfo> parameterTypes, List<String> parameterNames, CodeModel body);
 

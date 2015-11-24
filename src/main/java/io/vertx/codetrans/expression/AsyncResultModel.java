@@ -48,7 +48,7 @@ public class AsyncResultModel extends ExpressionModel {
     }
     @Override
     public void render(CodeWriter writer) {
-      writer.renderAsyncResultSucceeded(name);
+      writer.renderAsyncResultSucceeded(type, name);
     }
   }
 
@@ -58,7 +58,7 @@ public class AsyncResultModel extends ExpressionModel {
     }
     @Override
     public void render(CodeWriter writer) {
-      writer.renderAsyncResultFailed(name);
+      writer.renderAsyncResultFailed(type, name);
     }
   }
 
@@ -68,7 +68,7 @@ public class AsyncResultModel extends ExpressionModel {
     }
     @Override
     public void render(CodeWriter writer) {
-      writer.renderAsyncResultValue(name);
+      writer.renderAsyncResultValue(type, name);
     }
   }
 
@@ -78,7 +78,7 @@ public class AsyncResultModel extends ExpressionModel {
     }
     @Override
     public void render(CodeWriter writer) {
-      writer.renderAsyncResultCause(name);
+      writer.renderAsyncResultCause(type, name);
     }
   }
 }

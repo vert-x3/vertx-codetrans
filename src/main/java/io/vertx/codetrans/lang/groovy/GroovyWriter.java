@@ -120,22 +120,22 @@ class GroovyWriter extends CodeWriter {
   }
 
   @Override
-  public void renderAsyncResultSucceeded(String name) {
+  public void renderAsyncResultSucceeded(TypeInfo resultType, String name) {
     append(name).append(".succeeded()");
   }
 
   @Override
-  public void renderAsyncResultFailed(String name) {
+  public void renderAsyncResultFailed(TypeInfo resultType, String name) {
     append(name).append(".failed()");
   }
 
   @Override
-  public void renderAsyncResultCause(String name) {
+  public void renderAsyncResultCause(TypeInfo resultType, String name) {
     append(name).append(".cause()");
   }
 
   @Override
-  public void renderAsyncResultValue(String name) {
+  public void renderAsyncResultValue(TypeInfo resultType, String name) {
     append(name).append(".result()");
   }
 
