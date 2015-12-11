@@ -495,7 +495,7 @@ class RubyWriter extends CodeWriter {
   @Override
   public void renderThrow(String throwableType, ExpressionModel reason) {
     if (reason == null) {
-      append("raise ").append("\"an error occured\"");
+      append("raise ").append("\"an error occurred\"");
     } else {
       append("raise ");
       reason.render(this);
