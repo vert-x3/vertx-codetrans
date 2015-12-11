@@ -1,6 +1,8 @@
 package io.vertx.codetrans;
 
-import io.vertx.codegen.TypeInfo;
+import io.vertx.codegen.type.ApiTypeInfo;
+import io.vertx.codegen.type.ParameterizedTypeInfo;
+import io.vertx.codegen.type.TypeInfo;
 import io.vertx.core.Handler;
 
 import java.util.ArrayList;
@@ -18,16 +20,16 @@ public class Helper {
   }
 
   public static boolean isHandler(TypeInfo type) {
-    if (type instanceof TypeInfo.Parameterized) {
-      TypeInfo.Parameterized parameterizedType = (TypeInfo.Parameterized) type;
+    if (type instanceof ParameterizedTypeInfo) {
+      ParameterizedTypeInfo parameterizedType = (ParameterizedTypeInfo) type;
       return parameterizedType.getRaw().getName().equals(Handler.class.getName());
     }
     return false;
   }
 
   public static boolean isInstanceOfHandler(TypeInfo type) {
-    if (type instanceof TypeInfo.Class.Api) {
-      TypeInfo.Class.Api apiType = (TypeInfo.Class.Api) type;
+    if (type instanceof ApiTypeInfo) {
+      ApiTypeInfo apiType = (ApiTypeInfo) type;
       return apiType.isHandler();
     }
     return false;

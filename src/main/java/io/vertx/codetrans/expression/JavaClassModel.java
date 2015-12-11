@@ -1,6 +1,6 @@
 package io.vertx.codetrans.expression;
 
-import io.vertx.codegen.TypeInfo;
+import io.vertx.codegen.type.ClassTypeInfo;
 import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.CodeWriter;
 
@@ -16,9 +16,9 @@ import java.util.List;
  */
 public class JavaClassModel extends ClassModel {
 
-  final TypeInfo.Class type;
+  final ClassTypeInfo type;
 
-  public JavaClassModel(CodeBuilder builder, TypeInfo.Class type) {
+  public JavaClassModel(CodeBuilder builder, ClassTypeInfo type) {
     super(builder);
     this.type = type;
   }

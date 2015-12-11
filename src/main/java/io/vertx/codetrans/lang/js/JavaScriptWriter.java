@@ -1,7 +1,10 @@
 package io.vertx.codetrans.lang.js;
 
 import com.sun.source.tree.LambdaExpressionTree;
-import io.vertx.codegen.TypeInfo;
+import io.vertx.codegen.type.ApiTypeInfo;
+import io.vertx.codegen.type.ClassTypeInfo;
+import io.vertx.codegen.type.EnumTypeInfo;
+import io.vertx.codegen.type.TypeInfo;
 import io.vertx.codetrans.expression.BinaryExpressionModel;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
@@ -194,7 +197,7 @@ class JavaScriptWriter extends CodeWriter {
   }
 
   @Override
-  public void renderEnumConstant(TypeInfo.Class.Enum type, String constant) {
+  public void renderEnumConstant(EnumTypeInfo type, String constant) {
     append('\'').append(constant).append('\'');
   }
 
@@ -291,32 +294,32 @@ class JavaScriptWriter extends CodeWriter {
   }
 
   @Override
-  public void renderApiType(TypeInfo.Class.Api apiType) {
+  public void renderApiType(ApiTypeInfo apiType) {
     append(apiType.getSimpleName());
   }
 
   @Override
-  public void renderJavaType(TypeInfo.Class javaType) {
+  public void renderJavaType(ClassTypeInfo javaType) {
     append("Java.type(\"" + javaType.getName() + "\")");
   }
 
   @Override
-  public void renderAsyncResultSucceeded(String name) {
+  public void renderAsyncResultSucceeded(TypeInfo resultType, String name) {
     append(name).append("_err == null");
   }
 
   @Override
-  public void renderAsyncResultFailed(String name) {
+  public void renderAsyncResultFailed(TypeInfo resultType, String name) {
     append(name).append("_err != null");
   }
 
   @Override
-  public void renderAsyncResultCause(String name) {
+  public void renderAsyncResultCause(TypeInfo resultType, String name) {
     append(name).append("_err");
   }
 
   @Override
-  public void renderAsyncResultValue(String name) {
+  public void renderAsyncResultValue(TypeInfo resultType, String name) {
     append(name);
   }
 

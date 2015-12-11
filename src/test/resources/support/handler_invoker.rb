@@ -10,11 +10,11 @@ module Support
       yield other
     end
     def self.invoke_async_result_handler_success(&callback)
-      callback.call 'hello', nil
+      callback.call nil, 'hello'
     end
     def self.invoke_async_result_handler_failure(&callback)
       future = Java::IoVertxCore::Future.failedFuture 'oh no'
-      callback.call nil, future.cause
+      callback.call future.cause, nil
     end
   end
 end

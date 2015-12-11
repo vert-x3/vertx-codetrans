@@ -1,7 +1,10 @@
 package io.vertx.codetrans.lang.groovy;
 
 import com.sun.source.tree.LambdaExpressionTree;
-import io.vertx.codegen.TypeInfo;
+import io.vertx.codegen.type.ApiTypeInfo;
+import io.vertx.codegen.type.ClassTypeInfo;
+import io.vertx.codegen.type.EnumTypeInfo;
+import io.vertx.codegen.type.TypeInfo;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.expression.DataObjectLiteralModel;
@@ -107,37 +110,37 @@ class GroovyWriter extends CodeWriter {
   }
 
   @Override
-  public void renderApiType(TypeInfo.Class.Api apiType) {
+  public void renderApiType(ApiTypeInfo apiType) {
     append(apiType.getSimpleName());
   }
 
   @Override
-  public void renderJavaType(TypeInfo.Class javaType) {
+  public void renderJavaType(ClassTypeInfo javaType) {
     append(javaType.getName());
   }
 
   @Override
-  public void renderAsyncResultSucceeded(String name) {
+  public void renderAsyncResultSucceeded(TypeInfo resultType, String name) {
     append(name).append(".succeeded()");
   }
 
   @Override
-  public void renderAsyncResultFailed(String name) {
+  public void renderAsyncResultFailed(TypeInfo resultType, String name) {
     append(name).append(".failed()");
   }
 
   @Override
-  public void renderAsyncResultCause(String name) {
+  public void renderAsyncResultCause(TypeInfo resultType, String name) {
     append(name).append(".cause()");
   }
 
   @Override
-  public void renderAsyncResultValue(String name) {
+  public void renderAsyncResultValue(TypeInfo resultType, String name) {
     append(name).append(".result()");
   }
 
   @Override
-  public void renderEnumConstant(TypeInfo.Class.Enum type, String constant) {
+  public void renderEnumConstant(EnumTypeInfo type, String constant) {
     append(type.getSimpleName()).append('.').append(constant);
   }
 

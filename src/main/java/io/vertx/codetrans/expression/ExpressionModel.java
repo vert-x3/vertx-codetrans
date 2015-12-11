@@ -1,9 +1,8 @@
 package io.vertx.codetrans.expression;
 
-import io.vertx.codegen.TypeInfo;
+import io.vertx.codegen.type.TypeInfo;
 import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.CodeModel;
-import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.MethodSignature;
 
 import java.util.List;
@@ -13,7 +12,7 @@ import java.util.List;
  */
 public class ExpressionModel extends CodeModel {
 
-  final CodeBuilder builder;
+  protected final CodeBuilder builder;
 
   public ExpressionModel(CodeBuilder builder) {
     this.builder = builder;

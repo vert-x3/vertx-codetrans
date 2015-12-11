@@ -7,7 +7,9 @@ import com.sun.tools.javac.comp.Attr;
 import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.util.Context;
-import io.vertx.codegen.TypeInfo;
+import io.vertx.codegen.type.TypeInfo;
+import io.vertx.codegen.type.TypeUse;
+import io.vertx.codegen.type.TypeMirrorFactory;
 import io.vertx.codetrans.statement.StatementModel;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -17,6 +19,8 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Types;
 import java.util.HashMap;
@@ -33,7 +37,7 @@ public class CodeTranslator {
   private final DeclaredType SystemType;
   private final DeclaredType ThrowableType;
   private final Attr attr;
-  private final TypeInfo.Factory factory;
+  private final TypeMirrorFactory factory;
   private final Types typeUtils;
 
   public CodeTranslator(ProcessingEnvironment processingEnv) {
@@ -43,11 +47,18 @@ public class CodeTranslator {
     Context context = ((JavacProcessingEnvironment)processingEnv).getContext();
     this.attr = Attr.instance(context);
     this.typeUtils = processingEnv.getTypeUtils();
-    this.factory = new TypeInfo.Factory(processingEnv.getElementUtils(), processingEnv.getTypeUtils()) {
+    this.factory = new TypeMirrorFactory(processingEnv.getElementUtils(), processingEnv.getTypeUtils()) {
       @Override
-      public TypeInfo.Wildcard create(WildcardType type) {
-        // Tolerate wildcard bounds for unit tests, for instance we interrop with Map that uses bound wildcards
-        return new TypeInfo.Wildcard();
+      public TypeInfo create(TypeUse use, TypeMirror type) {
+        if (type.getKind() == TypeKind.WILDCARD) {
+          WildcardType wildcardType = (WildcardType) type;
+          if (wildcardType.getExtendsBound() != null) {
+            return super.create(wildcardType.getExtendsBound());
+          } else if (wildcardType.getSuperBound() != null) {
+            return super.create(use, wildcardType.getSuperBound());
+          }
+        }
+        return super.create(use, type);
       }
     };
   }

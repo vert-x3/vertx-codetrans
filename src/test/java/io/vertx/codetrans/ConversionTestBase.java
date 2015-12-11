@@ -153,7 +153,7 @@ public abstract class ConversionTestBase {
     JsonArray unwrapped = new JsonArray();
     long len = (long) obj.size();
     for (int i = 0;i < len;i++) {
-      Object value = obj.get(i);
+      Object value = obj.get("" + i);
       if (value instanceof ScriptObjectMirror) {
         value = unwrapJsonElement((ScriptObjectMirror) value);
       }

@@ -1,6 +1,6 @@
 package io.vertx.codetrans;
 
-import io.vertx.codegen.TypeInfo;
+import io.vertx.codegen.type.TypeInfo;
 
 import java.util.List;
 

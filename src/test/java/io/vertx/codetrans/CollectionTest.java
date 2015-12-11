@@ -85,7 +85,7 @@ public class CollectionTest extends ConversionTestBase {
     runJavaScript("collection/ListApi", "add");
     ScriptObjectMirror so = (ScriptObjectMirror) o;
     assertEquals(1, so.size());
-    assertEquals("foo", so.get(0));
+    assertEquals("foo", so.get("0"));
     o = null;
     runRuby("collection/ListApi", "add");
     assertEquals(Collections.singletonList("foo"), o);
@@ -116,9 +116,9 @@ public class CollectionTest extends ConversionTestBase {
     runJavaScript("collection/ListApi", "asList");
     ScriptObjectMirror so = (ScriptObjectMirror) o;
     assertEquals(3, so.size());
-    assertEquals("foo", so.get(0));
-    assertEquals("bar", so.get(1));
-    assertEquals("juu", so.get(2));
+    assertEquals("foo", so.get("0"));
+    assertEquals("bar", so.get("1"));
+    assertEquals("juu", so.get("2"));
     o = null;
     runRuby("collection/ListApi", "asList");
     assertEquals(Arrays.asList("foo", "bar", "juu"), o);

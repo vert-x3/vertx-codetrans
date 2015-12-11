@@ -1,6 +1,6 @@
 package io.vertx.codetrans.expression;
 
-import io.vertx.codegen.TypeInfo;
+import io.vertx.codegen.type.ClassTypeInfo;
 import io.vertx.codetrans.CodeBuilder;
 
 import java.util.List;
@@ -10,9 +10,9 @@ import java.util.List;
  */
 public class DataObjectClassModel extends ClassModel {
 
-  final TypeInfo.Class type;
+  final ClassTypeInfo type;
 
-  public DataObjectClassModel(CodeBuilder builder, TypeInfo.Class type) {
+  public DataObjectClassModel(CodeBuilder builder, ClassTypeInfo type) {
     super(builder);
     this.type = type;
   }

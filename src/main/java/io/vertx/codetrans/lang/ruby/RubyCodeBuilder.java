@@ -2,7 +2,12 @@ package io.vertx.codetrans.lang.ruby;
 
 import com.sun.source.tree.LambdaExpressionTree;
 import io.vertx.codegen.Case;
-import io.vertx.codegen.TypeInfo;
+import io.vertx.codegen.type.TypeInfo;
+import io.vertx.codegen.type.ApiTypeInfo;
+import io.vertx.codegen.type.ClassTypeInfo;
+import io.vertx.codegen.type.EnumTypeInfo;
+import io.vertx.codegen.type.ParameterizedTypeInfo;
+import io.vertx.codegen.type.TypeReflectionFactory;
 import io.vertx.codetrans.expression.ApiTypeModel;
 import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.CodeModel;
@@ -25,7 +30,7 @@ import java.util.Map;
  */
 class RubyCodeBuilder implements CodeBuilder {
 
-  LinkedHashSet<TypeInfo.Class> imports = new LinkedHashSet<>();
+  LinkedHashSet<ClassTypeInfo> imports = new LinkedHashSet<>();
   LinkedHashSet<String> requires = new LinkedHashSet<>();
 
   @Override
@@ -36,7 +41,7 @@ class RubyCodeBuilder implements CodeBuilder {
   @Override
   public String render(RunnableCompilationUnit unit) {
     CodeWriter writer = newWriter();
-    for (TypeInfo.Class type : imports) {
+    for (ClassTypeInfo type : imports) {
       requires.add(type.getModuleName() + "/" + Case.SNAKE.format(Case.CAMEL.parse(type.getSimpleName())));
     }
     for (String require : requires) {
@@ -67,19 +72,24 @@ class RubyCodeBuilder implements CodeBuilder {
   }
 
   @Override
-  public EnumExpressionModel enumType(TypeInfo.Class.Enum type) {
+  public EnumExpressionModel enumType(EnumTypeInfo type) {
     return CodeBuilder.super.enumType(type);
   }
 
   @Override
-  public ApiTypeModel apiType(TypeInfo.Class.Api type) {
+  public ApiTypeModel apiType(ApiTypeInfo type) {
     imports.add(type);
     return CodeBuilder.super.apiType(type);
   }
 
   @Override
-  public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, TypeInfo.Parameterized resultType, String resultName, CodeModel body) {
-    return new LambdaExpressionModel(this, bodyKind, Arrays.asList(resultType.getArgs().get(0), TypeInfo.create(Throwable.class)), Arrays.asList(resultName, resultName + "_err"), body);
+  public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, ParameterizedTypeInfo resultType, String resultName, CodeModel body) {
+    return new LambdaExpressionModel(
+        this,
+        bodyKind,
+        Arrays.asList(TypeReflectionFactory.create(Throwable.class), resultType.getArgs().get(0)),
+        Arrays.asList(resultName + "_err", resultName),
+        body);
   }
 
   @Override
