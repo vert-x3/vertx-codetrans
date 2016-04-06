@@ -41,10 +41,12 @@ public class JsonObjectLiteralModel extends ExpressionModel {
   @Override
   public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
     String methodName = method.getName();
+    StringLiteralModel name = (StringLiteralModel) argumentModels.get(0);
     switch (methodName) {
       case "put":
-        StringLiteralModel name = (StringLiteralModel) argumentModels.get(0);
         return new JsonObjectLiteralModel(builder, Helper.append(entries, new Member.Single(name.value).append(argumentModels.get(1))));
+      case "putNull":
+        return new JsonObjectLiteralModel(builder, Helper.append(entries, new Member.Single(name.value).append(new NullLiteralModel(builder))));
       default:
         throw new UnsupportedOperationException("Method " + method + " not yet implemented");
     }

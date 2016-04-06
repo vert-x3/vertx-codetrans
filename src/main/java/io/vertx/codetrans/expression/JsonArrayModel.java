@@ -53,6 +53,11 @@ public class JsonArrayModel extends ExpressionModel {
           writer.renderJsonArrayAdd(expression, argumentModels.get(0));
         });
       }
+      case "addNull": {
+        return builder.render(writer -> {
+          writer.renderJsonArrayAdd(expression, new NullLiteralModel(builder));
+        });
+      }
       default:
         throw unsupported("Method " + method);
     }
