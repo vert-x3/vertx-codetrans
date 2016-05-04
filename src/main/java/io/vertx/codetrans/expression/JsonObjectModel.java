@@ -28,6 +28,11 @@ public class JsonObjectModel extends ExpressionModel {
           StringLiteralModel name = (StringLiteralModel) argumentModels.get(0);
           writer.renderJsonObjectAssign(expression, name.value, argumentModels.get(1));
         });
+      case "putNull":
+        return builder.render(writer -> {
+          StringLiteralModel name = (StringLiteralModel) argumentModels.get(0);
+          writer.renderJsonObjectAssign(expression, name.value, new NullLiteralModel(builder));
+        });
       case "encodePrettily":
       case "encode": {
         return builder.jsonObjectEncoder(expression);

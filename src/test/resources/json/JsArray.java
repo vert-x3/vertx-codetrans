@@ -149,4 +149,12 @@ public class JsArray {
     JsonArray arr = new JsonArray().add("foo").add("bar");
     JsonTest.o = arr.encode();
   }
+
+  @CodeTranslate
+  public void addNull() throws Exception {
+    JsonArray arr = new JsonArray();
+    arr.addNull();
+    JsonTest.o = JsonConverter.toJsonArray(arr);
+  }
+
 }

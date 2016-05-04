@@ -44,6 +44,8 @@ public class JsonArrayLiteralModel extends ExpressionModel {
     switch (methodName) {
       case "add":
         return new JsonArrayLiteralModel(builder, Helper.append(values, argumentModels.get(0)));
+      case "addNull":
+        return new JsonArrayLiteralModel(builder, Helper.append(values, new NullLiteralModel(builder)));
       default:
         throw new UnsupportedOperationException("Method " + method + " not yet implemented");
     }

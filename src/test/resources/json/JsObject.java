@@ -164,4 +164,11 @@ public class JsObject {
     obj = JsonConverter.fromJsonObject(obj);
     JsonTest.o = obj.getJsonArray("foo").encodePrettily();
   }
+
+  @CodeTranslate
+  public void putNull() throws Exception {
+    JsonObject obj = new JsonObject();
+    obj.putNull("foo");
+    JsonTest.o = JsonConverter.toJsonObject(obj);
+  }
 }

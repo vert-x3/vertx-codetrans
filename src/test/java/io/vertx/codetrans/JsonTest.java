@@ -342,4 +342,19 @@ public class JsonTest extends ConversionTestBase {
       o = null;
     });
   }
+
+  @Test
+  public void testJsonArrayAddNull() {
+    JsonArray expected = new JsonArray().addNull();
+    runAll("json/JsArray", "addNull", () -> {
+      Assert.assertEquals(expected, o);
+    });
+  }
+
+  @Test
+  public void testJsonObjectPutNull() {
+    runAll("json/JsObject", "putNull", () -> {
+      Assert.assertEquals(new JsonObject().putNull("foo"), o);
+    });
+  }
 }
