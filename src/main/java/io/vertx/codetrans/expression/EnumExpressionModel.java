@@ -21,8 +21,6 @@ public class EnumExpressionModel extends ExpressionModel {
 
   @Override
   public ExpressionModel onField(String identifier) {
-    return builder.render(writer -> {
-      writer.renderEnumConstant(type, identifier);
-    });
+    return new EnumFieldExpressionModel(builder, type, identifier);
   }
 }

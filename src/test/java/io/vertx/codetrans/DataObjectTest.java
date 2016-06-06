@@ -106,4 +106,17 @@ public class DataObjectTest extends ConversionTestBase {
     expected.add("bar");
     Assert.assertEquals(expected, actual.getEnabledCipherSuites());
   }
+
+  @Test
+  public void testEnumValue() throws Exception {
+    o = null;
+    runJavaScript("dataobject/DataObject", "enumValue");
+    Assert.assertEquals(new JsonObject().put("protocolVersion", "HTTP_2"), unwrapJsonObject((ScriptObjectMirror) o));
+    o = null;
+    runGroovy("dataobject/DataObject", "enumValue");
+    Assert.assertEquals(new JsonObject().put("protocolVersion", "HTTP_2"), unwrapJsonObject((Map<String, Object>) o));
+    o = null;
+    runRuby("dataobject/DataObject", "enumValue");
+    Assert.assertEquals(new JsonObject().put("protocolVersion", "HTTP_2"), unwrapJsonObject((Map<String, Object>) o));
+  }
 }

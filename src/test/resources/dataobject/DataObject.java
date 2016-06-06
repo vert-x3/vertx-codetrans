@@ -1,8 +1,10 @@
 package dataobject;
 
 import io.vertx.core.http.HttpServerOptions;
+import io.vertx.core.http.HttpClientOptions;
 import io.vertx.codetrans.annotations.CodeTranslate;
 import io.vertx.codetrans.DataObjectTest;
+import io.vertx.core.http.HttpVersion;
 import io.vertx.core.net.JksOptions;
 
 /**
@@ -42,5 +44,12 @@ public class DataObject {
   public void getFromIdentifier() throws Exception {
     HttpServerOptions obj = new HttpServerOptions().setHost("localhost");
     DataObjectTest.o = obj.getHost();
+  }
+
+  @CodeTranslate
+  public void enumValue() throws Exception {
+    HttpClientOptions obj = new HttpClientOptions();
+    obj.setProtocolVersion(HttpVersion.HTTP_2);
+    DataObjectTest.o = obj;
   }
 }

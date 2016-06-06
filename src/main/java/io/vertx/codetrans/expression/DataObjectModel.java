@@ -26,7 +26,7 @@ public class DataObjectModel extends ExpressionModel {
       return builder.render(writer -> {
         writer.renderDataObjectAssign(expression,
             DataObjectLiteralModel.unwrapSet(methodName),
-            argumentModels.get(0));
+            argumentModels.get(0).toDataObjectValue());
       });
     }
     if (DataObjectLiteralModel.isGet(methodName)) {
