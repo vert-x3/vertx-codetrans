@@ -54,7 +54,7 @@ public class DataObjectLiteralModel extends ExpressionModel {
     }
     if (argumentModels.size() == 1) {
       Map<String, Member> copy = new LinkedHashMap<>(members);
-      ExpressionModel value = argumentModels.get(0);
+      ExpressionModel value = argumentModels.get(0).toDataObjectValue();
       Member member = copy.computeIfAbsent(name, memberFactory);
       member.append(value);
       copy.put(name, member);

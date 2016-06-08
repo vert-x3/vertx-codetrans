@@ -108,15 +108,28 @@ public class DataObjectTest extends ConversionTestBase {
   }
 
   @Test
-  public void testEnumValue() throws Exception {
+  public void testEnumValueFromIdentifier() throws Exception {
     o = null;
-    runJavaScript("dataobject/DataObject", "enumValue");
+    runJavaScript("dataobject/DataObject", "enumValueFromIdentifier");
     Assert.assertEquals(new JsonObject().put("protocolVersion", "HTTP_2"), unwrapJsonObject((ScriptObjectMirror) o));
     o = null;
-    runGroovy("dataobject/DataObject", "enumValue");
+    runGroovy("dataobject/DataObject", "enumValueFromIdentifier");
     Assert.assertEquals(new JsonObject().put("protocolVersion", "HTTP_2"), unwrapJsonObject((Map<String, Object>) o));
     o = null;
-    runRuby("dataobject/DataObject", "enumValue");
+    runRuby("dataobject/DataObject", "enumValueFromIdentifier");
+    Assert.assertEquals(new JsonObject().put("protocolVersion", "HTTP_2"), unwrapJsonObject((Map<String, Object>) o));
+  }
+
+  @Test
+  public void testEnumValueFromConstructor() throws Exception {
+    o = null;
+    runJavaScript("dataobject/DataObject", "enumValueFromConstructor");
+    Assert.assertEquals(new JsonObject().put("protocolVersion", "HTTP_2"), unwrapJsonObject((ScriptObjectMirror) o));
+    o = null;
+    runGroovy("dataobject/DataObject", "enumValueFromConstructor");
+    Assert.assertEquals(new JsonObject().put("protocolVersion", "HTTP_2"), unwrapJsonObject((Map<String, Object>) o));
+    o = null;
+    runRuby("dataobject/DataObject", "enumValueFromConstructor");
     Assert.assertEquals(new JsonObject().put("protocolVersion", "HTTP_2"), unwrapJsonObject((Map<String, Object>) o));
   }
 }

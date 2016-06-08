@@ -47,7 +47,13 @@ public class DataObject {
   }
 
   @CodeTranslate
-  public void enumValue() throws Exception {
+  public void enumValueFromConstructor() throws Exception {
+    HttpClientOptions obj = new HttpClientOptions().setProtocolVersion(HttpVersion.HTTP_2);
+    DataObjectTest.o = obj;
+  }
+
+  @CodeTranslate
+  public void enumValueFromIdentifier() throws Exception {
     HttpClientOptions obj = new HttpClientOptions();
     obj.setProtocolVersion(HttpVersion.HTTP_2);
     DataObjectTest.o = obj;
