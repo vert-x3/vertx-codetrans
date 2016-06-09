@@ -202,8 +202,10 @@ class GroovyWriter extends CodeWriter {
         append(":");
         if (member instanceof Member.Single) {
           ((Member.Single) member).getValue().render(this);
-        } else {
-          renderJsonArray(((Member.Array) member).getValues());
+        } else if (member instanceof Member.Sequence) {
+          renderJsonArray(((Member.Sequence) member).getValues());
+        } else if (member instanceof Member.Entries) {
+          renderJsonObject(((Member.Entries) member).entries());
         }
         if (iterator.hasNext()) {
           append(',');

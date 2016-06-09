@@ -354,8 +354,10 @@ class RubyWriter extends CodeWriter {
       append("'").append(name).append("' => ");
       if (member instanceof Member.Single) {
         ((Member.Single) member).getValue().render(this);
+      } else if (member instanceof Member.Sequence) {
+        renderJsonArray(((Member.Sequence) member).getValues(), writer);
       } else {
-        renderJsonArray(((Member.Array) member).getValues(), writer);
+        renderJsonObject(((Member.Entries) member).entries(), writer);
       }
       if (iterator.hasNext()) {
         append(',');

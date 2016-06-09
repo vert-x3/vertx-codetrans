@@ -1,5 +1,6 @@
 package dataobject;
 
+import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.codetrans.annotations.CodeTranslate;
@@ -23,8 +24,13 @@ public class DataObject {
   }
 
   @CodeTranslate
-  public void add() throws Exception {
+  public void addToList() throws Exception {
     DataObjectTest.o = new HttpServerOptions().addEnabledCipherSuite("foo").addEnabledCipherSuite("bar");
+  }
+
+  @CodeTranslate
+  public void addToMap() throws Exception {
+    DataObjectTest.o = new DeliveryOptions().addHeader("foo", "foo_value").addHeader("bar", "bar_value");
   }
 
   @CodeTranslate

@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -41,26 +40,44 @@ public class DataObjectLiteralModel extends ExpressionModel {
   @Override
   public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
     String methodName = method.getName();
-    String name;
-    Function<String, Member> memberFactory;
     if (isSet(methodName)) {
-      name = unwrapSet(methodName);
-      memberFactory = $ -> new Member.Single(name);
+      if (argumentModels.size() == 1) {
+        String name = unwrapSet(methodName);
+        Map<String, Member> copy = new LinkedHashMap<>(members);
+        ExpressionModel value = argumentModels.get(0).toDataObjectValue();
+        Member.Single member = (Member.Single) copy.computeIfAbsent(name, Member.Single::new);
+        member.append(value);
+        copy.put(name, member);
+        return new DataObjectLiteralModel(builder, type, copy);
+      } else {
+        throw unsupported("Method " + method + " must be invoked with a single argument argument");
+      }
     } else if (isAdd(methodName)) {
-      name = unwrapAdd(methodName);
-      memberFactory = $ -> new Member.Array(name);
+      if (argumentModels.size() == 1) {
+        String name = unwrapSet(methodName) + "s";
+        Map<String, Member> copy = new LinkedHashMap<>(members);
+        ExpressionModel value = argumentModels.get(0).toDataObjectValue();
+        Member.Sequence member = (Member.Sequence) copy.computeIfAbsent(name, Member.Sequence::new);
+        member.append(value);
+        copy.put(name, member);
+        return new DataObjectLiteralModel(builder, type, copy);
+      } else if (argumentModels.size() == 2 && argumenTypes.get(0).getName().equals("java.lang.String")) {
+        String name = unwrapSet(methodName) + "s";
+        Map<String, Member> copy = new LinkedHashMap<>(members);
+        ExpressionModel key = argumentModels.get(0);
+        if (!(key instanceof StringLiteralModel)) {
+          throw new UnsupportedOperationException("Must use a string literal in a key/value adder");
+        }
+        ExpressionModel value = argumentModels.get(1).toDataObjectValue();
+        Member.Entries member = (Member.Entries) copy.computeIfAbsent(name, Member.Entries::new);
+        member.append(((StringLiteralModel)key).getValue(), value);
+        copy.put(name, member);
+        return new DataObjectLiteralModel(builder, type, copy);
+      } else {
+        throw unsupported("Method " + method + " must be invoked with a single argument or with a key/value argument");
+      }
     } else {
       throw unsupported("Method " + method);
-    }
-    if (argumentModels.size() == 1) {
-      Map<String, Member> copy = new LinkedHashMap<>(members);
-      ExpressionModel value = argumentModels.get(0).toDataObjectValue();
-      Member member = copy.computeIfAbsent(name, memberFactory);
-      member.append(value);
-      copy.put(name, member);
-      return new DataObjectLiteralModel(builder, type, copy);
-    } else {
-      throw unsupported("Method " + method + " must be invoked with a single argument");
     }
   }
 

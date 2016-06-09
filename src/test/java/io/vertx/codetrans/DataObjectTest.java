@@ -1,5 +1,6 @@
 package io.vertx.codetrans;
 
+import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
@@ -83,28 +84,53 @@ public class DataObjectTest extends ConversionTestBase {
   }
 
   @Test
-  public void testAdd() throws Exception {
+  public void testAddToList() throws Exception {
     o = null;
-    runJavaScript("dataobject/DataObject", "add");
+    runJavaScript("dataobject/DataObject", "addToList");
     HttpServerOptions actual = new HttpServerOptions(unwrapJsonObject((ScriptObjectMirror) o));
     HashSet<String> expected = new HashSet<>();
     expected.add("foo");
     expected.add("bar");
     Assert.assertEquals(expected, actual.getEnabledCipherSuites());
     o = null;
-    runGroovy("dataobject/DataObject", "add");
+    runGroovy("dataobject/DataObject", "addToList");
     actual = new HttpServerOptions(unwrapJsonObject((Map<String, Object>) o));
     expected = new HashSet<>();
     expected.add("foo");
     expected.add("bar");
     Assert.assertEquals(expected, actual.getEnabledCipherSuites());
     o = null;
-    runRuby("dataobject/DataObject", "add");
+    runRuby("dataobject/DataObject", "addToList");
     actual = new HttpServerOptions(unwrapJsonObject((Map<String, Object>) o));
     expected = new HashSet<>();
     expected.add("foo");
     expected.add("bar");
     Assert.assertEquals(expected, actual.getEnabledCipherSuites());
+  }
+
+  @Test
+  public void testAddToMap() throws Exception {
+    HashSet<String> expectedKeys = new HashSet<>();
+    expectedKeys.add("foo");
+    expectedKeys.add("bar");
+    o = null;
+    runJavaScript("dataobject/DataObject", "addToMap");
+    DeliveryOptions actual = new DeliveryOptions(unwrapJsonObject((ScriptObjectMirror) o));
+    Assert.assertEquals(expectedKeys, actual.getHeaders().names());
+    Assert.assertEquals("foo_value", actual.getHeaders().get("foo"));
+    Assert.assertEquals("bar_value", actual.getHeaders().get("bar"));
+    o = null;
+    runGroovy("dataobject/DataObject", "addToMap");
+    actual = new DeliveryOptions(unwrapJsonObject((Map<String, Object>) o));
+    Assert.assertEquals(expectedKeys, actual.getHeaders().names());
+    Assert.assertEquals("foo_value", actual.getHeaders().get("foo"));
+    Assert.assertEquals("bar_value", actual.getHeaders().get("bar"));
+    o = null;
+    runRuby("dataobject/DataObject", "addToMap");
+    actual = new DeliveryOptions(unwrapJsonObject((Map<String, Object>) o));
+    Assert.assertEquals(expectedKeys, actual.getHeaders().names());
+    Assert.assertEquals("foo_value", actual.getHeaders().get("foo"));
+    Assert.assertEquals("bar_value", actual.getHeaders().get("bar"));
   }
 
   @Test
