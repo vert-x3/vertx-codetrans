@@ -191,6 +191,22 @@ class GroovyWriter extends CodeWriter {
     renderJsonArray(jsonArray.getValues());
   }
 
+  private boolean isValidMapLiteralKey(String s) {
+    int len = s.length();
+    if (len == 0) {
+      return false;
+    }
+    if (!Character.isJavaIdentifierStart(s.charAt(0))) {
+      return false;
+    }
+    for (int i = 1;i < len;i++) {
+      if (!Character.isJavaIdentifierPart(s.charAt(i))) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   private void renderJsonObject(Iterable<Member> members) {
     Iterator<Member> iterator = members.iterator();
     if (iterator.hasNext()) {
@@ -198,9 +214,13 @@ class GroovyWriter extends CodeWriter {
       while (iterator.hasNext()) {
         Member member = iterator.next();
         String name = member.getName();
-        append("'");
-        renderChars(name);
-        append("'");
+        if (isValidMapLiteralKey(name)) {
+          append(name);
+        } else {
+          append("'");
+          renderChars(name);
+          append("'");
+        }
         append(":");
         if (member instanceof Member.Single) {
           ((Member.Single) member).getValue().render(this);
