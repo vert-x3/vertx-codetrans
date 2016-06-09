@@ -198,7 +198,9 @@ class GroovyWriter extends CodeWriter {
       while (iterator.hasNext()) {
         Member member = iterator.next();
         String name = member.getName();
-        append(name);
+        append("'");
+        renderChars(name);
+        append("'");
         append(":");
         if (member instanceof Member.Single) {
           ((Member.Single) member).getValue().render(this);

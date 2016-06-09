@@ -103,7 +103,9 @@ class JavaScriptWriter extends CodeWriter {
     for (Iterator<Member> iterator = members.iterator();iterator.hasNext();) {
       Member member = iterator.next();
       String name = member.getName();
-      append("\"").append(name).append("\" : ");
+      append("\"");
+      renderChars(name);
+      append("\" : ");
       if (member instanceof Member.Single) {
         ((Member.Single) member).getValue().render(this);
       } else if (member instanceof Member.Sequence) {
