@@ -1,11 +1,11 @@
-package throwing;
+package throwable;
 
 import io.vertx.codetrans.annotations.CodeTranslate;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class Throwing {
+public class Throwable {
 
   @CodeTranslate
   public void throwRuntimeExceptionNoArg() throws Exception {

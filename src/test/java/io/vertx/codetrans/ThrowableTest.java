@@ -13,23 +13,23 @@ import static org.junit.Assert.*;
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class ThrowingTest extends ConversionTestBase {
+public class ThrowableTest extends ConversionTestBase {
 
   @Test
   public void testThrowRuntimeExceptionNoArg() throws Exception {
     try {
-      script(new GroovyLang(), "throwing/Throwing", "throwRuntimeExceptionNoArg").run();
+      script(new GroovyLang(), "throwable/Throwable", "throwRuntimeExceptionNoArg").run();
       fail();
     } catch (RuntimeException e) {
       assertEquals(null, e.getMessage());
     }
     try {
-      script(new JavaScriptLang(), "throwing/Throwing", "throwRuntimeExceptionNoArg").run();
+      script(new JavaScriptLang(), "throwable/Throwable", "throwRuntimeExceptionNoArg").run();
       fail();
     } catch (ScriptException e) {
     }
     try {
-      script(new RubyLang(), "throwing/Throwing", "throwRuntimeExceptionNoArg").run();
+      script(new RubyLang(), "throwable/Throwable", "throwRuntimeExceptionNoArg").run();
       fail();
     } catch (EvalFailedException e) {
     }
@@ -38,19 +38,19 @@ public class ThrowingTest extends ConversionTestBase {
   @Test
   public void testThrowRuntimeExceptionStringArg() throws Exception {
     try {
-      script(new GroovyLang(), "throwing/Throwing", "throwRuntimeExceptionStringArg").run();
+      script(new GroovyLang(), "throwable/Throwable", "throwRuntimeExceptionStringArg").run();
       fail();
     } catch (RuntimeException e) {
       assertEquals("foobar", e.getMessage());
     }
     try {
-      script(new JavaScriptLang(), "throwing/Throwing", "throwRuntimeExceptionStringArg").run();
+      script(new JavaScriptLang(), "throwable/Throwable", "throwRuntimeExceptionStringArg").run();
       fail();
     } catch (ScriptException e) {
       assertTrue(e.getMessage().contains("foobar"));
     }
     try {
-      script(new RubyLang(), "throwing/Throwing", "throwRuntimeExceptionStringArg").run();
+      script(new RubyLang(), "throwable/Throwable", "throwRuntimeExceptionStringArg").run();
       fail();
     } catch (EvalFailedException e) {
       assertTrue(e.getMessage().contains("foobar"));
