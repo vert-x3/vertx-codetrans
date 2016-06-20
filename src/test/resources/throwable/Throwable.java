@@ -1,5 +1,6 @@
 package throwable;
 
+import io.vertx.codetrans.CustomException;
 import io.vertx.codetrans.annotations.CodeTranslate;
 import io.vertx.codetrans.ThrowableTest;
 
@@ -24,5 +25,11 @@ public class Throwable {
   public void instanceOf() throws Exception {
     java.lang.Throwable t = ThrowableTest.t;
     ThrowableTest.test = t instanceof BindException;
+  }
+
+  @CodeTranslate
+  public void field() throws Exception {
+    CustomException custom = ThrowableTest.custom;
+    ThrowableTest.test = custom.getCode();
   }
 }

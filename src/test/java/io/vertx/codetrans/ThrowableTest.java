@@ -4,7 +4,6 @@ import io.vertx.codetrans.lang.groovy.GroovyLang;
 import io.vertx.codetrans.lang.js.JavaScriptLang;
 import io.vertx.codetrans.lang.ruby.RubyLang;
 import org.jruby.embed.EvalFailedException;
-import org.junit.Before;
 import org.junit.Test;
 
 import javax.script.ScriptException;
@@ -19,7 +18,8 @@ import static org.junit.Assert.*;
 public class ThrowableTest extends ConversionTestBase {
 
   public static Throwable t;
-  public static Boolean test;
+  public static CustomException custom;
+  public static Object test;
 
   @Test
   public void testThrowRuntimeExceptionNoArg() throws Exception {
@@ -68,6 +68,16 @@ public class ThrowableTest extends ConversionTestBase {
     t = new BindException();
     runAll("throwable/Throwable", "instanceOf", () -> {
       assertEquals(Boolean.TRUE, test);
+      test = null;
+    });
+  }
+
+  @Test
+  public void testField() throws Exception {
+    custom = new CustomException(5);
+    runAll("throwable/Throwable", "field", () -> {
+      assertEquals(5, ((Number)test).intValue());
+      test = null;
     });
   }
 }
