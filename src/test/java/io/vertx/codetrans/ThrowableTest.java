@@ -4,9 +4,12 @@ import io.vertx.codetrans.lang.groovy.GroovyLang;
 import io.vertx.codetrans.lang.js.JavaScriptLang;
 import io.vertx.codetrans.lang.ruby.RubyLang;
 import org.jruby.embed.EvalFailedException;
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.script.ScriptException;
+
+import java.net.BindException;
 
 import static org.junit.Assert.*;
 
@@ -14,6 +17,9 @@ import static org.junit.Assert.*;
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 public class ThrowableTest extends ConversionTestBase {
+
+  public static Throwable t;
+  public static Boolean test;
 
   @Test
   public void testThrowRuntimeExceptionNoArg() throws Exception {
@@ -55,5 +61,13 @@ public class ThrowableTest extends ConversionTestBase {
     } catch (EvalFailedException e) {
       assertTrue(e.getMessage().contains("foobar"));
     }
+  }
+
+  @Test
+  public void testInstanceOf() throws Exception {
+    t = new BindException();
+    runAll("throwable/Throwable", "instanceOf", () -> {
+      assertEquals(Boolean.TRUE, test);
+    });
   }
 }

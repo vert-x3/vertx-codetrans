@@ -17,6 +17,7 @@ import io.vertx.codetrans.MethodSignature;
 import io.vertx.codetrans.statement.StatementModel;
 import io.vertx.codetrans.expression.ThisModel;
 
+import javax.lang.model.element.TypeElement;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -373,4 +374,11 @@ class JavaScriptWriter extends CodeWriter {
     append(')');
   }
 
+  @Override
+  public void renderInstanceOf(ExpressionModel expression, TypeElement type) {
+    expression.render(this);
+    append(".getClass().getSimpleName() == '");
+    append(type.getSimpleName());
+    append("'");
+  }
 }

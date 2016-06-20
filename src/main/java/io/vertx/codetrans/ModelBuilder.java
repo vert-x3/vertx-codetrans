@@ -11,6 +11,7 @@ import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.ForLoopTree;
 import com.sun.source.tree.IdentifierTree;
 import com.sun.source.tree.IfTree;
+import com.sun.source.tree.InstanceOfTree;
 import com.sun.source.tree.LambdaExpressionTree;
 import com.sun.source.tree.LiteralTree;
 import com.sun.source.tree.MemberReferenceTree;
@@ -202,6 +203,13 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
       }
     }
     return null;
+  }
+
+  @Override
+  public CodeModel visitInstanceOf(InstanceOfTree node, VisitContext p) {
+    ExpressionModel classModel = scan(node.getExpression(), p);
+    TypeElement type = (TypeElement) ((JCTree.JCIdent) node.getType()).sym;
+    return classModel.onInstanceOf(type);
   }
 
   @Override

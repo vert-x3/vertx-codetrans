@@ -5,6 +5,7 @@ import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.MethodSignature;
 
+import javax.lang.model.element.TypeElement;
 import java.util.List;
 
 /**
@@ -113,4 +114,9 @@ public class ExpressionModel extends CodeModel {
     });
   }
 
+  public ExpressionModel onInstanceOf(TypeElement type) {
+    return builder.render((renderer) -> {
+      renderer.renderInstanceOf(ExpressionModel.this, type);
+    });
+  }
 }

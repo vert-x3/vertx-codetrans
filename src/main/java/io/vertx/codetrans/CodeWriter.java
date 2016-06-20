@@ -14,6 +14,7 @@ import io.vertx.codetrans.expression.JsonObjectLiteralModel;
 import io.vertx.codetrans.statement.ConditionalBlockModel;
 import io.vertx.codetrans.statement.StatementModel;
 
+import javax.lang.model.element.TypeElement;
 import java.util.Iterator;
 import java.util.List;
 
@@ -402,5 +403,9 @@ public abstract class CodeWriter implements Appendable {
       }
     };
     renderer.parse(fragment);
+  }
+
+  public void renderInstanceOf(ExpressionModel expression, TypeElement type) {
+    throw new UnsupportedOperationException(getClass() + " has not implemented renderInstanceOf");
   }
 }

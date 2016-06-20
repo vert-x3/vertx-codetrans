@@ -23,6 +23,7 @@ import io.vertx.codetrans.MethodSignature;
 import io.vertx.codetrans.statement.StatementModel;
 import io.vertx.codetrans.expression.ThisModel;
 
+import javax.lang.model.element.TypeElement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -533,5 +534,19 @@ class RubyWriter extends CodeWriter {
     expression.render(this);
     append(".new");
     renderArguments(argumentModels, this);
+  }
+
+  @Override
+  public void renderInstanceOf(ExpressionModel expression, TypeElement type) {
+    expression.render(this);
+    append(".class.name == '");
+    append("Java::");
+    String qn = type.getQualifiedName().toString();
+    int idx = qn.lastIndexOf('.');
+    String pkg = qn.substring(0, idx);
+    append(Case.QUALIFIED.to(Case.CAMEL, pkg));
+    append("::");
+    append(type.getSimpleName());
+    append("'");
   }
 }

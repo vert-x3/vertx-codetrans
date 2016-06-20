@@ -14,6 +14,7 @@ import io.vertx.codetrans.expression.JsonObjectLiteralModel;
 import io.vertx.codetrans.expression.Member;
 import io.vertx.codetrans.statement.StatementModel;
 
+import javax.lang.model.element.TypeElement;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -376,5 +377,12 @@ class GroovyWriter extends CodeWriter {
       argumentModels.get(i).render(this);
     }
     append(')');
+  }
+
+  @Override
+  public void renderInstanceOf(ExpressionModel expression, TypeElement type) {
+    expression.render(this);
+    append(" instanceof ");
+    append(type.getQualifiedName());
   }
 }
