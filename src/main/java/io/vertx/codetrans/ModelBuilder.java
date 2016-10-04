@@ -136,9 +136,30 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     if (node.getUpdate().size() != 1) {
       throw new UnsupportedOperationException();
     }
+    StatementModel body = scan(node.getStatement(), context);
+    if (node.getInitializer().size() == 1 &&
+        node.getInitializer().get(0).getKind() == Tree.Kind.VARIABLE &&
+        node.getCondition().getKind() == Tree.Kind.LESS_THAN &&
+        node.getUpdate().size() == 1 &&
+        node.getUpdate().get(0).getKind() == Tree.Kind.EXPRESSION_STATEMENT &&
+        node.getUpdate().get(0).getExpression().getKind() == Tree.Kind.POSTFIX_INCREMENT) {
+      VariableTree init = (VariableTree) node.getInitializer().get(0);
+      BinaryTree lessThan = (BinaryTree) node.getCondition();
+      UnaryTree increment = (UnaryTree) node.getUpdate().get(0).getExpression();
+      if (lessThan.getLeftOperand().getKind() == Tree.Kind.IDENTIFIER &&
+          increment.getExpression().getKind() == Tree.Kind.IDENTIFIER) {
+        String id1 = init.getName().toString();
+        String id2 = ((IdentifierTree) lessThan.getLeftOperand()).getName().toString();
+        String id3 = ((IdentifierTree) increment.getExpression()).getName().toString();
+        if (id1.equals(id2) && id2.equals(id3)) {
+          ExpressionModel from = scan(init.getInitializer(), context);
+          ExpressionModel to = scan(lessThan.getRightOperand(), context);
+          return context.builder.sequenceForLoop(id1, from, to, body);
+        }
+      }
+    }
     StatementModel initializer = scan(node.getInitializer().get(0), context);
     ExpressionModel update = scan(node.getUpdate().get(0).getExpression(), context);
-    StatementModel body = scan(node.getStatement(), context);
     ExpressionModel condition = scan(node.getCondition(), context);
     return context.builder.forLoop(initializer, condition, update, body);
   }

@@ -54,6 +54,8 @@ public interface CodeBuilder {
 
   StatementModel forLoop(StatementModel initializer, ExpressionModel condition, ExpressionModel update, StatementModel body);
 
+  StatementModel sequenceForLoop(String variableName, ExpressionModel fromValue, ExpressionModel toValue, StatementModel body);
+
   default ExpressionModel jsonArrayEncoder(ExpressionModel expression) {
     return render(writer -> {
       writer.renderJsonArrayToString(expression);

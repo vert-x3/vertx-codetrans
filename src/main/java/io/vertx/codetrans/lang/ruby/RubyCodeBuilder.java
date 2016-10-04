@@ -145,6 +145,21 @@ class RubyCodeBuilder implements CodeBuilder {
   }
 
   @Override
+  public StatementModel sequenceForLoop(String variableName, ExpressionModel fromValue, ExpressionModel toValue, StatementModel body) {
+    return StatementModel.render(writer -> {
+      writer.append('(');
+      fromValue.render(writer);
+      writer.append("...");
+      toValue.render(writer);
+      writer.append(").each do |").append(variableName).append("|\n");
+      writer.indent();
+      body.render(writer);
+      writer.unindent();
+      writer.append("end");
+    });
+  }
+
+  @Override
   public ExpressionModel jsonArrayEncoder(ExpressionModel expression) {
     requires.add("json");
     return CodeBuilder.super.jsonArrayEncoder(expression);

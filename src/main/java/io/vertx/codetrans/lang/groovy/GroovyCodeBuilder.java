@@ -127,4 +127,19 @@ class GroovyCodeBuilder implements CodeBuilder {
       renderer.append("}");
     });
   }
+
+  @Override
+  public StatementModel sequenceForLoop(String variableName, ExpressionModel fromValue, ExpressionModel toValue, StatementModel body) {
+    return StatementModel.render(writer -> {
+      writer.append('(');
+      fromValue.render(writer);
+      writer.append("..<");
+      toValue.render(writer);
+      writer.append(").each { ").append(variableName).append(" ->\n");
+      writer.indent();
+      body.render(writer);
+      writer.unindent();
+      writer.append("}");
+    });
+  }
 }

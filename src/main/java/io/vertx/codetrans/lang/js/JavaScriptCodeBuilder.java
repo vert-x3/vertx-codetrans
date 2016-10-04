@@ -116,4 +116,19 @@ class JavaScriptCodeBuilder implements CodeBuilder {
       renderer.append("}");
     });
   }
+
+  @Override
+  public StatementModel sequenceForLoop(String variableName, ExpressionModel fromValue, ExpressionModel toValue, StatementModel body) {
+    return StatementModel.conditional((renderer) -> {
+      renderer.append("for (var ").append(variableName).append(" = ");
+      fromValue.render(renderer);
+      renderer.append(";").append(variableName).append(" < ");
+      toValue.render(renderer);
+      renderer.append(";").append(variableName).append("++) {\n");
+      renderer.indent();
+      body.render(renderer);
+      renderer.unindent();
+      renderer.append("}");
+    });
+  }
 }
