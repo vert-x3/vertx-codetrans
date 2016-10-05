@@ -37,7 +37,7 @@ public class ScalaApiModel extends ApiModel {
         // the second one does the onComplete call
 
         int lastIndex = (method.getParameterTypes().size() - 1 < 0) ? 0 : method.getParameterTypes().size();
-        MethodSignature futureMethodSignature = new MethodSignature(method.getName() + "Future", method.getParameterTypes().subList(0, lastIndex), false);
+        MethodSignature futureMethodSignature = new MethodSignature(method.getName() + "Future", method.getParameterTypes().subList(0, lastIndex), false, returnType);
 
         MethodInvocationModel futureModel = createMethodWithoutLastParameter(receiverType, returnType, argumentModels, argumentTypes, futureMethodSignature);
 
@@ -58,7 +58,7 @@ public class ScalaApiModel extends ApiModel {
   }
 
   private MethodInvocationModel createInvocationModelForReturnedFuture(TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
-    MethodSignature handlerMethodSignature = new MethodSignature("onComplete", Arrays.asList(method.getParameterTypes().get(method.getParameterTypes().size() - 1)), false);
+    MethodSignature handlerMethodSignature = new MethodSignature("onComplete", Arrays.asList(method.getParameterTypes().get(method.getParameterTypes().size() - 1)), false, returnType);
     return new MethodInvocationModel(builder, expression, receiverType, handlerMethodSignature, returnType, Arrays.asList(argumentModels.get(argumentModels.size() - 1)), Arrays.asList(argumentTypes.get(argumentTypes.size() - 1)));
   }
 

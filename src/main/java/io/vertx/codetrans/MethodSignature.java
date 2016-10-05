@@ -12,11 +12,13 @@ public class MethodSignature {
   final String name;
   final List<TypeInfo> parameterTypes;
   final boolean varargs;
+  final TypeInfo returnType;
 
-  public MethodSignature(String name, List<TypeInfo> parameterTypes, boolean varargs) {
+  public MethodSignature(String name, List<TypeInfo> parameterTypes, boolean varargs, TypeInfo returnType) {
     this.name = name;
     this.parameterTypes = parameterTypes;
     this.varargs = varargs;
+    this.returnType = returnType;
   }
 
   public String getName() {
@@ -25,6 +27,10 @@ public class MethodSignature {
 
   public List<TypeInfo> getParameterTypes() {
     return parameterTypes;
+  }
+
+  public TypeInfo getReturnType() {
+    return returnType;
   }
 
   @Override

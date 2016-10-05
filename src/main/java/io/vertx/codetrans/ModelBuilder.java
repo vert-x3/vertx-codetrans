@@ -33,13 +33,7 @@ import com.sun.source.util.TreePathScanner;
 import com.sun.source.util.Trees;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.tree.JCTree;
-import io.vertx.codegen.type.ApiTypeInfo;
-import io.vertx.codegen.type.ClassKind;
-import io.vertx.codegen.type.ClassTypeInfo;
-import io.vertx.codegen.type.EnumTypeInfo;
-import io.vertx.codegen.type.TypeMirrorFactory;
-import io.vertx.codegen.type.ParameterizedTypeInfo;
-import io.vertx.codegen.type.TypeInfo;
+import io.vertx.codegen.type.*;
 import io.vertx.codetrans.expression.ArraysModel;
 import io.vertx.codetrans.expression.ClassModel;
 import io.vertx.codetrans.expression.DataObjectClassModel;
@@ -569,7 +563,8 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
       parameterTypes.add(parameterType);
     }
 
-    return new MethodSignature(sym.getSimpleName().toString(), parameterTypes, varargs);
+    TypeInfo returnType = factory.create(methodType.getReturnType());
+    return new MethodSignature(sym.getSimpleName().toString(), parameterTypes, varargs, returnType);
   }
 
   @Override
@@ -705,6 +700,12 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
       TypeInfo parameterType = factory.create(decl.sym.asType());
       parameterTypes.add(parameterType);
     }
-    return new MethodModel(scan(node.getBody(), p), new MethodSignature(node.getName().toString(), parameterTypes, false), node.getParameters().stream().map(param -> param.getName().toString()).collect(Collectors.toList()));
+    TypeInfo returnType = VoidTypeInfo.INSTANCE;
+
+    if (node.getReturnType() instanceof JCTree) {
+      returnType = factory.create(((JCTree)node.getReturnType()).type);
+    }
+
+    return new MethodModel(scan(node.getBody(), p), new MethodSignature(node.getName().toString(), parameterTypes, false, returnType), node.getParameters().stream().map(param -> param.getName().toString()).collect(Collectors.toList()));
   }
 }
