@@ -34,7 +34,7 @@ public interface CodeBuilder {
     return new AsyncResultModel(this, identifier, type);
   }
 
-  ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, ParameterizedTypeInfo resultType, String resultName, CodeModel body);
+  ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, ParameterizedTypeInfo resultType, String resultName, CodeModel body, CodeModel succeededBody, CodeModel failedBody);
 
   default ApiTypeModel apiType(ApiTypeInfo type) {
     return new ApiTypeModel(this, type);

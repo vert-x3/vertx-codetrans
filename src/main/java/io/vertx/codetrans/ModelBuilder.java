@@ -40,12 +40,13 @@ import io.vertx.codegen.type.EnumTypeInfo;
 import io.vertx.codegen.type.TypeMirrorFactory;
 import io.vertx.codegen.type.ParameterizedTypeInfo;
 import io.vertx.codegen.type.TypeInfo;
-import io.vertx.codegen.type.TypeMirrorFactory;
 import io.vertx.codetrans.expression.ArraysModel;
 import io.vertx.codetrans.expression.ClassModel;
 import io.vertx.codetrans.expression.DataObjectClassModel;
 import io.vertx.codetrans.expression.ExpressionModel;
+import io.vertx.codetrans.expression.IdentifierModel;
 import io.vertx.codetrans.expression.ListClassModel;
+import io.vertx.codetrans.expression.MethodInvocationModel;
 import io.vertx.codetrans.expression.VariableScope;
 import io.vertx.codetrans.expression.JavaClassModel;
 import io.vertx.codetrans.expression.JsonArrayClassModel;
@@ -63,7 +64,6 @@ import io.vertx.codetrans.statement.ReturnModel;
 import io.vertx.codetrans.statement.StatementModel;
 import io.vertx.codetrans.statement.TryCatchModel;
 
-import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -646,10 +646,42 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
         if (typeApply.getType() instanceof MemberSelectTree) {
           TypeInfo type = factory.create(last.getType().type);
           if (type.getKind() == ClassKind.ASYNC_RESULT) {
-            ExpressionModel result = context.builder.asyncResult(last.name.toString(), ((ParameterizedTypeInfo)(type)).getArgs().get(0));
+            String identifier = last.name.toString();
+            ExpressionModel result = context.builder.asyncResult(identifier, ((ParameterizedTypeInfo)(type)).getArgs().get(0));
             CodeModel body = scan(node.getBody(), context.putAlias(last.sym, result));
             ParameterizedTypeInfo parameterized = (ParameterizedTypeInfo) type;
-            return context.builder.asyncResultHandler(node.getBodyKind(), parameterized, last.name.toString(), body);
+            BlockTree block = (BlockTree) node.getBody();
+            CodeModel succeededBody = null;
+            CodeModel failedBody = null;
+            if (block.getStatements().size() == 1) {
+              StatementTree statement = block.getStatements().get(0);
+              if (statement.getKind() == Tree.Kind.IF) {
+                IfTree ifTree = (IfTree) statement;
+                if (ifTree.getCondition().getKind() == Tree.Kind.PARENTHESIZED) {
+                  ExpressionTree inner = ((ParenthesizedTree) ifTree.getCondition()).getExpression();
+                  if (inner.getKind() == Tree.Kind.METHOD_INVOCATION) {
+                    MethodInvocationModel invocationModel = (MethodInvocationModel) visitMethodInvocation((MethodInvocationTree) inner, context);
+                    if (invocationModel.receiverType.getKind() == ClassKind.ASYNC_RESULT &&
+                        invocationModel.expression instanceof IdentifierModel &&
+                        ((IdentifierModel) invocationModel.expression).name.equals(identifier)) {
+                      MethodSignature method = invocationModel.method;
+                      if (method.name.equals("succeeded") && method.parameterTypes.isEmpty()) {
+                        succeededBody = scan(ifTree.getThenStatement(), context);
+                        if (ifTree.getElseStatement() != null) {
+                          failedBody = scan(ifTree.getElseStatement(), context);
+                        }
+                      } else if (method.name.equals("failed") && method.parameterTypes.isEmpty()) {
+                        failedBody = scan(ifTree.getThenStatement(), context);
+                        if (ifTree.getElseStatement() != null) {
+                          succeededBody = scan(ifTree.getThenStatement(), context);
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            return context.builder.asyncResultHandler(node.getBodyKind(), parameterized, identifier, body, succeededBody, failedBody);
           }
         }
       }

@@ -75,4 +75,30 @@ public class AsyncResultTest extends ConversionTestBase {
       Assert.assertEquals(Boolean.TRUE, failed);
     }
   }
+
+  @Test
+  public void analyzeSucceeded() throws Exception {
+    for (Lang lang : langs()) {
+      resultLatch = new CountDownLatch(1);
+      result = null;
+      run(lang, "asyncresult/AsyncResultHandler", "analyzeSucceeded");
+      resultLatch.await(10, TimeUnit.SECONDS);
+      Assert.assertTrue(resultLatch.await(10, TimeUnit.SECONDS));
+      Assert.assertEquals("hello", result);
+      Assert.assertEquals(Boolean.TRUE, succeeded);
+    }
+  }
+
+  @Test
+  public void analyzeFailed() throws Exception {
+    for (Lang lang : langs()) {
+      causeLatch = new CountDownLatch(1);
+      cause = null;
+      run(lang, "asyncresult/AsyncResultHandler", "analyzeFailed");
+      causeLatch.await(10, TimeUnit.SECONDS);
+      Assert.assertNotNull(cause);
+      Assert.assertEquals("oh no", cause.getMessage());
+      Assert.assertEquals(Boolean.TRUE, failed);
+    }
+  }
 }

@@ -8,7 +8,7 @@ import io.vertx.codetrans.CodeWriter;
  */
 public class IdentifierModel extends ExpressionModel {
 
-  final String name;
+  public final String name;
   final VariableScope scope;
 
   public IdentifierModel(CodeBuilder builder, String name, VariableScope scope) {
