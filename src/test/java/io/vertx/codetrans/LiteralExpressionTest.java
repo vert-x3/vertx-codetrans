@@ -80,7 +80,13 @@ public class LiteralExpressionTest extends ConversionTestBase {
   @Test
   public void testLiteralChar() throws Exception {
     runAll("expression/LiteralChar", () -> {
-      assertEquals("a", result);
+      if (result instanceof Character) {
+        assertEquals('a', result);
+      } else if (result instanceof String) {
+        assertEquals("a", result);
+      } else {
+        fail();
+      }
     });
   }
 

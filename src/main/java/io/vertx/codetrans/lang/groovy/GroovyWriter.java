@@ -32,6 +32,13 @@ class GroovyWriter extends CodeWriter {
   }
 
   @Override
+  public void renderCharLiteral(char value) {
+    append('\'');
+    renderChars(Character.toString(value));
+    append("\' as char");
+  }
+
+  @Override
   public void renderStringLiteral(List<?> parts) {
     append('"');
     for (Object part : parts) {
