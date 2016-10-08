@@ -5,6 +5,7 @@ import io.vertx.codegen.type.ApiTypeInfo;
 import io.vertx.codegen.type.EnumTypeInfo;
 import io.vertx.codegen.type.ParameterizedTypeInfo;
 import io.vertx.codegen.type.TypeInfo;
+import io.vertx.codetrans.expression.ApiModel;
 import io.vertx.codetrans.expression.ApiTypeModel;
 import io.vertx.codetrans.expression.AsyncResultModel;
 import io.vertx.codetrans.expression.BinaryExpressionModel;
@@ -38,6 +39,10 @@ public interface CodeBuilder {
 
   default ApiTypeModel apiType(ApiTypeInfo type) {
     return new ApiTypeModel(this, type);
+  }
+
+  default ApiModel api(ExpressionModel expr) {
+    return new ApiModel(this, expr);
   }
 
   default EnumExpressionModel enumType(EnumTypeInfo type) {

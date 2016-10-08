@@ -58,6 +58,7 @@ public class JsonObjectModel extends ExpressionModel {
         throw unsupported("Method " + method);
     }
   }
+
   @Override
   public void render(CodeWriter writer) {
     expression.render(writer);
