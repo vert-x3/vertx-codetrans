@@ -72,7 +72,7 @@ class JavaScriptCodeBuilder implements CodeBuilder {
   }
 
   @Override
-  public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, ParameterizedTypeInfo resultType, String resultName, CodeModel body) {
+  public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, ParameterizedTypeInfo resultType, String resultName, CodeModel body, CodeModel succeededBody, CodeModel failedBody) {
     return new LambdaExpressionModel(this, bodyKind, Arrays.asList(resultType.getArgs().get(0), TypeReflectionFactory.create(Throwable.class)), Arrays.asList(resultName, resultName + "_err"), body);
   }
 
@@ -110,6 +110,21 @@ class JavaScriptCodeBuilder implements CodeBuilder {
       renderer.append("; ");
       update.render(renderer);
       renderer.append(") {\n");
+      renderer.indent();
+      body.render(renderer);
+      renderer.unindent();
+      renderer.append("}");
+    });
+  }
+
+  @Override
+  public StatementModel sequenceForLoop(String variableName, ExpressionModel fromValue, ExpressionModel toValue, StatementModel body) {
+    return StatementModel.conditional((renderer) -> {
+      renderer.append("for (var ").append(variableName).append(" = ");
+      fromValue.render(renderer);
+      renderer.append(";").append(variableName).append(" < ");
+      toValue.render(renderer);
+      renderer.append(";").append(variableName).append("++) {\n");
       renderer.indent();
       body.render(renderer);
       renderer.unindent();

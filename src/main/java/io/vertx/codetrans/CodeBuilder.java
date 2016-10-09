@@ -5,6 +5,7 @@ import io.vertx.codegen.type.ApiTypeInfo;
 import io.vertx.codegen.type.EnumTypeInfo;
 import io.vertx.codegen.type.ParameterizedTypeInfo;
 import io.vertx.codegen.type.TypeInfo;
+import io.vertx.codetrans.expression.ApiModel;
 import io.vertx.codetrans.expression.ApiTypeModel;
 import io.vertx.codetrans.expression.AsyncResultModel;
 import io.vertx.codetrans.expression.BinaryExpressionModel;
@@ -34,10 +35,14 @@ public interface CodeBuilder {
     return new AsyncResultModel(this, identifier, type);
   }
 
-  ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, ParameterizedTypeInfo resultType, String resultName, CodeModel body);
+  ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, ParameterizedTypeInfo resultType, String resultName, CodeModel body, CodeModel succeededBody, CodeModel failedBody);
 
   default ApiTypeModel apiType(ApiTypeInfo type) {
     return new ApiTypeModel(this, type);
+  }
+
+  default ApiModel api(ExpressionModel expr) {
+    return new ApiModel(this, expr);
   }
 
   default EnumExpressionModel enumType(EnumTypeInfo type) {
@@ -53,6 +58,8 @@ public interface CodeBuilder {
   StatementModel enhancedForLoop(String variableName, ExpressionModel expression, StatementModel body);
 
   StatementModel forLoop(StatementModel initializer, ExpressionModel condition, ExpressionModel update, StatementModel body);
+
+  StatementModel sequenceForLoop(String variableName, ExpressionModel fromValue, ExpressionModel toValue, StatementModel body);
 
   default ExpressionModel jsonArrayEncoder(ExpressionModel expression) {
     return render(writer -> {

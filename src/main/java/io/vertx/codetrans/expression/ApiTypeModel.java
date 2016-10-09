@@ -7,7 +7,7 @@ import io.vertx.codetrans.CodeWriter;
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class ApiTypeModel extends ExpressionModel {
+public class ApiTypeModel extends ClassModel {
 
   private final ApiTypeInfo type;
 

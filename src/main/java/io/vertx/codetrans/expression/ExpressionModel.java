@@ -21,6 +21,8 @@ public class ExpressionModel extends CodeModel {
 
   public ExpressionModel as(TypeInfo type) {
     switch (type.getKind()) {
+      case API:
+        return builder.api(this);
       case JSON_OBJECT:
         return new JsonObjectModel(builder, this);
       case JSON_ARRAY:

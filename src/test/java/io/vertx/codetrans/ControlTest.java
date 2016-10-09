@@ -102,6 +102,14 @@ public class ControlTest extends ConversionTestBase {
   }
 
   @Test
+  public void testForSequence() throws Exception {
+    runAll("control/ForSequence", () -> {
+      Assert.assertEquals(Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7", "8", "9"), collected);
+      collected.clear();
+    });
+  }
+
+  @Test
   public void testReturnVoid() throws Exception {
     o = null;
     runAll("control/Return", "returnVoid", () -> {

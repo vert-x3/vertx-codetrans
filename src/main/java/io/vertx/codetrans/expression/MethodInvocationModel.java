@@ -12,12 +12,12 @@ import java.util.List;
  */
 public class MethodInvocationModel extends ExpressionModel {
 
-  final ExpressionModel expression;
-  final TypeInfo receiverType;
-  final MethodSignature method;
-  final TypeInfo returnType;
-  final List<ExpressionModel> argumentModels;
-  final List<TypeInfo> argumentTypes;
+  public final ExpressionModel expression;
+  public final TypeInfo receiverType;
+  public final MethodSignature method;
+  public final TypeInfo returnType;
+  public final List<ExpressionModel> argumentModels;
+  public final List<TypeInfo> argumentTypes;
 
   public MethodInvocationModel(CodeBuilder builder, ExpressionModel expression, TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
     super(builder);

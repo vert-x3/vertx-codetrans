@@ -83,7 +83,7 @@ class RubyCodeBuilder implements CodeBuilder {
   }
 
   @Override
-  public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, ParameterizedTypeInfo resultType, String resultName, CodeModel body) {
+  public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, ParameterizedTypeInfo resultType, String resultName, CodeModel body, CodeModel succeededBody, CodeModel failedBody) {
     return new LambdaExpressionModel(
         this,
         bodyKind,
@@ -139,6 +139,21 @@ class RubyCodeBuilder implements CodeBuilder {
       body.render(writer);
       update.render(writer);
       writer.append('\n');
+      writer.unindent();
+      writer.append("end");
+    });
+  }
+
+  @Override
+  public StatementModel sequenceForLoop(String variableName, ExpressionModel fromValue, ExpressionModel toValue, StatementModel body) {
+    return StatementModel.render(writer -> {
+      writer.append('(');
+      fromValue.render(writer);
+      writer.append("...");
+      toValue.render(writer);
+      writer.append(").each do |").append(variableName).append("|\n");
+      writer.indent();
+      body.render(writer);
       writer.unindent();
       writer.append("end");
     });

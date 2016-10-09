@@ -84,7 +84,7 @@ class GroovyCodeBuilder implements CodeBuilder {
   }
 
   @Override
-  public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, ParameterizedTypeInfo resultType, String resultName, CodeModel body) {
+  public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, ParameterizedTypeInfo resultType, String resultName, CodeModel body, CodeModel succeededBody, CodeModel failedBody) {
     return new LambdaExpressionModel(this, bodyKind, Collections.singletonList(resultType), Collections.singletonList(resultName), body);
   }
 
@@ -125,6 +125,21 @@ class GroovyCodeBuilder implements CodeBuilder {
       body.render(renderer);
       renderer.unindent();
       renderer.append("}");
+    });
+  }
+
+  @Override
+  public StatementModel sequenceForLoop(String variableName, ExpressionModel fromValue, ExpressionModel toValue, StatementModel body) {
+    return StatementModel.render(writer -> {
+      writer.append('(');
+      fromValue.render(writer);
+      writer.append("..<");
+      toValue.render(writer);
+      writer.append(").each { ").append(variableName).append(" ->\n");
+      writer.indent();
+      body.render(writer);
+      writer.unindent();
+      writer.append("}");
     });
   }
 }
