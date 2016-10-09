@@ -32,11 +32,21 @@ public class SystemTest extends ConversionTestBase {
       setter.accept(next);
       runAll("api/SystemApi", method, () -> {
         next.flush();
-        assertEquals("hello" + System.getProperty("line.separator"), writer.toString());
+        assertEquals("hello\n", line2unix(writer.toString()));
         writer.reset();
       });
     } finally {
       setter.accept(prev);
+    }
+  }
+
+  // fix ruby line ending comparison in Windows
+  // (https://github.com/vert-x3/vertx-codetrans/issues/10)
+  private String line2unix(String text) {
+    if (System.getProperty("line.separator").equals("\n")) {
+      return text;
+    } else {
+      return text.replace(System.getProperty("line.separator"), "\n");
     }
   }
 }
