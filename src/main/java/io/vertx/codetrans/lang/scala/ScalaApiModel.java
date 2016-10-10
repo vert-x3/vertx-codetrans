@@ -13,6 +13,12 @@ import io.vertx.codetrans.expression.MethodInvocationModel;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Custom {@see ApiModel}-implementation to allow the conversion of method signatures.
+ * It specifically changes methods from accepting a {@code Handler<AsyncResult>} to return a Scala-Promise.
+ *
+ * @author <a href="mailto:jochen.mader@codecentric.de">Jochen Mader</a
+ */
 public class ScalaApiModel extends ApiModel {
   private ExpressionModel expression;
 
@@ -25,21 +31,17 @@ public class ScalaApiModel extends ApiModel {
   public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
     if (argumentTypes.size() > 0) {
       TypeInfo last = argumentTypes.get(argumentTypes.size() - 1);
-      if (last.getKind() == ClassKind.HANDLER && ((ParameterizedTypeInfo) last).getArg(0).getKind() == ClassKind.ASYNC_RESULT) {
+      if (methodAcceptsAsyncResultHandler(last)) {
         // Return an ExpressionModel that the composition of two MethodInvocationModel that
         // the first one calls the method that returns the future
         // the second one does the onComplete call
 
         int lastIndex = (method.getParameterTypes().size() - 1 < 0) ? 0 : method.getParameterTypes().size();
         MethodSignature futureMethodSignature = new MethodSignature(method.getName() + "Future", method.getParameterTypes().subList(0, lastIndex), false);
-        List<ExpressionModel> futureArgumentModels = argumentModels.subList(0, (argumentModels.size() - 1 < 0) ? 0 : argumentModels.size() - 1);
-        List<TypeInfo> futureArgumentTypes = argumentTypes.subList(0, (argumentTypes.size() - 1 < 0) ? 0 : argumentTypes.size() - 1);
 
-        MethodInvocationModel futureModel = new MethodInvocationModel(builder, expression, receiverType, futureMethodSignature, returnType, futureArgumentModels, futureArgumentTypes);
+        MethodInvocationModel futureModel = createMethodWithoutLastParameter(receiverType, returnType, argumentModels, argumentTypes, futureMethodSignature);
 
-        MethodSignature handlerMethodSignature = new MethodSignature("onComplete", Arrays.asList(method.getParameterTypes().get(method.getParameterTypes().size() - 1)), false);
-        MethodInvocationModel completeMethod = new MethodInvocationModel(builder, expression, receiverType, handlerMethodSignature, returnType, Arrays.asList(argumentModels.get(argumentModels.size() - 1)), Arrays.asList(argumentTypes.get(argumentTypes.size() - 1)));
-
+        MethodInvocationModel completeMethod = createInvocationModelForReturnedFuture(receiverType, method, returnType, argumentModels, argumentTypes);
 
         return new ExpressionModel(builder) {
           @Override
@@ -53,5 +55,24 @@ public class ScalaApiModel extends ApiModel {
 
 
     return super.onMethodInvocation(receiverType, method, returnType, argumentModels, argumentTypes);
+  }
+
+  private MethodInvocationModel createInvocationModelForReturnedFuture(TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
+    MethodSignature handlerMethodSignature = new MethodSignature("onComplete", Arrays.asList(method.getParameterTypes().get(method.getParameterTypes().size() - 1)), false);
+    return new MethodInvocationModel(builder, expression, receiverType, handlerMethodSignature, returnType, Arrays.asList(argumentModels.get(argumentModels.size() - 1)), Arrays.asList(argumentTypes.get(argumentTypes.size() - 1)));
+  }
+
+  private MethodInvocationModel createMethodWithoutLastParameter(TypeInfo receiverType, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes, MethodSignature futureMethodSignature) {
+    List<ExpressionModel> futureArgumentModels = listWithoutLastElement(argumentModels);
+    List<TypeInfo> futureArgumentTypes = listWithoutLastElement(argumentTypes);
+    return new MethodInvocationModel(builder, expression, receiverType, futureMethodSignature, returnType, futureArgumentModels, futureArgumentTypes);
+  }
+
+  private <T> List<T> listWithoutLastElement(List<T> argumentModels) {
+    return argumentModels.subList(0, (argumentModels.size() - 1 < 0) ? 0 : argumentModels.size() - 1);
+  }
+
+  private boolean methodAcceptsAsyncResultHandler(TypeInfo last) {
+    return last.getKind() == ClassKind.HANDLER && ((ParameterizedTypeInfo) last).getArg(0).getKind() == ClassKind.ASYNC_RESULT;
   }
 }

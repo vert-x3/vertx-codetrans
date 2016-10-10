@@ -10,11 +10,11 @@ import java.util.*;
 import java.util.stream.IntStream;
 
 /**
- * Created by jochen on 10.10.16.
+ * @author <a href="mailto:jochen.mader@codecentric.de">Jochen Mader</a
  */
 public class ScalaCodeBuilder implements CodeBuilder {
-  private Set<ClassTypeInfo> imports = new HashSet<>();
 
+  private Set<ClassTypeInfo> imports = new HashSet<>();
   private List<String> asyncResults = new ArrayList<>();
 
   @Override
@@ -87,7 +87,9 @@ public class ScalaCodeBuilder implements CodeBuilder {
     return new StatementModel() {
       public void render(CodeWriter renderer) {
         expression.render(renderer);
-        renderer.append(".foreach(" + variableName + " => {");
+        renderer.append(".foreach(");
+        renderer.append(variableName);
+        renderer.append(" => {");
         renderer.append("\n");
         renderer.indent();
         body.render(renderer);
@@ -146,6 +148,7 @@ public class ScalaCodeBuilder implements CodeBuilder {
 
     for (ClassTypeInfo importedType : imports) {
       String fqn = importedType.getName();
+      //only translate actual API-types
       if (importedType instanceof ApiTypeInfo) fqn = importedType.translateName("scala");
       writer.append("import ").append(fqn).append('\n');
     }

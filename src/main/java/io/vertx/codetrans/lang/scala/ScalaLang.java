@@ -4,6 +4,11 @@ import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.Lang;
 import io.vertx.codetrans.Script;
 
+/**
+ * Scala language
+ *
+ * @author <a href="mailto:jochen.mader@codecentric.de">Jochen Mader</a
+ */
 public class ScalaLang implements Lang {
 
   @Override

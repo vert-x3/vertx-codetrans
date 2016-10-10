@@ -17,6 +17,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
+/**
+ * @author <a href="mailto:jochen.mader@codecentric.de">Jochen Mader</a
+ */
 public class ScalaCodeWriter extends CodeWriter {
 
 
@@ -163,7 +166,9 @@ public class ScalaCodeWriter extends CodeWriter {
     append("(");
     IntStream.range(0, parameterNames.size()).forEach(i -> {
       if(i > 0) append(", ");
-      append(parameterNames.get(i)+": "+parameterTypes.get(i).translateName("scala"));
+      append(parameterNames.get(i));
+      append(": ");
+      append(parameterTypes.get(i).translateName("scala"));
     });
     append(") => {\n");
     indent();
