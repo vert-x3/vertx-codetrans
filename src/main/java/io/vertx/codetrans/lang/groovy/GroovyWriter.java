@@ -7,6 +7,7 @@ import io.vertx.codegen.type.EnumTypeInfo;
 import io.vertx.codegen.type.TypeInfo;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
+import io.vertx.codetrans.MethodSignature;
 import io.vertx.codetrans.expression.DataObjectLiteralModel;
 import io.vertx.codetrans.expression.ExpressionModel;
 import io.vertx.codetrans.expression.JsonArrayLiteralModel;
@@ -367,9 +368,9 @@ class GroovyWriter extends CodeWriter {
   }
 
   @Override
-  public void renderMethodReference(ExpressionModel expression, String methodName) {
+  public void renderMethodReference(ExpressionModel expression, MethodSignature signature) {
     expression.render(this);
-    append(".&").append(methodName);
+    append(".&").append(signature.getName());
   }
 
   @Override

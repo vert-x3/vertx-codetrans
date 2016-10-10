@@ -68,9 +68,9 @@ public class ExpressionModel extends CodeModel {
     });
   }
 
-  public ExpressionModel onMethodReference(String methodName) {
+  public ExpressionModel onMethodReference(MethodSignature signature) {
     return builder.render((renderer) -> {
-      renderer.renderMethodReference(ExpressionModel.this, methodName);
+      renderer.renderMethodReference(ExpressionModel.this, signature);
     });
   }
 

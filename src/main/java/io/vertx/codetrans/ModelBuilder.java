@@ -488,11 +488,14 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
   @Override
   public CodeModel visitMemberReference(MemberReferenceTree node, VisitContext p) {
     if (node.getMode() == MemberReferenceTree.ReferenceMode.INVOKE) {
+      JCTree.JCMemberReference refTree = (JCTree.JCMemberReference) node;
+      ExecutableElement method = (ExecutableElement) refTree.sym;
+      MethodSignature signature = abc(method, false);
       ExpressionModel expression = scan(node.getQualifierExpression(), p);
       if (expression instanceof ThisModel) {
         p.getReferencedMethods().add(node.getName().toString());
       }
-      ExpressionModel methodReferenceExpression = expression.onMethodReference(node.getName().toString());
+      ExpressionModel methodReferenceExpression = expression.onMethodReference(signature);
       return methodReferenceExpression;
     } else {
       throw new UnsupportedOperationException("New reference not implemented yet");
@@ -541,6 +544,17 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     }
 
     //
+    TypeInfo type = factory.create(sym.owner.type);
+    MethodSignature signature = abc(sym, varargs);
+    if (addToRefedMethods) {
+      context.getReferencedMethods().add(name);
+    }
+
+    ExpressionModel expression = memberSelectExpression.onMethodInvocation(type, signature, returnType, argumentModels, argumentTypes);
+    return expression.as(returnType);
+  }
+
+  private MethodSignature abc(ExecutableElement sym, boolean varargs) {
     ExecutableType methodType = (ExecutableType) typeUtils.asMemberOf((DeclaredType) sym.getEnclosingElement().asType(), sym);
 
     // Compute the parameter types
@@ -555,14 +569,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
       parameterTypes.add(parameterType);
     }
 
-    TypeInfo type = factory.create(sym.owner.type);
-    MethodSignature signature = new MethodSignature(name, parameterTypes, varargs);
-    if (addToRefedMethods) {
-      context.getReferencedMethods().add(name);
-    }
-
-    ExpressionModel expression = memberSelectExpression.onMethodInvocation(type, signature, returnType, argumentModels, argumentTypes);
-    return expression.as(returnType);
+    return new MethodSignature(sym.getSimpleName().toString(), parameterTypes, varargs);
   }
 
   @Override

@@ -35,8 +35,8 @@ public class ParenthesizedModel extends ExpressionModel {
   }
 
   @Override
-  public ExpressionModel onMethodReference(String methodName) {
-    return expression.onMethodReference(methodName);
+  public ExpressionModel onMethodReference(MethodSignature signature) {
+    return expression.onMethodReference(signature);
   }
 
   @Override

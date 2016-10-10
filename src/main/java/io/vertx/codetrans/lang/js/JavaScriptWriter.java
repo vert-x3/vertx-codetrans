@@ -290,12 +290,12 @@ class JavaScriptWriter extends CodeWriter {
   }
 
   @Override
-  public void renderMethodReference(ExpressionModel expression, String methodName) {
+  public void renderMethodReference(ExpressionModel expression, MethodSignature signature) {
     if (!(expression instanceof ThisModel)) {
       expression.render(this);
       append('.');
     }
-    append(methodName);
+    append(signature.getName());
   }
 
   @Override

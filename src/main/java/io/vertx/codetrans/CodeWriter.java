@@ -182,7 +182,7 @@ public abstract class CodeWriter implements Appendable {
     append('.').append(identifier);
   }
 
-  public abstract void renderMethodReference(ExpressionModel expression, String methodName);
+  public abstract void renderMethodReference(ExpressionModel expression, MethodSignature signature);
 
   public abstract void renderNew(ExpressionModel expression, TypeInfo type, List<ExpressionModel> argumentModels);
 

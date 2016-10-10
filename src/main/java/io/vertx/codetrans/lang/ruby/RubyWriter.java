@@ -194,13 +194,13 @@ class RubyWriter extends CodeWriter {
   }
 
   @Override
-  public void renderMethodReference(ExpressionModel expression, String methodName) {
+  public void renderMethodReference(ExpressionModel expression, MethodSignature signature) {
     if (!(expression instanceof ThisModel)) {
       expression.render(this);
       append(".");
     }
 
-    append("method(:").append(Case.SNAKE.format(Case.CAMEL.parse(methodName))).append(")");
+    append("method(:").append(Case.SNAKE.format(Case.CAMEL.parse(signature.getName()))).append(")");
   }
 
   @Override
