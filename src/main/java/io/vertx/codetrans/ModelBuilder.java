@@ -490,7 +490,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     if (node.getMode() == MemberReferenceTree.ReferenceMode.INVOKE) {
       JCTree.JCMemberReference refTree = (JCTree.JCMemberReference) node;
       ExecutableElement method = (ExecutableElement) refTree.sym;
-      MethodSignature signature = abc(method, false);
+      MethodSignature signature = createMethodSignature(method, false);
       ExpressionModel expression = scan(node.getQualifierExpression(), p);
       if (expression instanceof ThisModel) {
         p.getReferencedMethods().add(node.getName().toString());
@@ -545,7 +545,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
 
     //
     TypeInfo type = factory.create(sym.owner.type);
-    MethodSignature signature = abc(sym, varargs);
+    MethodSignature signature = createMethodSignature(sym, varargs);
     if (addToRefedMethods) {
       context.getReferencedMethods().add(name);
     }
@@ -554,7 +554,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     return expression.as(returnType);
   }
 
-  private MethodSignature abc(ExecutableElement sym, boolean varargs) {
+  private MethodSignature createMethodSignature(ExecutableElement sym, boolean varargs) {
     ExecutableType methodType = (ExecutableType) typeUtils.asMemberOf((DeclaredType) sym.getEnclosingElement().asType(), sym);
 
     // Compute the parameter types
