@@ -10,21 +10,21 @@ public class LiteralString {
 
   @CodeTranslate
   public void value() throws Exception {
-    LiteralExpressionTest.result = "foobar";
+    LiteralExpressionTest.string = "foobar";
   }
 
   @CodeTranslate
   public void concat() throws Exception {
     int a = 0;
     a = 3;
-    LiteralExpressionTest.result = "_" + a + "_";
+    LiteralExpressionTest.string = "_" + a + "_";
   }
 
   @CodeTranslate
   public void concat1() throws Exception {
     int a = 0;
     a = 1;
-    LiteralExpressionTest.result = a + "_";
+    LiteralExpressionTest.string = a + "_";
   }
 
   @CodeTranslate
@@ -33,7 +33,7 @@ public class LiteralString {
     int b = 0;
     a = 1;
     b = 2;
-    LiteralExpressionTest.result = a + b + "_";
+    LiteralExpressionTest.string = a + b + "_";
   }
 
   @CodeTranslate
@@ -42,7 +42,7 @@ public class LiteralString {
     int b = 0;
     a = 1;
     b = 2;
-    LiteralExpressionTest.result = (a + b) + "_";
+    LiteralExpressionTest.string = (a + b) + "_";
   }
 
   @CodeTranslate
@@ -51,19 +51,19 @@ public class LiteralString {
     int b = 0;
     a = 1;
     b = 2;
-    LiteralExpressionTest.result = a + (b + "_");
+    LiteralExpressionTest.string = a + (b + "_");
   }
 
   @CodeTranslate
   public void concat5() throws Exception {
     int a = 0;
     a = 1;
-    LiteralExpressionTest.result = "_" + a;
+    LiteralExpressionTest.string = "_" + a;
   }
 
   @CodeTranslate
   public void concat6() throws Exception {
-    LiteralExpressionTest.result = "_" + 1 + 2;
+    LiteralExpressionTest.string = "_" + 1 + 2;
   }
 
   @CodeTranslate
@@ -72,7 +72,7 @@ public class LiteralString {
     int b = 0;
     a = 1;
     b = 2;
-    LiteralExpressionTest.result = ("_" + a) + b;
+    LiteralExpressionTest.string = ("_" + a) + b;
   }
 
   @CodeTranslate
@@ -81,25 +81,25 @@ public class LiteralString {
     int b = 0;
     a = 1;
     b = 2;
-    LiteralExpressionTest.result = "_" + (a + b);
+    LiteralExpressionTest.string = "_" + (a + b);
   }
 
   @CodeTranslate
   public void concat9() throws Exception {
     int a = 0;
     a = 2;
-    LiteralExpressionTest.result = ("_" + a) + "_";
+    LiteralExpressionTest.string = ("_" + a) + "_";
   }
 
   @CodeTranslate
   public void concat10() throws Exception {
     int a = 0;
     a = 2;
-    LiteralExpressionTest.result = "\n" + a;
+    LiteralExpressionTest.string = "\n" + a;
   }
 
   @CodeTranslate
   public void escape() throws Exception {
-    LiteralExpressionTest.result = "\n\r\t\f\b\"\\'\u0000A\u007F";
+    LiteralExpressionTest.string = "\n\r\t\f\b\"\\'\u0000A\u007F";
   }
 }

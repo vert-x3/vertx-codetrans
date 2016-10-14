@@ -10,6 +10,6 @@ public class Divide {
 
   @CodeTranslate
   public void start() throws Exception {
-    BinaryOperatorExpressionTest.result = 6 / 2;
+    BinaryOperatorExpressionTest.numResult = 6 / 2;
   }
 }

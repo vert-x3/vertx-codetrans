@@ -10,11 +10,11 @@ import java.util.Map;
 @VertxGen
 public interface CollectionFactory {
 
-  public static Map createMap() {
+  public static Map<String, String> createMap() {
     throw new AssertionError("stub");
   }
 
-  public static Map wrapMap(Map map) {
+  public static Map<String, String> wrapMap(Map<String, String> map) {
     throw new AssertionError("stub");
   }
 }

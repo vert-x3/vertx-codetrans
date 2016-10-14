@@ -24,7 +24,7 @@ public class Throwable {
   @CodeTranslate
   public void instanceOf() throws Exception {
     java.lang.Throwable t = ThrowableTest.t;
-    ThrowableTest.test = t instanceof BindException;
+    ThrowableTest.bool = t instanceof BindException;
   }
 
   @CodeTranslate

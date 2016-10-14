@@ -1,6 +1,7 @@
 package io.vertx.codetrans;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -22,6 +23,13 @@ public class ClassIdentifierExpressionTest extends ConversionTestBase {
     args.add(o);
   }
 
+  @Before
+  public void before() {
+    invoked = 0;
+    args.clear();
+    field = null;
+  }
+
   @Test
   public void testInvokeStaticMethod() throws Exception {
     invoked = 0;
@@ -34,6 +42,11 @@ public class ClassIdentifierExpressionTest extends ConversionTestBase {
     runGroovy("expression/ClassIdentifier", "invokeStaticMethod");
     Assert.assertEquals(1, invoked);
     Assert.assertEquals(Collections.<Object>singletonList("foo"), args);
+    invoked = 0;
+    args.clear();
+    runScala("expression/ClassIdentifier", "invokeStaticMethod");
+    Assert.assertEquals(1, invoked);
+    Assert.assertEquals(Collections.<Object>singletonList("foo"), args);
   }
 
   @Test
@@ -43,6 +56,9 @@ public class ClassIdentifierExpressionTest extends ConversionTestBase {
     Assert.assertEquals("foo", field);
     field = null;
     runGroovy("expression/ClassIdentifier", "accessStaticField");
+    Assert.assertEquals("foo", field);
+    field = null;
+    runScala("expression/ClassIdentifier", "accessStaticField");
     Assert.assertEquals("foo", field);
   }
 }

@@ -10,6 +10,6 @@ public class LogicalComplement {
 
   @CodeTranslate
   public void start() throws Exception {
-    UnaryOperatorExpressionTest.result = !(true);
+    UnaryOperatorExpressionTest.result3 = !(true);
   }
 }

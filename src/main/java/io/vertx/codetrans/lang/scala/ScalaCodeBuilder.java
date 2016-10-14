@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
  */
 public class ScalaCodeBuilder implements CodeBuilder {
 
-  private Set<ClassTypeInfo> imports = new HashSet<>();
+  private Set<String> imports = new HashSet<>();
   private List<String> asyncResults = new ArrayList<>();
 
   @Override
@@ -24,13 +24,13 @@ public class ScalaCodeBuilder implements CodeBuilder {
 
   @Override
   public ApiTypeModel apiType(ApiTypeInfo type) {
-    imports.add(type);
+    imports.add(type.translateName("scala"));
     return CodeBuilder.super.apiType(type);
   }
 
   @Override
   public EnumExpressionModel enumType(EnumTypeInfo type) {
-    imports.add(type);
+    imports.add(type.getName());
     return CodeBuilder.super.enumType(type);
   }
 
@@ -41,16 +41,20 @@ public class ScalaCodeBuilder implements CodeBuilder {
       if (initializer != null) {
         renderer.append(" = ");
         initializer.render(renderer);
+      } else {
+        renderer.append(" = null.asInstanceOf[").append(type.getName()).append(']');
       }
     });
   }
 
   @Override
   public ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, ParameterizedTypeInfo parameterizedTypeInfo, String s, CodeModel codeModel, CodeModel codeModel1, CodeModel codeModel2) {
+    imports.add("scala.util.Failure");
+    imports.add("scala.util.Success");
     return new ExpressionModel(this) {
       public void render(CodeWriter writer) {
         asyncResults.add(s);
-        writer.append("\n");
+        writer.append("{\n");
         writer.indent();
         writer.append("case Success(result) => ");
         writer.indent();
@@ -72,12 +76,14 @@ public class ScalaCodeBuilder implements CodeBuilder {
           writer.append("println(s\"$cause\")");
 //          codeModel2.render(writer)
           writer.unindent();
-          writer.append("}\n");
+          writer.append("\n}\n");
         } else {
           writer.append("println(\"Failure\")\n");
           writer.unindent();
         }
+
         writer.unindent();
+        writer.append("}");
       }
     };
   }
@@ -94,7 +100,7 @@ public class ScalaCodeBuilder implements CodeBuilder {
         renderer.indent();
         body.render(renderer);
         renderer.unindent();
-        renderer.append("}\n");
+        renderer.append("})\n");
       }
     };
   }
@@ -103,17 +109,14 @@ public class ScalaCodeBuilder implements CodeBuilder {
   public StatementModel forLoop(StatementModel initializer, ExpressionModel condition, ExpressionModel update, StatementModel body) {
     return new StatementModel() {
       public void render(CodeWriter renderer) {
-        BinaryExpressionModel condExp = (BinaryExpressionModel) condition;
         initializer.render(renderer);
         renderer.append("\nwhile(");
         condition.render(renderer);
         renderer.append("){\n");
         renderer.indent();
-        condExp.getLeft().render(renderer);
-        renderer.append(" += ");
-        update.render(renderer);
-        renderer.append("\n");
         body.render(renderer);
+        renderer.append("\n");
+        update.render(renderer);
         renderer.unindent();
         renderer.append("}\n");
       }
@@ -126,7 +129,7 @@ public class ScalaCodeBuilder implements CodeBuilder {
       public void render(CodeWriter renderer) {
         renderer.append("for ( " + variableName + " <- ");
         fromValue.render(renderer);
-        renderer.append(" to ");
+        renderer.append(" until ");
         toValue.render(renderer);
         renderer.append(") {\n");
         renderer.indent();
@@ -146,15 +149,11 @@ public class ScalaCodeBuilder implements CodeBuilder {
   public String render(RunnableCompilationUnit unit) {
     CodeWriter writer = newWriter();
 
-    for (ClassTypeInfo importedType : imports) {
-      String fqn = importedType.getName();
-      //only translate actual API-types
-      if (importedType instanceof ApiTypeInfo) fqn = importedType.translateName("scala");
-      writer.append("import ").append(fqn).append('\n');
+    for (String importedType : imports) {
+      writer.append("import ").append(importedType).append('\n');
     }
 
     for (StatementModel value : unit.getFields().values()) {
-      writer.append("val ");
       value.render(writer);
       writer.append("\n");
     }
@@ -164,9 +163,10 @@ public class ScalaCodeBuilder implements CodeBuilder {
       IntStream.range(0, method.getValue().getParameterNames().size()).forEach(i -> {
         if (i > 0) writer.append(", ");
         writer.append(method.getValue().getParameterNames().get(i));
+        writer.append(":");
+        writer.append(method.getValue().getSignature().getParameterTypes().get(i).getName());
       });
-
-      writer.append(") {\n");
+      writer.append(") = {\n");
       writer.indent();
       method.getValue().render(writer);
       writer.unindent();
@@ -174,7 +174,25 @@ public class ScalaCodeBuilder implements CodeBuilder {
     }
     unit.getMain().render(writer);
 
-    return asyncResults.stream().reduce(writer.getBuffer().toString(), (identity, value) -> identity.replace(value + ".result()", "result"));
+    String ret = writer.getBuffer().toString();
+    //remove return statements
+    ret = ret.replace("return ","");
+    ret = convertLeftoverUsageOfAsyncResultMethods(ret);
+    ret = removeThisIfStringRepresentsAScript(ret);
+    return ret;
+  }
+
+  private String removeThisIfStringRepresentsAScript(String ret) {
+    if (!ret.contains("class")){
+      return ret.replace("this.","");
+    }
+    return ret;
+  }
+
+  private String convertLeftoverUsageOfAsyncResultMethods(String ret) {
+    return asyncResults.stream()
+            .reduce(ret, (identity, value) -> identity.replace(value + ".result()", "result")
+                    .replace(value + ".succeeded()", "true"));
   }
 
 }

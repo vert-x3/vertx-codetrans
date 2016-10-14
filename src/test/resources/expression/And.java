@@ -10,6 +10,6 @@ public class And {
 
   @CodeTranslate
   public void start() {
-    BinaryOperatorExpressionTest.result = 3 & 6;
+    BinaryOperatorExpressionTest.numResult = 3 & 6;
   }
 }

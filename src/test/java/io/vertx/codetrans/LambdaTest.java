@@ -1,6 +1,8 @@
 package io.vertx.codetrans;
 
+import io.vertx.codetrans.lang.scala.ScalaLang;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.function.Consumer;
@@ -24,9 +26,15 @@ public class LambdaTest extends ConversionTestBase {
     consumer.accept("foo");
   }
 
+  @Before
+  public void before() {
+    o = null;
+    invoked = 0;
+  }
+
   @Test
   public void testNoArg() throws Exception {
-    runAll("lambda/Lambda", "noArg", () -> {
+    runAllExcept("lambda/Lambda", "noArg", ScalaLang.class, () -> {
       Assert.assertEquals(1, invoked);
       invoked = 0;
     });
@@ -34,7 +42,7 @@ public class LambdaTest extends ConversionTestBase {
 
   @Test
   public void testOneArg() throws Exception {
-    runAll("lambda/Lambda", "oneArg", () -> {
+    runAllExcept("lambda/Lambda", "oneArg", ScalaLang.class, () -> {
       Assert.assertEquals("foo", o);
       o = null;
     });

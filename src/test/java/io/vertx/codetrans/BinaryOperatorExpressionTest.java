@@ -10,11 +10,14 @@ import static org.junit.Assert.assertEquals;
  */
 public class BinaryOperatorExpressionTest extends ConversionTestBase {
 
-  public static Object result;
+  public static Boolean result;
+  
+  public static Number numResult;
 
   @Before
   public void before() {
     result = null;
+    numResult = null;
   }
 
   @Test
@@ -76,7 +79,7 @@ public class BinaryOperatorExpressionTest extends ConversionTestBase {
   @Test
   public void testAnd() throws Exception {
     runAll("expression/And", () -> {
-      assertEquals(2, ((Number) result).intValue());
+      assertEquals(2, numResult.intValue());
     });
   }
 
@@ -84,49 +87,49 @@ public class BinaryOperatorExpressionTest extends ConversionTestBase {
   @Test
   public void testOr() throws Exception {
     runAll("expression/Or", () -> {
-      assertEquals(7, ((Number) result).intValue());
+      assertEquals(7, numResult.intValue());
     });
   }
 
   @Test
   public void testXor() throws Exception {
     runAll("expression/Xor", () -> {
-      assertEquals(5, ((Number) result).intValue());
+      assertEquals(5, numResult.intValue());
     });
   }
 
   @Test
   public void testPlus() throws Exception {
     runAll("expression/Plus", () -> {
-      assertEquals(5, ((Number) result).intValue());
+      assertEquals(5, numResult.intValue());
     });
   }
 
   @Test
   public void testMinus() throws Exception {
     runAll("expression/Minus", () -> {
-      assertEquals(-1, ((Number) result).intValue());
+      assertEquals(-1, numResult.intValue());
     });
   }
 
   @Test
   public void testMultiply() throws Exception {
     runAll("expression/Multiply", () -> {
-      assertEquals(6, ((Number) result).intValue());
+      assertEquals(6, numResult.intValue());
     });
   }
 
   @Test
   public void testDivide() throws Exception {
     runAll("expression/Divide", () -> {
-      assertEquals(3, ((Number)result).intValue());
+      assertEquals(3, numResult.intValue());
     });
   }
 
   @Test
   public void testRemainder() throws Exception {
     runAll("expression/Remainder", () -> {
-      assertEquals(1, ((Number) result).intValue());
+      assertEquals(1, numResult.intValue());
     });
   }
 
