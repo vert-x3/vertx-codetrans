@@ -10,8 +10,8 @@ import static org.junit.Assert.assertEquals;
  */
 public class ParenthesizedExpressionTest extends ConversionTestBase {
 
-  public static Object result;
-  public static Object result2;
+  public static Number result;
+  public static Number result2;
 
   @Before
   public void before() {
@@ -21,8 +21,8 @@ public class ParenthesizedExpressionTest extends ConversionTestBase {
   @Test
   public void testParenthesized() throws Exception {
     runAll("expression/Parenthesized", () -> {
-      assertEquals(15, ((Number) result).intValue());
-      assertEquals(9, ((Number) result2).intValue());
+      assertEquals(15, result.intValue());
+      assertEquals(9, result2.intValue());
     });
   }
 }

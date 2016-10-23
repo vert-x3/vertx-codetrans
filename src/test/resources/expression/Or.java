@@ -10,6 +10,6 @@ public class Or {
 
   @CodeTranslate
   public void start() throws Exception {
-    BinaryOperatorExpressionTest.result = 3 | 6;
+    BinaryOperatorExpressionTest.numResult = 3 | 6;
   }
 }

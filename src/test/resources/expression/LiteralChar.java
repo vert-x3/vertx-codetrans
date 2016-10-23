@@ -10,6 +10,6 @@ public class LiteralChar {
 
   @CodeTranslate
   public void start() throws Exception {
-    LiteralExpressionTest.result = 'a';
+    LiteralExpressionTest.charresult = 'a';
   }
 }

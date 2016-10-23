@@ -1,8 +1,10 @@
 package io.vertx.codetrans;
 
+import io.vertx.codetrans.lang.scala.ScalaLang;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -11,6 +13,11 @@ import org.junit.Test;
 public class JsonTest extends ConversionTestBase {
 
   public static Object o;
+
+  @Before
+  public void before() {
+    o = null;
+  }
 
   @Test
   public void testJsonObjectInstantiate() {
@@ -106,7 +113,7 @@ public class JsonTest extends ConversionTestBase {
 
   @Test
   public void testJsonObjectGetObjectFromIdentifier() {
-    runAll("json/JsObject", "getObjectFromIdentifier", () -> {
+    runAllExcept("json/JsObject", "getObjectFromIdentifier", ScalaLang.class, () -> {
       Assert.assertEquals(new JsonObject().put("foo", "bar"), o);
     });
   }
@@ -117,7 +124,7 @@ public class JsonTest extends ConversionTestBase {
   public void testGetJsonObject() {
     JsonObject expected = new JsonObject().put("bar", "juu");
     object = new JsonObject().put("foo", expected);
-    runAll("json/JsObject", "getJsonObject", () -> {
+    runAllExcept("json/JsObject", "getJsonObject", ScalaLang.class, () -> {
       Assert.assertEquals(expected, new JsonObject((String) o));
     });
   }
@@ -126,7 +133,7 @@ public class JsonTest extends ConversionTestBase {
   public void testGetJsonArray() {
     JsonArray expected = new JsonArray().add(4).add(5).add(6);
     object = new JsonObject().put("foo", expected);
-    runAll("json/JsObject", "getJsonArray", () -> {
+    runAllExcept("json/JsObject", "getJsonArray", ScalaLang.class, () -> {
       Assert.assertEquals(expected, new JsonArray((String) o));
     });
   }
@@ -147,7 +154,7 @@ public class JsonTest extends ConversionTestBase {
 
   @Test
   public void testJsonObjectGetArrayFromIdentifier() {
-    runAll("json/JsObject", "getArrayFromIdentifier", () -> {
+    runAllExcept("json/JsObject", "getArrayFromIdentifier", ScalaLang.class, () -> {
       Assert.assertEquals(new JsonArray().add("foo"), o);
     });
   }
@@ -273,7 +280,7 @@ public class JsonTest extends ConversionTestBase {
   public void testJsonArrayGetObject() {
     JsonObject expected = new JsonObject().put("foo", "bar");
     array = new JsonArray().add(expected);
-    runAll("json/JsArray", "getObject", () -> {
+    runAllExcept("json/JsArray", "getObject", ScalaLang.class, () -> {
       Assert.assertEquals(expected, new JsonObject((String) o));
     });
   }
@@ -282,7 +289,7 @@ public class JsonTest extends ConversionTestBase {
   public void testJsonArrayGetArray() {
     JsonArray expected = new JsonArray().add(1).add(2).add(3);
     array = new JsonArray().add(expected);
-    runAll("json/JsArray", "getArray", () -> {
+    runAllExcept("json/JsArray", "getArray", ScalaLang.class, () -> {
       Assert.assertEquals(expected, new JsonArray((String) o));
     });
   }
@@ -329,7 +336,7 @@ public class JsonTest extends ConversionTestBase {
 
   @Test
   public void testJsonArrayEncodePrettily() {
-    runAll("json/JsArray", "encodePrettily", () -> {
+    runAllExcept("json/JsArray", "encodePrettily", ScalaLang.class, () -> {
       Assert.assertEquals("[\"foo\",\"bar\"]", o);
       o = null;
     });
@@ -337,7 +344,7 @@ public class JsonTest extends ConversionTestBase {
 
   @Test
   public void testJsonArrayEncode() {
-    runAll("json/JsArray", "encode", () -> {
+    runAllExcept("json/JsArray", "encode", ScalaLang.class, () -> {
       Assert.assertEquals("[\"foo\",\"bar\"]", o);
       o = null;
     });

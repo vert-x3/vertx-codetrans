@@ -13,8 +13,8 @@ public class MapGet {
 
   @CodeTranslate
   public void getOnVariable() throws Exception {
-    Map map = CollectionFactory.createMap();
-    Object result = map.get("foo");
+    Map<String, String> createdMap = CollectionFactory.createMap();
+    Object result = createdMap.get("foo");
     CollectionTest.o = result;
   }
 

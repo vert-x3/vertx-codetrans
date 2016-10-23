@@ -11,7 +11,7 @@ import java.text.DateFormat;
  */
 public class InterropTest extends ConversionTestBase {
 
-  public static Object isEquals;
+  public static Boolean isEquals;
   private static boolean called;
   public final static Object o = new Object() {
     @Override

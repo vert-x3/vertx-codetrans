@@ -10,6 +10,6 @@ public class Multiply {
 
   @CodeTranslate
   public void start() throws Exception {
-    BinaryOperatorExpressionTest.result = 2 * 3;
+    BinaryOperatorExpressionTest.numResult = 2 * 3;
   }
 }

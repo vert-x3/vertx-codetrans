@@ -10,11 +10,11 @@ public class LiteralBoolean {
 
   @CodeTranslate
   public void falseValue() throws Exception {
-    LiteralExpressionTest.result = false;
+    LiteralExpressionTest.bool = false;
   }
 
   @CodeTranslate
   public void trueValue() throws Exception {
-    LiteralExpressionTest.result = true;
+    LiteralExpressionTest.bool = true;
   }
 }

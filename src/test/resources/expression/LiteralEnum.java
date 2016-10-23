@@ -11,11 +11,11 @@ public class LiteralEnum {
 
   @CodeTranslate
   public void enumConstant() throws Exception {
-    LiteralExpressionTest.result = TheEnum.THE_CONSTANT;
+    LiteralExpressionTest.enumresult = TheEnum.THE_CONSTANT;
   }
 
   @CodeTranslate
   public void enumConstantInString() throws Exception {
-    LiteralExpressionTest.result = "->" + TheEnum.THE_CONSTANT + "<-";
+    LiteralExpressionTest.string = "->" + TheEnum.THE_CONSTANT + "<-";
   }
 }

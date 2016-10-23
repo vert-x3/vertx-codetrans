@@ -10,6 +10,6 @@ public class Remainder {
 
   @CodeTranslate
   public void start() throws Exception {
-    BinaryOperatorExpressionTest.result = 7 % 3;
+    BinaryOperatorExpressionTest.numResult = 7 % 3;
   }
 }

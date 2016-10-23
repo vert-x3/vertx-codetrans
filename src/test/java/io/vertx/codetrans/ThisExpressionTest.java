@@ -1,5 +1,6 @@
 package io.vertx.codetrans;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
@@ -10,6 +11,11 @@ import static org.junit.Assert.assertNotNull;
 public class ThisExpressionTest extends ConversionTestBase {
 
   public static Object obj;
+
+  @Before
+  public void before() {
+    obj = null;
+  }
 
   @Test
   public void testInstanceSelectInvocation() throws Exception {

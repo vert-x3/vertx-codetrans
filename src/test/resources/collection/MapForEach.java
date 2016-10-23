@@ -13,7 +13,7 @@ public class MapForEach {
 
   @CodeTranslate
   public void forEach() throws Exception {
-    Map map = CollectionFactory.createMap();
+    Map<String, String> map = CollectionFactory.createMap();
     map.forEach((key, value) -> {
       CollectionTest.o = key + " -> " + value;
     });

@@ -14,7 +14,7 @@ public class MapNew {
 
   @CodeTranslate
   public void newMap() throws Exception {
-    Map map = new HashMap<>();
-    CollectionTest.o = map;
+    Map hashMap = new HashMap<>();
+    CollectionTest.map = hashMap;
   }
 }

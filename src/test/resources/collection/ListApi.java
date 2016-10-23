@@ -15,27 +15,27 @@ public class ListApi {
 
   @CodeTranslate
   public void add() throws Exception {
-    List list = new ArrayList<>();
+    List<String> list = new ArrayList<>();
     list.add("foo");
     CollectionTest.o = list;
   }
 
   @CodeTranslate
   public void get() throws Exception {
-    List list = new ArrayList<>();
+    List<String> list = new ArrayList<>();
     list.add("foo");
     CollectionTest.o = list.get(0);
   }
 
   @CodeTranslate
   public void newArrayList() throws Exception {
-    List list = new ArrayList<>();
+    List<String> list = new ArrayList<>();
     CollectionTest.o = list;
   }
 
   @CodeTranslate
   public void size() throws Exception {
-    List list = new ArrayList<>();
+    List<String> list = new ArrayList<>();
     list.add("foo");
     CollectionTest.o = list.size();
   }

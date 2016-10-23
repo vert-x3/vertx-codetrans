@@ -1,5 +1,6 @@
 package io.vertx.codetrans;
 
+import io.vertx.codetrans.lang.scala.ScalaLang;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -30,7 +31,7 @@ public class SystemTest extends ConversionTestBase {
     try {
       PrintStream next = new PrintStream(writer);
       setter.accept(next);
-      runAll("api/SystemApi", method, () -> {
+      runAllExcept("api/SystemApi", method, ScalaLang.class, () -> {
         next.flush();
         assertEquals("hello\n", line2unix(writer.toString()));
         writer.reset();
