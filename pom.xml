@@ -60,6 +60,12 @@
       <version>1.7.18</version>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-lang-scala-on-the-fly_2.11</artifactId>
+      <version>${project.version}</version>
+      <optional>true</optional>
+    </dependency>
 
     <dependency>
       <groupId>com.sun</groupId>
@@ -70,11 +76,6 @@
       <optional>true</optional>
     </dependency>
 
-    <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-lang-scala-on-the-fly_2.11</artifactId>
-      <version>${project.version}</version>
-    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
