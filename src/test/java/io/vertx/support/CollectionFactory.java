@@ -2,6 +2,7 @@ package io.vertx.support;
 
 import io.vertx.codegen.annotations.VertxGen;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -10,11 +11,13 @@ import java.util.Map;
 @VertxGen
 public interface CollectionFactory {
 
-  public static Map<String, String> createMap() {
-    throw new AssertionError("stub");
+  static Map<String, String> createMap() {
+    Map<String, String> map = new HashMap<>();
+    map.put("foo", "foo_value");
+    return map;
   }
 
-  public static Map<String, String> wrapMap(Map<String, String> map) {
-    throw new AssertionError("stub");
+  static Map<String, String> wrapMap(Map<String, String> map) {
+    return map;
   }
 }

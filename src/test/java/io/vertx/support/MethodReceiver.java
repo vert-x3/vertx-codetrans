@@ -11,10 +11,10 @@ import io.vertx.core.Handler;
 public interface MethodReceiver {
 
   static boolean isRed() {
-    throw new UnsupportedOperationException();
+    return true;
   }
 
   static boolean blue() {
-    throw new UnsupportedOperationException();
+    return false;
   }
 }

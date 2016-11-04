@@ -13,19 +13,18 @@ import java.util.Map;
 public interface JsonConverter {
 
   static JsonObject toJsonObject(JsonObject obj) {
-    throw new AssertionError("stub");
+    return obj;
   }
 
   static JsonArray toJsonArray(JsonArray arr) {
-    throw new AssertionError("stub");
+    return arr;
   }
 
   static JsonObject fromJsonObject(JsonObject obj) {
-    throw new AssertionError("stub");
+    return obj;
   }
 
   static JsonArray fromJsonArray(JsonArray arr) {
-    throw new AssertionError("stub");
+    return arr;
   }
-
 }
