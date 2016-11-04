@@ -1,6 +1,7 @@
 package io.vertx.support;
 
 import io.vertx.codegen.annotations.VertxGen;
+import io.vertx.codetrans.MethodExpressionTest;
 import io.vertx.core.Handler;
 
 /**
@@ -10,16 +11,16 @@ import io.vertx.core.Handler;
 public interface SubHandler extends Handler<String> {
 
   static void classHandler(Handler<String> handler) {
-    throw new UnsupportedOperationException("stub");
+    handler.handle("hello_class");
   }
 
   static SubHandler create() {
     return event -> {
-      throw new UnsupportedOperationException("stub");
+      MethodExpressionTest.event = event;
     };
   }
 
   default void instanceHandler(Handler<String> handler) {
-    throw new UnsupportedOperationException("stub");
+    handler.handle("hello_instance");
   }
 }

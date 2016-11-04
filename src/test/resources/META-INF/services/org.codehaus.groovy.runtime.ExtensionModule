@@ -1,0 +1,4 @@
+moduleName = vertx-test-module
+moduleVersion = 1.0
+extensionClasses = io.vertx.groovy.support.GroovyExtension
+staticExtensionClasses = io.vertx.groovy.support.GroovyStaticExtension

@@ -42,9 +42,6 @@ class GroovyCodeBuilder implements CodeBuilder {
     }
     for (ClassTypeInfo importedType : imports) {
       String fqn = importedType.getName();
-      if (importedType instanceof ApiTypeInfo) {
-        fqn = importedType.translateName("groovy");
-      }
       writer.append("import ").append(fqn).append('\n');
     }
     for (Map.Entry<String, StatementModel> field : unit.getFields().entrySet()) {
