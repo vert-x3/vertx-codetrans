@@ -18,6 +18,7 @@
   <properties>
     <stack.version>3.4.0-SNAPSHOT</stack.version>
     <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
+    <kotlin.version>1.0.4</kotlin.version>
   </properties>
 
   <dependencyManagement>
@@ -68,6 +69,19 @@
     </dependency>
 
     <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-kotlin-common-compiler</artifactId>
+      <version>${project.version}</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-kotlin-common-json</artifactId>
+      <version>${project.version}</version>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
       <groupId>com.sun</groupId>
       <artifactId>tools</artifactId>
       <version>1.8</version>
@@ -98,5 +112,4 @@
       </plugins>
     </pluginManagement>
   </build>
-
 </project>

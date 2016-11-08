@@ -2,6 +2,7 @@ package io.vertx.codetrans;
 
 import io.vertx.codetrans.lang.groovy.GroovyLang;
 import io.vertx.codetrans.lang.js.JavaScriptLang;
+import io.vertx.codetrans.lang.kotlin.KotlinLang;
 import io.vertx.codetrans.lang.ruby.RubyLang;
 import io.vertx.codetrans.lang.scala.ScalaLang;
 import io.vertx.core.json.JsonArray;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
  */
 public abstract class ConversionTestBase {
 
-  public static Lang[] langs() { return new Lang[] { new GroovyLang(), new JavaScriptLang(), new RubyLang(), new ScalaLang() }; }
+  public static Lang[] langs() { return new Lang[] { new GroovyLang(), new JavaScriptLang(), new KotlinLang(), new RubyLang(), new ScalaLang() }; }
 
   public void runJavaScript(String path) {
     run(new JavaScriptLang(), path);
@@ -54,6 +55,14 @@ public abstract class ConversionTestBase {
     runAllExcept(path, "start", clazz, after);
   }
 
+  public void runKotlin(String path) {
+    run(new KotlinLang(), path);
+  }
+
+  public void runKotlin(String path, String method) {
+    run(new KotlinLang(), path, method);
+  }
+
   public void runAll(String path, Runnable after) {
     runAll(path, "start", after);
   }
@@ -62,22 +71,20 @@ public abstract class ConversionTestBase {
     runAll(path, method, Collections.emptyMap(), after);
   }
 
-  public void runAllExcept(String path, String method, Class except, Runnable after) {
-    runAll(path, method, Collections.emptyMap(), Optional.of(except), after);
+  public void runAllExcept(String path, String method, Class<? extends Lang> except, Runnable after) {
+    runAll(path, method, Collections.emptyMap(), Collections.singletonList(except), after);
   }
 
-  public void runAllExcept(String path, String method, Map<String, Object> globals, Class except, Runnable after) {
-    runAll(path, method, globals, Optional.of(except), after);
+  public void runAllExcept(String path, String method, Map<String, Object> globals, Class<? extends Lang> except, Runnable after) {
+    runAll(path, method, globals, Collections.singletonList(except), after);
   }
 
   public void runAll(String path, String method, Map<String, Object> globals, Runnable after) {
-    runAll(path, method, globals, Optional.empty(), after);
+    runAll(path, method, globals, Collections.emptyList(), after);
   }
 
-  public void runAll(String path, String method, Map<String, Object> globals, Optional<Class<Lang>> except, Runnable after) {
-    List<Lang> langs = Arrays.asList(langs());
-    if(except.isPresent())
-      langs = langs.stream().filter(l -> !l.getClass().equals(except.get())).collect(Collectors.toList());
+  public void runAll(String path, String method, Map<String, Object> globals, List<Class<? extends Lang>> except, Runnable after) {
+    List<Lang> langs = Arrays.stream(langs()).filter(l -> !except.contains(l.getClass())).collect(Collectors.toList());
     script(langs, path, method).values().forEach(
         script -> {
           try {

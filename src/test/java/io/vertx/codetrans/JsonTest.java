@@ -91,7 +91,6 @@ public class JsonTest extends ConversionTestBase {
     runAll("json/JsObject", "getFloatFromIdentifier", () -> {
       Assert.assertEquals(8080f, ((Number)o).floatValue(), 0.1);
     });
-    Assert.assertEquals(8080d, o);
     runAll("json/JsObject", "getDoubleFromIdentifier", () -> {
       Assert.assertEquals(8080d, ((Number)o).doubleValue(), 0.1);
     });
