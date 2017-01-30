@@ -24,13 +24,23 @@ public class KotlinCodeBuilder implements CodeBuilder {
   }
 
   @Override
-  public String render(RunnableCompilationUnit unit) {
+  public String render(RunnableCompilationUnit unit, boolean standalone) {
     KotlinCodeWriter writer = newWriter();
+
+    if (standalone) {
+      String className = unit.getMain().getClassName();
+      writer.append("package ").append(className).append("\n\n");
+    }
 
     for (String i : imports) {
       writer.append("import ").append(i).append("\n");
     }
     writer.append("\n");
+
+    if (standalone) {
+      writer.append("object ").append(unit.getMain().getSignature().getName()).append(" {\n");
+      writer.indent();
+    }
 
     for (Map.Entry<String, StatementModel> field : unit.getFields().entrySet()) {
       field.getValue().render(writer);
@@ -71,7 +81,19 @@ public class KotlinCodeBuilder implements CodeBuilder {
       writer.append("}\n");
     }
 
+    if (standalone) {
+      writer.append("fun ").append(unit.getMain().getSignature().getName()).append("() {\n");
+      writer.indent();
+    }
+
     unit.getMain().render(writer);
+
+    if (standalone) {
+      writer.unindent();
+      writer.append("}\n");
+      writer.unindent();
+      writer.append("}\n");
+    }
 
     return writer.getBuffer().toString();
   }

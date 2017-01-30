@@ -9,14 +9,20 @@ import java.util.List;
  */
 public class MethodModel extends CodeModel {
 
+  final String className;
   final StatementModel statement;
   final MethodSignature signature;
   final List<String> parameterNames;
 
-  public MethodModel(StatementModel statement, MethodSignature signature, List<String> parameterNames) {
+  public MethodModel(String className, StatementModel statement, MethodSignature signature, List<String> parameterNames) {
+    this.className = className;
     this.statement = statement;
     this.signature = signature;
     this.parameterNames = parameterNames;
+  }
+
+  public String getClassName() {
+    return className;
   }
 
   public StatementModel getStatement() {

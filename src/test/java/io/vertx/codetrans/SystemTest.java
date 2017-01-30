@@ -31,7 +31,7 @@ public class SystemTest extends ConversionTestBase {
     try {
       PrintStream next = new PrintStream(writer);
       setter.accept(next);
-      runAllExcept("api/SystemApi", method, ScalaLang.class, () -> {
+      runAllExcept("api/SystemApi", method, () -> {
         next.flush();
         assertEquals("hello\n", line2unix(writer.toString()));
         writer.reset();

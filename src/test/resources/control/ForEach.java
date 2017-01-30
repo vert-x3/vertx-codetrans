@@ -8,7 +8,7 @@ import io.vertx.codetrans.ControlTest;
  */
 public class ForEach {
 
-  @CodeTranslate
+  @CodeTranslate()
   public void start() throws Exception {
     for (String s : ControlTest.list) {
       ControlTest.invoke(s);

@@ -18,7 +18,7 @@
   <properties>
     <stack.version>3.4.0-SNAPSHOT</stack.version>
     <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
-    <kotlin.version>1.0.4</kotlin.version>
+    <kotlin.version>1.0.6</kotlin.version>
   </properties>
 
   <dependencyManagement>
@@ -62,17 +62,16 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-lang-scala-on-the-fly_2.11</artifactId>
-      <version>${project.version}</version>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
+      <version>2.12.0</version>
       <optional>true</optional>
     </dependency>
 
     <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-kotlin-common-compiler</artifactId>
-      <version>${project.version}</version>
-      <optional>true</optional>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib</artifactId>
+      <version>${kotlin.version}</version>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
@@ -90,6 +89,7 @@
       <optional>true</optional>
     </dependency>
 
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -105,11 +105,130 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <configuration>
-            <compilerArgument>-proc:none</compilerArgument>
-          </configuration>
+          <executions>
+            <execution>
+              <id>default-compile</id>
+              <configuration>
+                <compilerArgument>-proc:none</compilerArgument>
+              </configuration>
+            </execution>
+            <execution>
+              <id>default-testCompile</id>
+              <configuration>
+                <annotationProcessors>
+                  <annotationProcessor>io.vertx.codetrans.CodeTransProcessor</annotationProcessor>
+                </annotationProcessors>
+                <compilerArgs>
+                  <arg>-Acodetrans.output=${project.basedir}/src/test/generated</arg>
+                  <arg>-Acodetrans.config=${project.basedir}/src/test/resources/config.json</arg>
+                  <arg>-Acodetrans.standalone=true</arg>
+                </compilerArgs>
+              </configuration>
+            </execution>
+          </executions>
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.12</version>
+        <executions>
+          <execution>
+            <id>add-test-source</id>
+            <phase>generate-test-sources</phase>
+            <goals>
+              <goal>add-test-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${project.basedir}/src/test/resources</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-resources-1</id>
+            <phase>generate-test-sources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.basedir}/src/test/generated/scala</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}/src/test/resources</directory>
+                  <includes>io/**</includes>
+                </resource>
+                <resource>
+                  <directory>${project.basedir}/src/test/java</directory>
+                  <includes>io/**</includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>net.alchim31.maven</groupId>
+        <artifactId>scala-maven-plugin</artifactId>
+        <version>3.2.2</version>
+        <configuration>
+          <sendJavaToScalac>true</sendJavaToScalac>
+          <args>
+            <arg>-target:jvm-1.8</arg>
+            <arg>-feature</arg>
+            <arg>-deprecation</arg>
+            <arg>-explaintypes</arg>
+            <arg>-unchecked</arg>
+            <arg>-Xlint</arg>
+          </args>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>test-compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <configuration>
+              <sourceDir>${project.basedir}/src/test/generated/scala</sourceDir>
+              <outputDir>${project.build.directory}/scala-classes</outputDir>
+              <dependencies>
+                <dependency>
+                  <groupId>junit</groupId>
+                  <artifactId>junit</artifactId>
+                  <version>4.12</version>
+                </dependency>
+              </dependencies>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>kotlin-maven-plugin</artifactId>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <version>${kotlin.version}</version>
+        <executions>
+          <execution>
+            <configuration>
+              <sourceDirs>
+                <sourceDir>${basedir}/src/test/generated/kt</sourceDir>
+                <sourceDir>>${basedir}/src/test/java</sourceDir>
+              </sourceDirs>
+              <testOutput>${project.build.directory}/kotlin-classes</testOutput>
+            </configuration>
+            <goals>
+              <goal>test-compile</goal>
+            </goals>
+            <phase>test-compile</phase>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 </project>

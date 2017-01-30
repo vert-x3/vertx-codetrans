@@ -101,7 +101,7 @@ public class ConvertingProcessor extends AbstractProcessor {
         for (Lang lang : langs) {
           Result result;
           try {
-            String translation = translator.translate(methodElt, lang);
+            String translation = translator.translate(methodElt, lang, false);
             result = new Result.Source(translation);
           } catch (Exception e) {
             result = new Result.Failure(e);

@@ -39,7 +39,7 @@ class RubyCodeBuilder implements CodeBuilder {
   }
 
   @Override
-  public String render(RunnableCompilationUnit unit) {
+  public String render(RunnableCompilationUnit unit, boolean standalone) {
     CodeWriter writer = newWriter();
     for (ClassTypeInfo type : imports) {
       requires.add(type.getModuleName() + "/" + Case.SNAKE.format(Case.CAMEL.parse(type.getSimpleName())));

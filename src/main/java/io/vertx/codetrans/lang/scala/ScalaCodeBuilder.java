@@ -146,7 +146,7 @@ public class ScalaCodeBuilder implements CodeBuilder {
   }
 
   @Override
-  public String render(RunnableCompilationUnit unit) {
+  public String render(RunnableCompilationUnit unit, boolean standalone) {
     CodeWriter writer = newWriter();
 
     for (String importedType : imports) {
@@ -179,6 +179,17 @@ public class ScalaCodeBuilder implements CodeBuilder {
     ret = ret.replace("return ","");
     ret = convertLeftoverUsageOfAsyncResultMethods(ret);
     ret = removeThisIfStringRepresentsAScript(ret);
+
+    if (standalone) {
+      String className = unit.getMain().getClassName();
+      ret = "package " + className + "\n" +
+        "class " + unit.getMain().getSignature().getName() + " extends (() => Any) {\n" +
+        "  def apply() = {\n" +
+        ret +
+        "  }\n" +
+        "}\n";
+    }
+
     return ret;
   }
 

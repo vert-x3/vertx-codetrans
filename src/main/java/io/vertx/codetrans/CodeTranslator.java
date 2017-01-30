@@ -63,13 +63,12 @@ public class CodeTranslator {
     };
   }
 
-  public String translate(ExecutableElement methodElt, Lang lang) {
+  public String translate(ExecutableElement methodElt, Lang lang, boolean standalone) {
     TypeElement typeElt = (TypeElement) methodElt.getEnclosingElement();
     attributeClass(typeElt);
-    TreePath path = trees.getPath(methodElt);
-    ModelBuilder builder = new ModelBuilder(trees, path, SystemType, ThrowableType, factory, typeUtils, lang);
+    ModelBuilder builder = new ModelBuilder(trees, typeElt, SystemType, ThrowableType, factory, typeUtils, lang);
     VisitContext visitContext = new VisitContext(lang.codeBuilder());
-    MethodModel main = (MethodModel) builder.build(path, visitContext);
+    MethodModel main = builder.build(methodElt, visitContext);
     Map<String, MethodModel> methods = new HashMap<>();
     Map<String, StatementModel> fields = new HashMap<>();
     Map<String, Boolean> pending = visitContext.getReferencedMethods().stream().collect(Collectors.toMap(k -> k, k -> true));
@@ -86,7 +85,7 @@ public class CodeTranslator {
         for (Element enclosed : typeElt.getEnclosedElements()) {
           if (enclosed instanceof ExecutableElement && enclosed.getSimpleName().toString().equals(name)) {
             other = new VisitContext(visitContext.builder);
-            MethodModel method = (MethodModel) builder.build(trees.getPath(enclosed), other);
+            MethodModel method = builder.build((ExecutableElement) enclosed, other);
             methods.put(name, method);
           }
         }
@@ -94,7 +93,7 @@ public class CodeTranslator {
         for (Element enclosed : typeElt.getEnclosedElements()) {
           if (enclosed instanceof VariableElement && enclosed.getSimpleName().toString().equals(name)) {
             other = new VisitContext(visitContext.builder);
-            StatementModel statement = (StatementModel) builder.build(trees.getPath(enclosed), other);
+            StatementModel statement = builder.build((VariableElement) enclosed, other);
             fields.put(name, statement);
           }
         }
@@ -121,8 +120,7 @@ public class CodeTranslator {
     }
 
     RunnableCompilationUnit unit = new RunnableCompilationUnit(main, methods, fields);
-    String s = visitContext.builder.render(unit);
-    return s;
+    return visitContext.builder.render(unit, standalone);
   }
 
   private void attributeClass(Element classElement) {

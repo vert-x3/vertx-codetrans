@@ -1,0 +1,48 @@
+{
+  "scala": [
+    "asyncresult.AsyncResultHandler#analyzeFailed",
+    "control.Return#returnVoid",
+    "control.ForEach#start",
+    "collection.ListApi#add",
+    "collection.ListApi#get",
+    "collection.ListApi#size",
+    "collection.MapNew#newMap",
+    "collection.MapPut#put",
+    "dataobject.DataObject#addToList",
+    "dataobject.DataObject#addToMap",
+    "dataobject.DataObject#empty",
+    "dataobject.DataObject#enumValueFromConstructor",
+    "dataobject.DataObject#enumValueFromIdentifier",
+    "dataobject.DataObject#getFromIdentifier",
+    "dataobject.DataObject#nested",
+    "dataobject.DataObject#setFromConstructor",
+    "dataobject.DataObject#setFromIdentifier",
+    "expression.LiteralChar#start",
+    "expression.PostfixDecrement#start",
+    "expression.PostfixIncrement#start",
+    "expression.PrefixDecrement#start",
+    "expression.PrefixIncrement#start",
+    "json.JsArray#getArray",
+    "json.JsArray#getObject",
+    "json.JsObject#getJsonArray",
+    "json.JsObject#getJsonObject",
+    "json.JsObject#getObject",
+    "json.JsObject#getArrayFromIdentifier",
+    "json.JsObject#getObjectFromIdentifier",
+    "variable.Variable#globalExpression"
+  ],
+  "kt": [
+    "dataobject.DataObject#addToList",
+    "dataobject.DataObject#addToMap",
+    "dataobject.DataObject#enumValueFromConstructor",
+    "dataobject.DataObject#enumValueFromIdentifier",
+    "dataobject.DataObject#getFromIdentifier",
+    "dataobject.DataObject#nested",
+    "dataobject.DataObject#setFromConstructor",
+    "expression.LiteralString#concat4",
+    "variable.Variable#globalExpression",
+    "variable.Variable#uninitializedMemberExpression"
+  ],
+  "excludes": [
+  ]
+}

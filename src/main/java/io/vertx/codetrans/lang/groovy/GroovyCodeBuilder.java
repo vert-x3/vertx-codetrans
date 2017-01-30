@@ -35,7 +35,7 @@ class GroovyCodeBuilder implements CodeBuilder {
   }
 
   @Override
-  public String render(RunnableCompilationUnit unit) {
+  public String render(RunnableCompilationUnit unit, boolean standalone) {
     GroovyWriter writer = newWriter();
     if (unit.getFields().size() > 0) {
       writer.append("import groovy.transform.Field\n");

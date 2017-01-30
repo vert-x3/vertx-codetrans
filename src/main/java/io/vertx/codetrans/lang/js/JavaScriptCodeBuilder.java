@@ -36,7 +36,7 @@ class JavaScriptCodeBuilder implements CodeBuilder {
   }
 
   @Override
-  public String render(RunnableCompilationUnit unit) {
+  public String render(RunnableCompilationUnit unit, boolean standalone) {
     CodeWriter writer = newWriter();
     for (ClassTypeInfo module : modules) {
       writer.append("var ").append(module.getSimpleName()).append(" = require(\"").

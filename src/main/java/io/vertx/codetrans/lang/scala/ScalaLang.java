@@ -3,10 +3,15 @@ package io.vertx.codetrans.lang.scala;
 import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.Lang;
 import io.vertx.codetrans.Script;
-import io.vertx.lang.scala.onthefly.OnTheFlyCompiler;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Scala language
@@ -23,17 +28,33 @@ public class ScalaLang implements Lang {
   }
 
   @Override
-  public Script loadScript(ClassLoader loader, String source) throws Exception {
+  public File createSourceFile(File root, List<String> className, String methodName) {
+    File folder = new File(root, className.stream().collect(Collectors.joining(File.separator)));
+    if (methodName != null) {
+      folder = new File(folder, methodName);
+    }
+    return new File(folder.getParent(), folder.getName() + ".scala");
+  }
 
+  @Override
+  public Script loadScript(ClassLoader loader, String path, String method) throws Exception {
+    loader = new URLClassLoader(new URL[]{ new File(new File("target"), "scala-classes").toURI().toURL() }, loader);
+    String fqn = path.replace('/', '.') + '.' + method;
+    Class<?> clazz = loader.loadClass(fqn);
+    Object instance = clazz.newInstance();
+    Method m = clazz.getDeclaredMethod("apply");
     return new Script() {
       @Override
       public String getSource() {
-        return source;
+        throw new UnsupportedOperationException();
       }
-
       @Override
       public void run(Map<String, Object> globals) throws Exception {
-        new OnTheFlyCompiler(nopath).eval(source);
+        try {
+          m.invoke(instance);
+        } catch (InvocationTargetException e) {
+          rethrowAny(e.getCause());
+        }
       }
     };
   }
@@ -43,4 +64,12 @@ public class ScalaLang implements Lang {
     return "scala";
   }
 
+  @SuppressWarnings("unchecked")
+  private static <T extends Throwable> void throwThis(Throwable exception) throws T {
+    throw (T) exception;
+  }
+
+  private static void rethrowAny(Throwable exception) {
+    ScalaLang.throwThis(exception);
+  }
 }

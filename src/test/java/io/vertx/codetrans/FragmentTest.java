@@ -67,61 +67,61 @@ public class FragmentTest extends ConversionTestBase {
 
   @Test
   public void testEmpty() {
-    Result.Source s = (Result.Source) convert(new GroovyLang(), "fragment/Fragment", "empty");
-    assertEquals("def a = null\n", s.getValue());
-    s = (Result.Source) convert(new JavaScriptLang(), "fragment/Fragment", "empty");
-    assertEquals("var a = null;\n", s.getValue());
-    s = (Result.Source) convert(new RubyLang(), "fragment/Fragment", "empty");
-    assertEquals("a = nil\n", s.getValue());
+    Script s = loadScript(new GroovyLang(), "fragment/Fragment", "empty");
+    assertEquals("def a = null\n", s.getSource());
+    s = loadScript(new JavaScriptLang(), "fragment/Fragment", "empty");
+    assertEquals("var a = null;\n", s.getSource());
+    s = loadScript(new RubyLang(), "fragment/Fragment", "empty");
+    assertEquals("a = nil\n", s.getSource());
   }
 
   @Test
   public void testOnlyLineComments() {
-    Result.Source s = (Result.Source) convert(new GroovyLang(), "fragment/Fragment", "onlyLineComments");
+    Script s = loadScript(new GroovyLang(), "fragment/Fragment", "onlyLineComments");
     assertEquals("" +
         "// foo\n" +
         "// bar\n" +
-        "// juu\n", s.getValue());
-    s = (Result.Source) convert(new JavaScriptLang(), "fragment/Fragment", "onlyLineComments");
+        "// juu\n", s.getSource());
+    s = loadScript(new JavaScriptLang(), "fragment/Fragment", "onlyLineComments");
     assertEquals("" +
         "// foo\n" +
         "// bar\n" +
-        "// juu\n", s.getValue());
-    s = (Result.Source) convert(new RubyLang(), "fragment/Fragment", "onlyLineComments");
+        "// juu\n", s.getSource());
+    s = loadScript(new RubyLang(), "fragment/Fragment", "onlyLineComments");
     assertEquals("" +
         "# foo\n" +
         "# bar\n" +
-        "# juu\n", s.getValue());
+        "# juu\n", s.getSource());
   }
 
   @Test
   public void testLineComments() {
-    Result.Source s = (Result.Source) convert(new GroovyLang(), "fragment/Fragment", "lineComments");
+    Script s = loadScript(new GroovyLang(), "fragment/Fragment", "lineComments");
     assertEquals("" +
         "// foo\n" +
         "def t = null\n" +
         "// bar\n" +
         "def s = null\n" +
-        "// juu\n", s.getValue());
-    s = (Result.Source) convert(new JavaScriptLang(), "fragment/Fragment", "lineComments");
+        "// juu\n", s.getSource());
+    s = loadScript(new JavaScriptLang(), "fragment/Fragment", "lineComments");
     assertEquals("" +
         "// foo\n" +
         "var t = null;\n" +
         "// bar\n" +
         "var s = null;\n" +
-        "// juu\n", s.getValue());
-    s = (Result.Source) convert(new RubyLang(), "fragment/Fragment", "lineComments");
+        "// juu\n", s.getSource());
+    s = loadScript(new RubyLang(), "fragment/Fragment", "lineComments");
     assertEquals("" +
         "# foo\n" +
         "t = nil\n" +
         "# bar\n" +
         "s = nil\n" +
-        "# juu\n", s.getValue());
+        "# juu\n", s.getSource());
   }
 
   @Test
   public void testMultiLineComments() {
-    Result.Source s = (Result.Source) convert(new GroovyLang(), "fragment/Fragment", "multiLineComments");
+    Script s = loadScript(new GroovyLang(), "fragment/Fragment", "multiLineComments");
     assertEquals("" +
         "/*a\n" +
         "  b\n" +
@@ -133,8 +133,8 @@ public class FragmentTest extends ConversionTestBase {
         "def t = null\n" +
         "/*\n" +
         " * a\n" +
-        " */\n", s.getValue());
-    s = (Result.Source) convert(new JavaScriptLang(), "fragment/Fragment", "multiLineComments");
+        " */\n", s.getSource());
+    s = loadScript(new JavaScriptLang(), "fragment/Fragment", "multiLineComments");
     assertEquals("" +
         "/*a\n" +
         "  b\n" +
@@ -146,8 +146,8 @@ public class FragmentTest extends ConversionTestBase {
         "var t = null;\n" +
         "/*\n" +
         " * a\n" +
-        " */\n", s.getValue());
-    s = (Result.Source) convert(new RubyLang(), "fragment/Fragment", "multiLineComments");
+        " */\n", s.getSource());
+    s = loadScript(new RubyLang(), "fragment/Fragment", "multiLineComments");
     assertEquals("" +
         "=begina\n" +
         "  b\n" +
@@ -159,7 +159,7 @@ public class FragmentTest extends ConversionTestBase {
         "t = nil\n" +
         "=begin\n" +
         " * a\n" +
-        " =end\n", s.getValue());
+        " =end\n", s.getSource());
   }
 
   public static void someMethod(Handler<String> handler) {
@@ -167,7 +167,7 @@ public class FragmentTest extends ConversionTestBase {
 
   @Test
   public void testLineCommentsInLambda() {
-    Result.Source s = (Result.Source) convert(new GroovyLang(), "fragment/Fragment", "lineCommentsInLamba");
+    Script s = loadScript(new GroovyLang(), "fragment/Fragment", "lineCommentsInLamba");
     assertEquals("" +
         "io.vertx.codetrans.FragmentTest.someMethod({ arg ->\n" +
         "  // foo\n" +
@@ -175,8 +175,8 @@ public class FragmentTest extends ConversionTestBase {
         "  // bar\n" +
         "  def s = null\n" +
         "  // juu\n" +
-        "})\n", s.getValue());
-    s = (Result.Source) convert(new JavaScriptLang(), "fragment/Fragment", "lineCommentsInLamba");
+        "})\n", s.getSource());
+    s = loadScript(new JavaScriptLang(), "fragment/Fragment", "lineCommentsInLamba");
     assertEquals("" +
         "Java.type(\"io.vertx.codetrans.FragmentTest\").someMethod(function (arg) {\n" +
         "  // foo\n" +
@@ -184,8 +184,8 @@ public class FragmentTest extends ConversionTestBase {
         "  // bar\n" +
         "  var s = null;\n" +
         "  // juu\n" +
-        "});\n", s.getValue());
-    s = (Result.Source) convert(new RubyLang(), "fragment/Fragment", "lineCommentsInLamba");
+        "});\n", s.getSource());
+    s = loadScript(new RubyLang(), "fragment/Fragment", "lineCommentsInLamba");
     assertEquals("" +
         "Java::IoVertxCodetrans::FragmentTest.some_method() { |arg|\n" +
         "  # foo\n" +
@@ -193,6 +193,6 @@ public class FragmentTest extends ConversionTestBase {
         "  # bar\n" +
         "  s = nil\n" +
         "  # juu\n" +
-        "}\n", s.getValue());
+        "}\n", s.getSource());
   }
 }

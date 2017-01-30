@@ -61,6 +61,7 @@ import io.vertx.codetrans.statement.TryCatchModel;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
@@ -89,25 +90,33 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
   private final DeclaredType throwableType;
   private final Types typeUtils;
   private final TypeMirrorFactory factory;
+  private final TypeElement typeElt;
 
-  public ModelBuilder(Trees trees, TreePath path, DeclaredType systemType, DeclaredType throwableType, TypeMirrorFactory factory, Types typeUtils, Lang lang) {
-    this.path = path;
+  public ModelBuilder(Trees trees, TypeElement typeElt, DeclaredType systemType, DeclaredType throwableType, TypeMirrorFactory factory, Types typeUtils, Lang lang) {
+    this.path = trees.getPath(typeElt);
     this.trees = trees;
     this.systemType = systemType;
     this.throwableType = throwableType;
     this.factory = factory;
     this.typeUtils = typeUtils;
+    this.typeElt = typeElt;
   }
 
-  public CodeModel build(TreePath path, VisitContext context) {
-    return scan(path, context);
+  public MethodModel build(ExecutableElement methodElt, VisitContext context) {
+    TreePath path = trees.getPath(methodElt);
+    return (MethodModel) scan(path, context);
   }
 
-  public StatementModel scan(StatementTree tree, VisitContext context) {
+  public StatementModel build(VariableElement variableElt, VisitContext context) {
+    TreePath path = trees.getPath(variableElt);
+    return (StatementModel) scan(path, context);
+  }
+
+  private StatementModel scan(StatementTree tree, VisitContext context) {
     return (StatementModel) scan((Tree) tree, context);
   }
 
-  public ExpressionModel scan(ExpressionTree tree, VisitContext context) {
+  private ExpressionModel scan(ExpressionTree tree, VisitContext context) {
     return (ExpressionModel) scan((Tree) tree, context);
   }
 
@@ -437,7 +446,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
             }
             return null;
           };
-        }.scan(path.getParentPath(), null);
+        }.scan(path, null);
         if (resolvedScope.get() == VariableScope.FIELD) {
           context.getReferencedFields().add(name);
         }
@@ -701,11 +710,9 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
       parameterTypes.add(parameterType);
     }
     TypeInfo returnType = VoidTypeInfo.INSTANCE;
-
     if (node.getReturnType() instanceof JCTree) {
       returnType = factory.create(((JCTree)node.getReturnType()).type);
     }
-
-    return new MethodModel(scan(node.getBody(), p), new MethodSignature(node.getName().toString(), parameterTypes, false, returnType), node.getParameters().stream().map(param -> param.getName().toString()).collect(Collectors.toList()));
+    return new MethodModel("" + typeElt.getQualifiedName(), scan(node.getBody(), p), new MethodSignature(node.getName().toString(), parameterTypes, false, returnType), node.getParameters().stream().map(param -> param.getName().toString()).collect(Collectors.toList()));
   }
 }
