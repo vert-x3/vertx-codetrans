@@ -15,7 +15,7 @@ public class KotlinCodeBuilder implements CodeBuilder {
   private TreeSet<String> imports = new TreeSet<>();
 
   KotlinCodeBuilder() {
-    imports.add("io.vertx.lang.kotlin.*");
+    imports.add("io.vertx.kotlin.common.json.*");
   }
 
   @Override
