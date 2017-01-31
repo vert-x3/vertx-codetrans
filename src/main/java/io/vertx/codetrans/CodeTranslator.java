@@ -63,6 +63,10 @@ public class CodeTranslator {
     };
   }
 
+  public String translate(ExecutableElement methodElt, Lang lang) {
+    return translate(methodElt, lang, false);
+  }
+
   public String translate(ExecutableElement methodElt, Lang lang, boolean standalone) {
     TypeElement typeElt = (TypeElement) methodElt.getEnclosingElement();
     attributeClass(typeElt);
