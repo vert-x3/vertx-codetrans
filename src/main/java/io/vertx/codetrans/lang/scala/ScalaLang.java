@@ -20,8 +20,6 @@ import java.util.stream.Collectors;
  */
 public class ScalaLang implements Lang {
 
-  scala.Option<File> nopath = scala.Option.<File>empty();
-
   @Override
   public CodeBuilder codeBuilder() {
     return new ScalaCodeBuilder();
