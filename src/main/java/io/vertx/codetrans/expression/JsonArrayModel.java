@@ -4,8 +4,12 @@ import io.vertx.codegen.type.TypeInfo;
 import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.MethodSignature;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 
 import java.util.List;
+
+import static io.vertx.codetrans.expression.JsonObjectModel.classMapping;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -31,18 +35,18 @@ public class JsonArrayModel extends ExpressionModel {
       case "getInteger":
         if (argumentModels.size() == 1) {
           return builder.render(writer -> {
-            writer.renderJsonArrayGet(expression, argumentModels.get(0));
+            writer.renderJsonArrayGet(expression, classMapping.get(methodName.substring(3)), argumentModels.get(0));
           });
         } else {
           throw unsupported("Invalid arguments " + argumentModels);
         }
       case "getJsonArray":
         return new JsonArrayModel(builder, builder.render(writer -> {
-          writer.renderJsonArrayGet(expression, argumentModels.get(0));
+          writer.renderJsonArrayGet(expression, JsonArray.class, argumentModels.get(0));
         }));
       case "getJsonObject":
         return new JsonObjectModel(builder, builder.render(writer -> {
-          writer.renderJsonArrayGet(expression, argumentModels.get(0));
+          writer.renderJsonArrayGet(expression, JsonObject.class, argumentModels.get(0));
         }));
       case "encode":
       case "encodePrettily": {

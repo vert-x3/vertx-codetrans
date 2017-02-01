@@ -216,6 +216,7 @@
         <executions>
           <execution>
             <configuration>
+              <jvmTarget>1.6</jvmTarget>
               <sourceDirs>
                 <sourceDir>${basedir}/src/test/generated/kt</sourceDir>
                 <sourceDir>>${basedir}/src/test/java</sourceDir>

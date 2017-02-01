@@ -439,7 +439,7 @@ class RubyWriter extends CodeWriter {
   }
 
   @Override
-  public void renderJsonObjectMemberSelect(ExpressionModel expression, String name) {
+  public void renderJsonObjectMemberSelect(ExpressionModel expression, Class<?> type, String name) {
     expression.render(this);
     append("['");
     append(name);
@@ -448,7 +448,7 @@ class RubyWriter extends CodeWriter {
 
   @Override
   public void renderDataObjectMemberSelect(ExpressionModel expression, String name) {
-    renderJsonObjectMemberSelect(expression, name);
+    renderJsonObjectMemberSelect(expression, Object.class, name);
   }
 
   @Override

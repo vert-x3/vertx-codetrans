@@ -445,9 +445,16 @@ public class KotlinCodeWriter extends CodeWriter {
   }
 
   @Override
-  public void renderJsonArrayGet(ExpressionModel expression, ExpressionModel index) {
+  public void renderJsonArrayGet(ExpressionModel expression, Class<?> type, ExpressionModel index) {
     expression.render(this);
-    append(".get<Any?>(");
+    append(".");
+    if (type == Object.class) {
+      append("get<Any?>(");
+    } else {
+      append("get");
+      append(type.getSimpleName());
+    }
+    append("(");
     index.render(this);
     append(')');
   }
@@ -510,9 +517,16 @@ public class KotlinCodeWriter extends CodeWriter {
   }
 
   @Override
-  public void renderJsonObjectMemberSelect(ExpressionModel expression, String name) {
+  public void renderJsonObjectMemberSelect(ExpressionModel expression, Class<?> type, String name) {
     expression.render(this);
-    append(".get<Any?>(");
+    append(".");
+    if (type == Object.class) {
+      append("get<Any?>");
+    } else {
+      append("get");
+      append(type.getSimpleName());
+    }
+    append("(");
     renderStringLiteral(name);
     append(")");
   }

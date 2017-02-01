@@ -334,11 +334,11 @@ public abstract class CodeWriter implements Appendable {
     throw new UnsupportedOperationException("todo");
   }
 
-  public abstract void renderJsonObjectMemberSelect(ExpressionModel expression, String name);
+  public abstract void renderJsonObjectMemberSelect(ExpressionModel expression, Class<?> type, String name);
 
   public abstract void renderDataObjectMemberSelect(ExpressionModel expression, String name);
 
-  public void renderJsonArrayGet(ExpressionModel expression, ExpressionModel index) {
+  public void renderJsonArrayGet(ExpressionModel expression, Class<?> type, ExpressionModel index) {
     expression.render(this);
     append('[');
     index.render(this);

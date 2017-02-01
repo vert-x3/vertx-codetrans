@@ -93,14 +93,14 @@ public class JsArray {
   public void getArray() throws Exception {
     JsonArray arr = JsonTest.array;
     arr = JsonConverter.fromJsonArray(arr);
-    JsonTest.o = arr.getJsonArray(0).encodePrettily();
+    JsonTest.o = arr.getJsonArray(0).getInteger(1);
   }
 
   @CodeTranslate
   public void getObject() throws Exception {
     JsonArray arr = JsonTest.array;
     arr = JsonConverter.fromJsonArray(arr);
-    JsonTest.o = arr.getJsonObject(0).encodePrettily();
+    JsonTest.o = arr.getJsonObject(0).getString("foo");
   }
 
   @CodeTranslate

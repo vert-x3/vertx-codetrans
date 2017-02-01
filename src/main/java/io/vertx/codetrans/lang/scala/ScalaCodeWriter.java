@@ -129,7 +129,7 @@ public class ScalaCodeWriter extends CodeWriter {
   }
 
   @Override
-  public void renderJsonObjectMemberSelect(ExpressionModel expression, String name){
+  public void renderJsonObjectMemberSelect(ExpressionModel expression, Class<?> type, String name){
     expression.render(this);
     append(".getValue(\"");
     append(name);
@@ -294,7 +294,7 @@ public class ScalaCodeWriter extends CodeWriter {
   }
 
   @Override
-  public void renderJsonArrayGet(ExpressionModel expression, ExpressionModel index) {
+  public void renderJsonArrayGet(ExpressionModel expression, Class<?> type, ExpressionModel index) {
     expression.render(this);
     append(".getValue(");
     index.render(this);

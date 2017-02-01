@@ -280,7 +280,7 @@ public class JsonTest extends ConversionTestBase {
     JsonObject expected = new JsonObject().put("foo", "bar");
     array = new JsonArray().add(expected);
     runAllExcept("json/JsArray", "getObject", ScalaLang.class, () -> {
-      Assert.assertEquals(expected, new JsonObject((String) o));
+      Assert.assertEquals("bar", o);
     });
   }
 
@@ -289,7 +289,7 @@ public class JsonTest extends ConversionTestBase {
     JsonArray expected = new JsonArray().add(1).add(2).add(3);
     array = new JsonArray().add(expected);
     runAllExcept("json/JsArray", "getArray", ScalaLang.class, () -> {
-      Assert.assertEquals(expected, new JsonArray((String) o));
+      Assert.assertEquals(2, ((Number)o).intValue());
     });
   }
 

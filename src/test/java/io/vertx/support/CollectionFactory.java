@@ -17,7 +17,7 @@ public interface CollectionFactory {
     return map;
   }
 
-  static Map<String, String> wrapMap(Map<String, String> map) {
+  static <K, V> Map<K, V> wrapMap(Map<K, V> map) {
     return map;
   }
 }

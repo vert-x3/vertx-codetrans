@@ -205,9 +205,11 @@ public class KotlinCodeBuilder implements CodeBuilder {
 
   private void addImport(ClassTypeInfo importedType) {
     String fqn = importedType.getName();
+/*
     if (importedType instanceof ApiTypeInfo) {
       fqn = importedType.translateName("kotlin");
     }
+*/
     imports.add(fqn);
   }
 }
