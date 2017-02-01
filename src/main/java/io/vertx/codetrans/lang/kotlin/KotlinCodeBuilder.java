@@ -24,10 +24,10 @@ public class KotlinCodeBuilder implements CodeBuilder {
   }
 
   @Override
-  public String render(RunnableCompilationUnit unit, boolean standalone) {
+  public String render(RunnableCompilationUnit unit, RenderMode renderMode) {
     KotlinCodeWriter writer = newWriter();
 
-    if (standalone) {
+    if (renderMode == RenderMode.TEST) {
       String className = unit.getMain().getClassName();
       writer.append("package ").append(className).append("\n\n");
     }
@@ -37,9 +37,15 @@ public class KotlinCodeBuilder implements CodeBuilder {
     }
     writer.append("\n");
 
-    if (standalone) {
-      writer.append("object ").append(unit.getMain().getSignature().getName()).append(" {\n");
-      writer.indent();
+    switch (renderMode) {
+      case TEST:
+        writer.append("object ").append(unit.getMain().getSignature().getName()).append(" {\n");
+        writer.indent();
+        break;
+      case VERTICLE:
+        writer.append("class ").append(unit.getMain().getSignature().getName()).append(" : io.vertx.core.AbstractVerticle() ").append(" {\n");
+        writer.indent();
+        break;
     }
 
     for (Map.Entry<String, StatementModel> field : unit.getFields().entrySet()) {
@@ -81,18 +87,27 @@ public class KotlinCodeBuilder implements CodeBuilder {
       writer.append("}\n");
     }
 
-    if (standalone) {
-      writer.append("fun ").append(unit.getMain().getSignature().getName()).append("() {\n");
-      writer.indent();
+    switch (renderMode) {
+      case TEST:
+        writer.append("fun ").append(unit.getMain().getSignature().getName()).append("() {\n");
+        writer.indent();
+        break;
+      case VERTICLE:
+        writer.append("override fun ").append("start").append("() {\n");
+        writer.indent();
+        break;
     }
 
     unit.getMain().render(writer);
 
-    if (standalone) {
-      writer.unindent();
-      writer.append("}\n");
-      writer.unindent();
-      writer.append("}\n");
+    switch (renderMode) {
+      case TEST:
+      case VERTICLE:
+        writer.unindent();
+        writer.append("}\n");
+        writer.unindent();
+        writer.append("}\n");
+        break;
     }
 
     return writer.getBuffer().toString();

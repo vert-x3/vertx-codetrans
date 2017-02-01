@@ -25,7 +25,7 @@ public interface CodeBuilder {
 
   CodeWriter newWriter();
 
-  String render(RunnableCompilationUnit unit, boolean standalone);
+  String render(RunnableCompilationUnit unit, RenderMode renderMode);
 
   default ExpressionModel combine(ExpressionModel left, String op, ExpressionModel right) {
     return new BinaryExpressionModel(this, left, op, right);

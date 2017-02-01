@@ -6,6 +6,7 @@ import io.vertx.codegen.type.ApiTypeInfo;
 import io.vertx.codegen.type.ClassTypeInfo;
 import io.vertx.codegen.type.EnumTypeInfo;
 import io.vertx.codegen.type.ParameterizedTypeInfo;
+import io.vertx.codetrans.RenderMode;
 import io.vertx.codetrans.expression.ApiTypeModel;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.expression.EnumExpressionModel;
@@ -35,7 +36,7 @@ class GroovyCodeBuilder implements CodeBuilder {
   }
 
   @Override
-  public String render(RunnableCompilationUnit unit, boolean standalone) {
+  public String render(RunnableCompilationUnit unit, RenderMode renderMode) {
     GroovyWriter writer = newWriter();
     if (unit.getFields().size() > 0) {
       writer.append("import groovy.transform.Field\n");

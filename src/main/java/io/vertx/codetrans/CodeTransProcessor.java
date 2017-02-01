@@ -86,7 +86,7 @@ public class CodeTransProcessor extends AbstractProcessor {
   private PrintWriter log;
   private ObjectNode config;
   private Map<String, Set<String>> abc = new HashMap<>();
-  private boolean standalone;
+  private RenderMode renderMode;
 
   @Override
   public Set<String> getSupportedOptions() {
@@ -107,7 +107,8 @@ public class CodeTransProcessor extends AbstractProcessor {
     }
     translator = new CodeTranslator(processingEnv);
     langs = Arrays.asList(new JavaScriptLang(), new GroovyLang(), new RubyLang(), new KotlinLang(), new ScalaLang());
-    standalone = "true".equals(processingEnv.getOptions().get("codetrans.standalone"));
+    String renderOpt = processingEnv.getOptions().get("codetrans.render");
+    renderMode = renderOpt != null ? RenderMode.valueOf(renderOpt.toUpperCase()) : RenderMode.VERTICLE;
 
     String configFile = processingEnv.getOptions().get("codetrans.config");
     if (configFile != null) {
@@ -232,7 +233,7 @@ public class CodeTransProcessor extends AbstractProcessor {
             File f = lang.createSourceFile(dstFolder, fqn, methodElt.getAnnotation(CodeTranslate.class) != null ? methodElt.getSimpleName().toString() : null);
             if (f.getParentFile().exists() || f.getParentFile().mkdirs()) {
               try {
-                String translation = translator.translate(methodElt, lang, standalone);
+                String translation = translator.translate(methodElt, lang, renderMode);
                 Files.write(f.toPath(), translation.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
                 log.println("Generated " + f.getAbsolutePath());
                 copyDirRec(srcFolder, dstFolder, log);

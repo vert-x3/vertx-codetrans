@@ -64,10 +64,10 @@ public class CodeTranslator {
   }
 
   public String translate(ExecutableElement methodElt, Lang lang) {
-    return translate(methodElt, lang, false);
+    return translate(methodElt, lang, RenderMode.SNIPPET);
   }
 
-  public String translate(ExecutableElement methodElt, Lang lang, boolean standalone) {
+  public String translate(ExecutableElement methodElt, Lang lang, RenderMode renderMode) {
     TypeElement typeElt = (TypeElement) methodElt.getEnclosingElement();
     attributeClass(typeElt);
     ModelBuilder builder = new ModelBuilder(trees, typeElt, SystemType, ThrowableType, factory, typeUtils, lang);
@@ -124,7 +124,7 @@ public class CodeTranslator {
     }
 
     RunnableCompilationUnit unit = new RunnableCompilationUnit(main, methods, fields);
-    return visitContext.builder.render(unit, standalone);
+    return visitContext.builder.render(unit, renderMode);
   }
 
   private void attributeClass(Element classElement) {

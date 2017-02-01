@@ -7,6 +7,7 @@ import io.vertx.codegen.type.ClassTypeInfo;
 import io.vertx.codegen.type.ParameterizedTypeInfo;
 import io.vertx.codegen.type.TypeReflectionFactory;
 import io.vertx.codegen.type.TypeInfo;
+import io.vertx.codetrans.RenderMode;
 import io.vertx.codetrans.expression.ApiTypeModel;
 import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.CodeModel;
@@ -36,7 +37,7 @@ class JavaScriptCodeBuilder implements CodeBuilder {
   }
 
   @Override
-  public String render(RunnableCompilationUnit unit, boolean standalone) {
+  public String render(RunnableCompilationUnit unit, RenderMode renderMode) {
     CodeWriter writer = newWriter();
     for (ClassTypeInfo module : modules) {
       writer.append("var ").append(module.getSimpleName()).append(" = require(\"").

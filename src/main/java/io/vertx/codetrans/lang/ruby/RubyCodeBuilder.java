@@ -8,6 +8,7 @@ import io.vertx.codegen.type.ClassTypeInfo;
 import io.vertx.codegen.type.EnumTypeInfo;
 import io.vertx.codegen.type.ParameterizedTypeInfo;
 import io.vertx.codegen.type.TypeReflectionFactory;
+import io.vertx.codetrans.RenderMode;
 import io.vertx.codetrans.expression.ApiTypeModel;
 import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.CodeModel;
@@ -39,7 +40,7 @@ class RubyCodeBuilder implements CodeBuilder {
   }
 
   @Override
-  public String render(RunnableCompilationUnit unit, boolean standalone) {
+  public String render(RunnableCompilationUnit unit, RenderMode renderMode) {
     CodeWriter writer = newWriter();
     for (ClassTypeInfo type : imports) {
       requires.add(type.getModuleName() + "/" + Case.SNAKE.format(Case.CAMEL.parse(type.getSimpleName())));

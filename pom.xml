@@ -121,7 +121,7 @@
                 <compilerArgs>
                   <arg>-Acodetrans.output=${project.basedir}/src/test/generated</arg>
                   <arg>-Acodetrans.config=${project.basedir}/src/test/resources/config.json</arg>
-                  <arg>-Acodetrans.standalone=true</arg>
+                  <arg>-Acodetrans.render=test</arg>
                 </compilerArgs>
               </configuration>
             </execution>
