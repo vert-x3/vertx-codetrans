@@ -27,6 +27,11 @@ public class JavaScriptLang implements Lang {
   LinkedHashSet<ClassTypeInfo> modules = new LinkedHashSet<>();
 
   @Override
+  public String id() {
+    return "js";
+  }
+
+  @Override
   public CodeBuilder codeBuilder() {
     return new JavaScriptCodeBuilder();
   }

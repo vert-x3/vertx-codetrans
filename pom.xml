@@ -122,6 +122,7 @@
                   <arg>-Acodetrans.output=${project.basedir}/src/test/generated</arg>
                   <arg>-Acodetrans.config=${project.basedir}/src/test/resources/config.json</arg>
                   <arg>-Acodetrans.render=test</arg>
+                  <arg>-Acodetrans.langs=js,ruby,groovy,kotlin,scala</arg>
                 </compilerArgs>
               </configuration>
             </execution>
@@ -218,7 +219,7 @@
             <configuration>
               <jvmTarget>1.6</jvmTarget>
               <sourceDirs>
-                <sourceDir>${basedir}/src/test/generated/kt</sourceDir>
+                <sourceDir>${basedir}/src/test/generated/kotlin</sourceDir>
                 <sourceDir>>${basedir}/src/test/java</sourceDir>
               </sourceDirs>
               <testOutput>${project.build.directory}/kotlin-classes</testOutput>

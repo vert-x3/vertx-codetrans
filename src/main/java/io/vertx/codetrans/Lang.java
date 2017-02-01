@@ -12,6 +12,8 @@ import java.util.stream.Stream;
  */
 public interface Lang {
 
+  String id();
+
   Script loadScript(ClassLoader loader, String path, String method) throws Exception;
 
   default File createSourceFile(File root, List<String> className, String methodName) {

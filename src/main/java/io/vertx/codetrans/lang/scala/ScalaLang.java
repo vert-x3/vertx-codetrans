@@ -21,6 +21,11 @@ import java.util.stream.Collectors;
 public class ScalaLang implements Lang {
 
   @Override
+  public String id() {
+    return "scala";
+  }
+
+  @Override
   public CodeBuilder codeBuilder() {
     return new ScalaCodeBuilder();
   }

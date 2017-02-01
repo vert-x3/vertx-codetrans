@@ -33,7 +33,7 @@
       "variable.Variable#globalExpression"
     ]
   },
-  "kt": {
+  "kotlin": {
     "excludes": [
       "dataobject.DataObject#addToList",
       "dataobject.DataObject#addToMap",

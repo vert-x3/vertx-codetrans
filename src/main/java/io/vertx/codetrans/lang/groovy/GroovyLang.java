@@ -21,6 +21,11 @@ import java.util.stream.Stream;
 public class GroovyLang implements Lang {
 
   @Override
+  public String id() {
+    return "groovy";
+  }
+
+  @Override
   public CodeBuilder codeBuilder() {
     return new GroovyCodeBuilder();
   }

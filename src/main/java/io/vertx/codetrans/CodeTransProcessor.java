@@ -79,6 +79,7 @@ import java.util.Set;
  */
 public class CodeTransProcessor extends AbstractProcessor {
 
+
   private File outputDir;
   private CodeTranslator translator;
   private List<Lang> langs;
@@ -106,29 +107,56 @@ public class CodeTransProcessor extends AbstractProcessor {
       outputDir = new File(outputOption);
     }
     translator = new CodeTranslator(processingEnv);
-    langs = Arrays.asList(new JavaScriptLang(), new GroovyLang(), new RubyLang(), new KotlinLang(), new ScalaLang());
+    langs = new ArrayList<>();
     String renderOpt = processingEnv.getOptions().get("codetrans.render");
     renderMode = renderOpt != null ? RenderMode.valueOf(renderOpt.toUpperCase()) : RenderMode.VERTICLE;
-
-    String configFile = processingEnv.getOptions().get("codetrans.config");
-    if (configFile != null) {
+    String langsOpt = processingEnv.getOptions().get("codetrans.langs");
+    Set<String> langs;
+    if (langsOpt != null) {
+      langs = new HashSet<>(Arrays.asList(langsOpt.split("\\s*,\\s*")));
+    } else {
+      langs = new HashSet<>(Arrays.asList("js", "ruby", "kotlin", "groovy"));
+    }
+    String configOpt = processingEnv.getOptions().get("codetrans.config");
+    if (configOpt != null) {
       ObjectMapper mapper = new ObjectMapper()
           .enable(JsonParser.Feature.ALLOW_COMMENTS)
           .enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES);
-      File file = new File(configFile);
+      File file = new File(configOpt);
       try {
         config = (ObjectNode) mapper.readTree(file);
       } catch (IOException e) {
         System.err.println("[ERROR] Cannot read configuration file " + file.getAbsolutePath() + " : " + e.getMessage());
         e.printStackTrace();
       }
-      for (Lang lang : langs) {
-        JsonNode n = config.get(lang.getExtension());
+      for (String lang : langs) {
+        Lang l;
+        switch (lang) {
+          case "kotlin":
+            l = new KotlinLang();
+            break;
+          case "groovy":
+            l = new GroovyLang();
+            break;
+          case "js":
+            l = new JavaScriptLang();
+            break;
+          case "scala":
+            l = new ScalaLang();
+            break;
+          case "ruby":
+            l = new RubyLang();
+            break;
+          default:
+            continue;
+        }
+        this.langs.add(l);
+        JsonNode n = config.get(lang);
         if (n != null && n.getNodeType() == JsonNodeType.OBJECT) {
           JsonNode excludes = n.get("excludes");
           if (excludes != null && excludes.getNodeType() == JsonNodeType.ARRAY) {
             Set<String> t = new HashSet<>();
-            abc.put(lang.getExtension(), t);
+            abc.put(l.id(), t);
             for (int i = 0;i < excludes.size();i++) {
               JsonNode c = excludes.get(i);
               if (c.getNodeType() == JsonNodeType.STRING) {
@@ -224,12 +252,12 @@ public class CodeTransProcessor extends AbstractProcessor {
           File srcFolder = new File(obj.toUri()).getParentFile();
           for (Lang lang : langs) {
             if (isSkipped(typeElt, lang) || isSkipped(methodElt, lang)) {
-              log.write("Skipping " + lang.getExtension() + " translation for " + typeElt.getQualifiedName() + "#" +
+              log.write("Skipping " + lang.id() + " translation for " + typeElt.getQualifiedName() + "#" +
                   methodElt.getSimpleName());
               continue;
             }
             List<String> fqn = Arrays.asList(typeElt.toString().split("\\."));
-            File dstFolder = new File(outputDir, lang.getExtension());
+            File dstFolder = new File(outputDir, lang.id());
             File f = lang.createSourceFile(dstFolder, fqn, methodElt.getAnnotation(CodeTranslate.class) != null ? methodElt.getSimpleName().toString() : null);
             if (f.getParentFile().exists() || f.getParentFile().mkdirs()) {
               try {
@@ -254,7 +282,7 @@ public class CodeTransProcessor extends AbstractProcessor {
   }
 
   private boolean isSkipped(ExecutableElement methodElt, Lang lang) {
-    Set<String> excl = abc.get(lang.getExtension());
+    Set<String> excl = abc.get(lang.id());
     if (excl != null) {
       TypeElement typeElt = (TypeElement) methodElt.getEnclosingElement();
       String match = "" + typeElt.getQualifiedName();

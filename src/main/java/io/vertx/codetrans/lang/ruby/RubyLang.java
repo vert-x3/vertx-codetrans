@@ -19,13 +19,18 @@ import java.util.stream.Stream;
 public class RubyLang implements Lang {
 
   @Override
+  public String id() {
+    return "ruby";
+  }
+
+  @Override
   public CodeBuilder codeBuilder() {
     return new RubyCodeBuilder();
   }
 
   @Override
   public Script loadScript(ClassLoader loader, String path, String method) throws Exception {
-    String name = "src/test/generated/rb/".replace('/', File.separatorChar) + Stream.of(path.split("/"))
+    String name = "src/test/generated/ruby/".replace('/', File.separatorChar) + Stream.of(path.split("/"))
       .map(f -> Case.SNAKE.format(Case.CAMEL.parse(f)))
       .collect(Collectors.joining(File.separator)) + File.separator + Case.SNAKE.format(Case.CAMEL.parse(method)) + ".rb";
     File f = new File(name);

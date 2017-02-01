@@ -19,6 +19,11 @@ import java.util.stream.Collectors;
 public class KotlinLang implements Lang {
 
   @Override
+  public String id() {
+    return "kotlin";
+  }
+
+  @Override
   public File createSourceFile(File root, List<String> className, String methodName) {
     File folder = new File(root, className.stream().collect(Collectors.joining(File.separator)));
     if (methodName != null) {
