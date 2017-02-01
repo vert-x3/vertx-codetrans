@@ -123,15 +123,17 @@ public class CodeTransProcessor extends AbstractProcessor {
       }
       for (Lang lang : langs) {
         JsonNode n = config.get(lang.getExtension());
-        if (n != null && n.getNodeType() == JsonNodeType.ARRAY) {
-          ArrayNode array = (ArrayNode) n;
-          Set<String> t = new HashSet<>();
-          abc.put(lang.getExtension(), t);
-          for (int i = 0;i < array.size();i++) {
-            JsonNode c = array.get(i);
-            if (c.getNodeType() == JsonNodeType.STRING) {
-              TextNode tn = (TextNode) c;
-              t.add(tn.asText());
+        if (n != null && n.getNodeType() == JsonNodeType.OBJECT) {
+          JsonNode excludes = n.get("excludes");
+          if (excludes != null && excludes.getNodeType() == JsonNodeType.ARRAY) {
+            Set<String> t = new HashSet<>();
+            abc.put(lang.getExtension(), t);
+            for (int i = 0;i < excludes.size();i++) {
+              JsonNode c = excludes.get(i);
+              if (c.getNodeType() == JsonNodeType.STRING) {
+                TextNode tn = (TextNode) c;
+                t.add(tn.asText());
+              }
             }
           }
         }
