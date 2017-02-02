@@ -171,4 +171,36 @@ public class JsObject {
     obj.putNull("foo");
     JsonTest.o = JsonConverter.toJsonObject(obj);
   }
+
+  @CodeTranslate
+  public void equalsNullValueRight() throws Exception {
+    JsonObject obj = JsonTest.object;
+    obj = JsonConverter.fromJsonObject(obj);
+    String s = obj.getString("the_key");
+    JsonTest.o = s == null;
+  }
+
+  @CodeTranslate
+  public void equalsNullValueLeft() throws Exception {
+    JsonObject obj = JsonTest.object;
+    obj = JsonConverter.fromJsonObject(obj);
+    String s = obj.getString("the_key");
+    JsonTest.o = null == s;
+  }
+
+  @CodeTranslate
+  public void equalsNotNullValueRight() throws Exception {
+    JsonObject obj = JsonTest.object;
+    obj = JsonConverter.fromJsonObject(obj);
+    String s = obj.getString("the_key");
+    JsonTest.o = s != null;
+  }
+
+  @CodeTranslate
+  public void equalsNotNullValueLeft() throws Exception {
+    JsonObject obj = JsonTest.object;
+    obj = JsonConverter.fromJsonObject(obj);
+    String s = obj.getString("the_key");
+    JsonTest.o = null != s;
+  }
 }

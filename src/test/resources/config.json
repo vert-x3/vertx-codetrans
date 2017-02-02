@@ -30,6 +30,10 @@
       "json.JsObject#getObject",
       "json.JsObject#getArrayFromIdentifier",
       "json.JsObject#getObjectFromIdentifier",
+      "json.JsObject#equalsNullValueLeft",
+      "json.JsObject#equalsNullValueRight",
+      "json.JsObject#equalsNotNullValueLeft",
+      "json.JsObject#equalsNotNullValueRight",
       "variable.Variable#globalExpression"
     ]
   },

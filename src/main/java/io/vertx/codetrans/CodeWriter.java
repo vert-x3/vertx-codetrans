@@ -145,10 +145,10 @@ public abstract class CodeWriter implements Appendable {
     append(')');
   }
 
-  public void renderEquals(ExpressionModel expression, ExpressionModel arg) {
-    expression.render(this);
+  public void renderEquals(ExpressionModel left, ExpressionModel right) {
+    left.render(this);
     append(" == ");
-    arg.render(this);
+    right.render(this);
   }
 
   public void renderConditionalExpression(ExpressionModel condition, ExpressionModel trueExpression, ExpressionModel falseExpression) {

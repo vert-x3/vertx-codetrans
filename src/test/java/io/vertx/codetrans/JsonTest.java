@@ -363,4 +363,52 @@ public class JsonTest extends ConversionTestBase {
       Assert.assertEquals(new JsonObject().putNull("foo"), o);
     });
   }
+
+  @Test
+  public void testEqualsNullValueRight() {
+    object = new JsonObject();
+    runAllExcept("json/JsObject", "equalsNullValueRight", ScalaLang.class, () -> {
+      Assert.assertEquals(true, o);
+    });
+    object.put("the_key", "some value");
+    runAllExcept("json/JsObject", "equalsNullValueRight", ScalaLang.class, () -> {
+      Assert.assertEquals(false, o);
+    });
+  }
+
+  @Test
+  public void testEqualsNullValueLeft() {
+    object = new JsonObject();
+    runAllExcept("json/JsObject", "equalsNullValueLeft", ScalaLang.class, () -> {
+      Assert.assertEquals(true, o);
+    });
+    object.put("the_key", "some value");
+    runAllExcept("json/JsObject", "equalsNullValueLeft", ScalaLang.class, () -> {
+      Assert.assertEquals(false, o);
+    });
+  }
+
+  @Test
+  public void testEqualsNotNullValueRight() {
+    object = new JsonObject();
+    runAllExcept("json/JsObject", "equalsNotNullValueRight", ScalaLang.class, () -> {
+      Assert.assertEquals(false, o);
+    });
+    object.put("the_key", "some value");
+    runAllExcept("json/JsObject", "equalsNotNullValueRight", ScalaLang.class, () -> {
+      Assert.assertEquals(true, o);
+    });
+  }
+
+  @Test
+  public void testEqualsNotNullValueLeft() {
+    object = new JsonObject();
+    runAllExcept("json/JsObject", "equalsNotNullValueLeft", ScalaLang.class, () -> {
+      Assert.assertEquals(false, o);
+    });
+    object.put("the_key", "some value");
+    runAllExcept("json/JsObject", "equalsNotNullValueLeft", ScalaLang.class, () -> {
+      Assert.assertEquals(true, o);
+    });
+  }
 }

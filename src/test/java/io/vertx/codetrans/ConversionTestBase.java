@@ -107,10 +107,14 @@ public abstract class ConversionTestBase {
           try {
             script.run(globals);
             after.run();
-          } catch (Exception e) {
-            System.out.println("Script evaluation failed");
+          } catch (Throwable e) {
+            System.out.println("Script evaluation " + method + " in " + path +  " failed ");
             System.out.println(script.getSource());
-            throw new AssertionError(e);
+            if (e instanceof AssertionError) {
+              throw (AssertionError)e;
+            } else {
+              throw new AssertionError(e);
+            }
           }
         }
     );

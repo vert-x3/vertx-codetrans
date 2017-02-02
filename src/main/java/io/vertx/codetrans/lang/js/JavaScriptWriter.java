@@ -14,6 +14,7 @@ import io.vertx.codetrans.expression.JsonArrayLiteralModel;
 import io.vertx.codetrans.expression.JsonObjectLiteralModel;
 import io.vertx.codetrans.expression.Member;
 import io.vertx.codetrans.MethodSignature;
+import io.vertx.codetrans.expression.NullLiteralModel;
 import io.vertx.codetrans.statement.StatementModel;
 import io.vertx.codetrans.expression.ThisModel;
 
@@ -36,12 +37,38 @@ class JavaScriptWriter extends CodeWriter {
 
   @Override
   public void renderBinary(BinaryExpressionModel expression) {
+    ExpressionModel left = expression.getLeft();
+    ExpressionModel right = expression.getRight();
     String op = expression.getOp();
     switch (op) {
       case "==":
         op = "===";
+        if (right instanceof NullLiteralModel) {
+          ExpressionModel tmp = right;
+          right = left;
+          left = tmp;
+        }
+        if (left instanceof NullLiteralModel) {
+          right.render(this);
+          append(" === null ||");
+          right.render(this);
+          append(" === undefined");
+          return;
+        }
         break;
       case "!=":
+        if (right instanceof NullLiteralModel) {
+          ExpressionModel tmp = right;
+          right = left;
+          left = tmp;
+        }
+        if (left instanceof NullLiteralModel) {
+          right.render(this);
+          append(" !== null &&");
+          right.render(this);
+          append(" !== undefined");
+          return;
+        }
         op = "!==";
         break;
     }

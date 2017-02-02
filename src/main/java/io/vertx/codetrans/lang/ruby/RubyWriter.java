@@ -41,10 +41,10 @@ class RubyWriter extends CodeWriter {
     this.builder = builder;
   }
 
-  public void renderEquals(ExpressionModel expression, ExpressionModel arg) {
-    expression.render(this);
+  public void renderEquals(ExpressionModel left, ExpressionModel right) {
+    left.render(this);
     append(".==(");
-    arg.render(this);
+    right.render(this);
     append(")");
   }
 

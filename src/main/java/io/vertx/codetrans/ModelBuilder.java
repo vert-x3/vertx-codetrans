@@ -41,6 +41,7 @@ import io.vertx.codetrans.expression.ExpressionModel;
 import io.vertx.codetrans.expression.IdentifierModel;
 import io.vertx.codetrans.expression.ListClassModel;
 import io.vertx.codetrans.expression.MethodInvocationModel;
+import io.vertx.codetrans.expression.NullLiteralModel;
 import io.vertx.codetrans.expression.VariableScope;
 import io.vertx.codetrans.expression.JavaClassModel;
 import io.vertx.codetrans.expression.JsonArrayClassModel;
@@ -341,9 +342,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
   public ExpressionModel visitLiteral(LiteralTree node, VisitContext context) {
     switch (node.getKind()) {
       case NULL_LITERAL:
-        return context.builder.render(writer -> {
-          writer.renderNullLiteral();
-        });
+        return new NullLiteralModel(context.builder);
       case STRING_LITERAL:
         return new StringLiteralModel(context.builder, node.getValue().toString());
       case BOOLEAN_LITERAL:
