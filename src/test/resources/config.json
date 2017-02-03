@@ -35,7 +35,8 @@
       "json.JsObject#equalsNullValueRight",
       "json.JsObject#equalsNotNullValueLeft",
       "json.JsObject#equalsNotNullValueRight",
-      "variable.Variable#globalExpression"
+      "variable.Variable#globalExpression",
+      "variable.Variable#declareAndAssignNull"
     ]
   },
   "kotlin": {

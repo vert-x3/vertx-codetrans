@@ -17,6 +17,7 @@ import java.util.Collections;
  */
 public class VariableTest extends ConversionTestBase {
 
+  public static boolean cond;
   public static final String constant = "foo";
   public static Object o;
 
@@ -30,6 +31,21 @@ public class VariableTest extends ConversionTestBase {
     runAll("variable/Variable", "declare", () -> {
       Assert.assertEquals("foo", o);
       o = null;
+    });
+  }
+
+  @Test
+  public void testDeclareAndAssignNull() throws Exception {
+    cond = true;
+    runAllExcept("variable/Variable", "declareAndAssignNull", ScalaLang.class, () -> {
+      Assert.assertEquals("lazy", o);
+      o = null;
+    });
+    o = "foo";
+    cond = false;
+    runAllExcept("variable/Variable", "declareAndAssignNull", ScalaLang.class, () -> {
+      Assert.assertEquals(null, o);
+      o = "foo";
     });
   }
 

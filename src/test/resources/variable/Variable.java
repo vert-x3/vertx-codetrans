@@ -18,6 +18,15 @@ public class Variable extends AbstractVerticle {
   }
 
   @CodeTranslate
+  public void declareAndAssignNull() throws Exception {
+    String o = null;
+    if (VariableTest.cond) {
+      o = "lazy";
+    }
+    VariableTest.o = o;
+  }
+
+  @CodeTranslate
   public void globalExpression() throws Exception {
     VariableTest.o = vertx;
   }

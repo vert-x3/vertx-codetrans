@@ -156,11 +156,16 @@ public class KotlinCodeBuilder implements CodeBuilder {
 
       renderer.append(name);
       if (initializer != null) {
-        renderer.append(" = ");
-        initializer.render(renderer);
+        if (initializer instanceof NullLiteralModel) {
+          renderer.append(": ");
+          renderType(type, renderer);
+          renderer.append("? = null");
+        } else {
+          renderer.append(" = ");
+          initializer.render(renderer);
+        }
       } else {
         renderer.append(": ");
-
         renderType(type, renderer);
       }
     });
