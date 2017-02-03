@@ -1,6 +1,5 @@
 package io.vertx.codetrans;
 
-import com.sun.source.util.TreePath;
 import com.sun.source.util.Trees;
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.comp.Attr;
@@ -63,11 +62,11 @@ public class CodeTranslator {
     };
   }
 
-  public String translate(ExecutableElement methodElt, Lang lang) {
-    return translate(methodElt, lang, RenderMode.SNIPPET);
+  public String translate(ExecutableElement methodElt, boolean isVerticle, Lang lang) {
+    return translate(methodElt, isVerticle, lang, RenderMode.SNIPPET);
   }
 
-  public String translate(ExecutableElement methodElt, Lang lang, RenderMode renderMode) {
+  public String translate(ExecutableElement methodElt, boolean isVerticle, Lang lang, RenderMode renderMode) {
     TypeElement typeElt = (TypeElement) methodElt.getEnclosingElement();
     attributeClass(typeElt);
     ModelBuilder builder = new ModelBuilder(trees, typeElt, SystemType, ThrowableType, factory, typeUtils, lang);
@@ -123,7 +122,7 @@ public class CodeTranslator {
       }
     }
 
-    RunnableCompilationUnit unit = new RunnableCompilationUnit(main, methods, fields);
+    RunnableCompilationUnit unit = new RunnableCompilationUnit(isVerticle, main, methods, fields);
     return visitContext.builder.render(unit, renderMode);
   }
 

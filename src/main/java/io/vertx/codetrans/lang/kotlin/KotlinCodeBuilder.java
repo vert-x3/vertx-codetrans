@@ -27,9 +27,19 @@ public class KotlinCodeBuilder implements CodeBuilder {
   public String render(RunnableCompilationUnit unit, RenderMode renderMode) {
     KotlinCodeWriter writer = newWriter();
 
-    if (renderMode == RenderMode.TEST) {
+    String foo = null;
+    if (renderMode == RenderMode.TEST || renderMode == RenderMode.EXAMPLE) {
       String className = unit.getMain().getClassName();
-      writer.append("package ").append(className).append("\n\n");
+      String pkg;
+      if (unit.isVerticle()) {
+        int index = className.lastIndexOf('.');
+        pkg = className.substring(0, index);
+        foo = className.substring(index + 1);
+      } else{
+        pkg = className;
+        foo = unit.getMain().getSignature().getName();
+      }
+      writer.append("package ").append(pkg).append("\n\n");
     }
 
     for (String i : imports) {
@@ -37,13 +47,14 @@ public class KotlinCodeBuilder implements CodeBuilder {
     }
     writer.append("\n");
 
+
     switch (renderMode) {
       case TEST:
-        writer.append("object ").append(unit.getMain().getSignature().getName()).append(" {\n");
+        writer.append("object ").append(foo).append(" {\n");
         writer.indent();
         break;
       case EXAMPLE:
-        writer.append("class ").append(unit.getMain().getSignature().getName()).append(" : io.vertx.core.AbstractVerticle() ").append(" {\n");
+        writer.append("class ").append(foo).append(" : io.vertx.core.AbstractVerticle() ").append(" {\n");
         writer.indent();
         break;
     }

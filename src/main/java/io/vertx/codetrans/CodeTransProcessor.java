@@ -42,6 +42,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -216,7 +217,7 @@ public class CodeTransProcessor extends AbstractProcessor {
       return false;
     }
     if (outputDir != null && (outputDir.exists() || outputDir.mkdirs())) {
-      List<ExecutableElement> methodElts = new ArrayList<>();
+      LinkedHashMap<ExecutableElement, Boolean> methods = new LinkedHashMap<>();
       try {
         PrintWriter log = getLogger();
 
@@ -233,7 +234,7 @@ public class CodeTransProcessor extends AbstractProcessor {
               if (enclosedElt.getKind() == ElementKind.METHOD) {
                 ExecutableElement methodElt = (ExecutableElement) enclosedElt;
                 if (methodElt.getSimpleName().toString().equals("start") && methodElt.getParameters().isEmpty()) {
-                  methodElts.add(methodElt);
+                  methods.put(methodElt, true);
                 }
               }
             }
@@ -242,11 +243,13 @@ public class CodeTransProcessor extends AbstractProcessor {
 
         // Process CodeTranslate annotations
         roundEnv.getElementsAnnotatedWith(CodeTranslate.class).forEach(annotatedElt -> {
-          methodElts.add((ExecutableElement) annotatedElt);
+          methods.put((ExecutableElement) annotatedElt, false);
         });
 
         // Generate
-        for (ExecutableElement methodElt : methodElts) {
+        for (Map.Entry<ExecutableElement, Boolean> method : methods.entrySet()) {
+          ExecutableElement methodElt = method.getKey();
+          boolean isVerticle = method.getValue();
           TypeElement typeElt = (TypeElement) methodElt.getEnclosingElement();
           FileObject obj = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, "", typeElt.getQualifiedName().toString().replace('.', '/') + ".java");
           File srcFolder = new File(obj.toUri()).getParentFile();
@@ -258,10 +261,10 @@ public class CodeTransProcessor extends AbstractProcessor {
             }
             List<String> fqn = Arrays.asList(typeElt.toString().split("\\."));
             File dstFolder = new File(outputDir, lang.id());
-            File f = lang.createSourceFile(dstFolder, fqn, methodElt.getAnnotation(CodeTranslate.class) != null ? methodElt.getSimpleName().toString() : null);
+            File f = lang.createSourceFile(dstFolder, fqn, !isVerticle ? methodElt.getSimpleName().toString() : null);
             if (f.getParentFile().exists() || f.getParentFile().mkdirs()) {
               try {
-                String translation = translator.translate(methodElt, lang, renderMode);
+                String translation = translator.translate(methodElt, isVerticle, lang, renderMode);
                 Files.write(f.toPath(), translation.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
                 log.println("Generated " + f.getAbsolutePath());
                 copyDirRec(srcFolder, dstFolder, log);
