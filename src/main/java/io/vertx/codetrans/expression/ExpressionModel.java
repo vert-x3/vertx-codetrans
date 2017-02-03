@@ -4,6 +4,7 @@ import io.vertx.codegen.type.TypeInfo;
 import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.MethodSignature;
+import io.vertx.codetrans.TypeArg;
 
 import javax.lang.model.element.TypeElement;
 import java.util.List;
@@ -51,7 +52,7 @@ public class ExpressionModel extends CodeModel {
   }
 
   public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodSignature method, TypeInfo returnType,
-                                            List<TypeInfo> typeArguments, List<ExpressionModel> argumentModels,
+                                            List<TypeArg> typeArguments, List<ExpressionModel> argumentModels,
                                             List<TypeInfo> argumentTypes) {
     if (method.getName().equals("equals") && method.getParameterTypes().size() == 1) {
       return builder.render(writer -> {

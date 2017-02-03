@@ -15,20 +15,49 @@ import static org.junit.Assert.assertEquals;
  */
 public class GenericsTest extends ConversionTestBase {
 
-  public static String obj;
+  public static Object obj;
 
   @Test
-  public void testCallParameterizedMethodWithTypeArgument() {
-    runAllExcept("generics/Generics", "callParameterizedMethodWithTypeArgument", ScalaLang.class, () -> {
+  public void testCallParameterizedMethodWithGivenTypeArgument() {
+    obj = null;
+    runAllExcept("generics/Generics", "callParameterizedMethodWithGivenTypeArgument", ScalaLang.class, () -> {
       assertEquals("hello", obj);
       obj = null;
     });
   }
 
   @Test
-  public void testCallParameterizedMethodWithDefaultTypeArgument() {
-    runAllExcept("generics/Generics", "callParameterizedMethodWithDefaultTypeArgument", ScalaLang.class, () -> {
+  public void testCallParameterizedMethodWithoutTypeArgument() {
+    obj = null;
+    runAllExcept("generics/Generics", "callParameterizedMethodWithoutTypeArgument", ScalaLang.class, () -> {
       assertEquals("hello", obj);
+      obj = null;
+    });
+  }
+
+  @Test
+  public void testCallParameterizedMethodWithTypeArgumentInferedByType() {
+    obj = null;
+    runAllExcept("generics/Generics", "callParameterizedMethodWithTypeArgumentInferedByType", ScalaLang.class, () -> {
+      assertEquals("the_string", obj);
+      obj = null;
+    });
+  }
+
+  @Test
+  public void testCallParameterizedMethodWithTypeArgumentInferedByTypeArgument() {
+    obj = null;
+    runAllExcept("generics/Generics", "callParameterizedMethodWithTypeArgumentInferedByTypeArgument", ScalaLang.class, () -> {
+      assertEquals("the_value", obj);
+      obj = null;
+    });
+  }
+
+  @Test
+  public void testCallParameterizedMethodTypeArgumentInferedByInheritedTypeArgument() {
+    obj = null;
+    runAllExcept("generics/Generics", "callParameterizedMethodTypeArgumentInferedByInheritedTypeArgument", ScalaLang.class, () -> {
+      assertEquals("the_value", obj);
       obj = null;
     });
   }

@@ -6,6 +6,7 @@ import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.Helper;
 import io.vertx.codetrans.MethodSignature;
+import io.vertx.codetrans.TypeArg;
 
 import java.util.Collections;
 import java.util.List;
@@ -39,7 +40,7 @@ public class JsonObjectLiteralModel extends ExpressionModel {
   }
 
   @Override
-  public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<TypeInfo> typeArguments, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
+  public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<TypeArg> typeArguments, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
     String methodName = method.getName();
     StringLiteralModel name = (StringLiteralModel) argumentModels.get(0);
     switch (methodName) {

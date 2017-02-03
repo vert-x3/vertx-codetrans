@@ -6,6 +6,7 @@ import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.MethodSignature;
+import io.vertx.codetrans.TypeArg;
 import io.vertx.codetrans.expression.*;
 import io.vertx.codetrans.statement.StatementModel;
 
@@ -397,7 +398,7 @@ public class ScalaCodeWriter extends CodeWriter {
   }
 
   @Override
-  public void renderMethodInvocation(ExpressionModel expression, TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<TypeInfo> typeArguments, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes){
+  public void renderMethodInvocation(ExpressionModel expression, TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<TypeArg> typeArguments, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes){
     String lbracket = (method.getName() == "onComplete") ? "" : "(";
     String rbracket = (method.getName() == "onComplete") ? "" : ")";
     if(method.getName() != "onComplete")

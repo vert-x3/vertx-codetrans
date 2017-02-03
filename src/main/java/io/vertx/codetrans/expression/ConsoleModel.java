@@ -4,6 +4,7 @@ import io.vertx.codegen.type.TypeInfo;
 import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.MethodSignature;
+import io.vertx.codetrans.TypeArg;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class ConsoleModel extends ExpressionModel {
   }
 
   @Override
-  public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<TypeInfo> typeArguments, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
+  public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<TypeArg> typeArguments, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
     if (method.getName().equals("println") && method.getParameterTypes().size() == 1) {
       return new ExpressionModel(builder) {
         @Override

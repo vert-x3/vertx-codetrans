@@ -3,6 +3,7 @@ package io.vertx.codetrans.expression;
 import io.vertx.codegen.type.TypeInfo;
 import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.MethodSignature;
+import io.vertx.codetrans.TypeArg;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class ArraysModel extends ClassModel {
   }
 
   @Override
-  public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<TypeInfo> typeArguments, List<ExpressionModel> arguments, List<TypeInfo> argumentTypes) {
+  public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<TypeArg> typeArguments, List<ExpressionModel> arguments, List<TypeInfo> argumentTypes) {
     if (method.getName().equals("asList")) {
       return builder.render(writer -> {
         writer.renderListLiteral(arguments);

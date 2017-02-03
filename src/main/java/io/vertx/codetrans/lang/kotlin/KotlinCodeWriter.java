@@ -6,6 +6,7 @@ import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.MethodSignature;
+import io.vertx.codetrans.TypeArg;
 import io.vertx.codetrans.expression.*;
 import io.vertx.codetrans.statement.StatementModel;
 import kotlin.collections.CollectionsKt;
@@ -499,22 +500,25 @@ public class KotlinCodeWriter extends CodeWriter {
   }
 
   @Override
-  public void renderMethodInvocation(ExpressionModel expression, TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<TypeInfo> typeArguments, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
+  public void renderMethodInvocation(ExpressionModel expression, TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<TypeArg> typeArguments, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
     if (!(expression instanceof ThisModel)) {
       expression.render(this);
       append('.');
     }
     renderIdentifier(method.getName(), VariableScope.FIELD);
     if (typeArguments.size() > 0) {
-      append('<');
-      append(typeArguments.stream().map(ti -> {
-        if (ti != null) {
-          return ti.getSimpleName();
-        } else {
-          return "Any";
-        }
-      }).collect(Collectors.joining(", ")));
-      append('>');
+      boolean needed = typeArguments.stream().filter(typeArg -> typeArg == null || !typeArg.resolved).count() > 0;
+      if (needed) {
+        append('<');
+        append(typeArguments.stream().map(ti -> {
+          if (ti != null) {
+            return ti.value.getSimpleName();
+          } else {
+            return "Any";
+          }
+        }).collect(Collectors.joining(", ")));
+        append('>');
+      }
     }
     append('(');
     for (int i = 0; i < argumentModels.size(); i++) {

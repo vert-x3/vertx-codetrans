@@ -9,6 +9,7 @@ import io.vertx.codegen.type.EnumTypeInfo;
 import io.vertx.codegen.type.TypeInfo;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
+import io.vertx.codetrans.TypeArg;
 import io.vertx.codetrans.statement.ConditionalBlockModel;
 import io.vertx.codetrans.expression.DataObjectLiteralModel;
 import io.vertx.codetrans.expression.ExpressionModel;
@@ -204,7 +205,7 @@ class RubyWriter extends CodeWriter {
   }
 
   @Override
-  public void renderMethodInvocation(ExpressionModel expression, TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<TypeInfo> typeArguments, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
+  public void renderMethodInvocation(ExpressionModel expression, TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<TypeArg> typeArguments, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
     List<TypeInfo> parameterTypes = method.getParameterTypes();
     String methodName = method.getName();
     int size = parameterTypes.size();

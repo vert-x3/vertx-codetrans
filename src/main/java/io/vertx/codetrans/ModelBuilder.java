@@ -69,6 +69,7 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.Types;
 import java.io.IOException;
 import java.io.Reader;
@@ -513,8 +514,10 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
 
     // Compute the argument types
     List<TypeInfo> argTypes = new ArrayList<>();
+    List<TypeMirror> argsTypeMirror = new ArrayList<>();
     for (JCTree.JCExpression argExpr : ((JCTree.JCMethodInvocation) node).getArguments()) {
       TypeInfo argType = null;
+      argsTypeMirror.add(argExpr.type);
       if (argExpr.type.getKind() != TypeKind.NULL) {
         argType = factory.create(argExpr.type);
       }
@@ -522,18 +525,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     }
 
     //
-    List<TypeInfo> typeArgs = new ArrayList<>();
-    List<JCTree.JCExpression> typeArgsExpr = ((JCTree.JCMethodInvocation) node).getTypeArguments();
-    List<? extends TypeParameterElement> typeParams = exec.getTypeParameters();
-    for (int i = 0;i < typeParams.size();i++) {
-      if (i < typeArgsExpr.size()) {
-        JCTree.JCExpression typeArgExpr = typeArgsExpr.get(i);
-        TypeInfo typeArg = factory.create(typeArgExpr.type);
-        typeArgs.add(typeArg);
-      } else {
-        typeArgs.add(null);
-      }
-    }
+    List<TypeArg> typeArgs = resolveTypeArgs(node, argsTypeMirror);
 
     //
     List<ExpressionModel> argumentModels = node.getArguments().stream().map(argument -> scan(argument, context)).collect(Collectors.toList());
@@ -569,6 +561,110 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
 
     ExpressionModel expression = memberSelectExpression.onMethodInvocation(type, signature, returnType, typeArgs, argumentModels, argTypes);
     return expression.as(returnType);
+  }
+
+  private List<TypeArg> resolveTypeArgs(MethodInvocationTree node, List<TypeMirror> argTypes) {
+    ExecutableElement exec = (ExecutableElement) trees.getElement(trees.getPath(path.getCompilationUnit(), node));
+    ExecutableType methodType = (ExecutableType) exec.asType();
+    List<TypeArg> typeArgs = new ArrayList<>();
+    List<JCTree.JCExpression> typeArgsExpr = ((JCTree.JCMethodInvocation) node).getTypeArguments();
+    List<? extends TypeParameterElement> typeParamElts = exec.getTypeParameters();
+
+    // Resolve the type argument
+    for (int i = 0;i < typeParamElts.size();i++) {
+      if (i < typeArgsExpr.size()) {
+
+        // This is the case where the code has an explicit list of type arguments:
+        // foo<String>(...) -> we resolve String
+        JCTree.JCExpression typeArgExpr = typeArgsExpr.get(i);
+        TypeInfo typeArg = factory.create(typeArgExpr.type);
+        typeArgs.add(new TypeArg(typeArg, false));
+      } else {
+
+        // This is the case where we need to make some inference to deduce the type
+        // for this matter we examine all valid parameters and try to use the method invocation
+        // types to resolve the type, for instance:
+        // foo("abc") -> we resolve String
+        // but it can get more complex, see resolveTypeVariable
+        TypeParameterElement typeParameterElt = typeParamElts.get(i);
+        TypeVariable typeVar = (TypeVariable) typeParameterElt.asType();
+        TypeMirror resolved = null;
+
+        // In case of a varargs we don't examine the last parameter
+        int size = methodType.getParameterTypes().size();
+        if (exec.isVarArgs()) {
+          size--;
+        }
+
+        // Use each parameter and see if we can resolve (or not)
+        for (int j = 0;j < size;j++) {
+          TypeMirror argType = argTypes.get(j);
+          TypeMirror another = methodType.getParameterTypes().get(j);
+          resolved = resolveTypeVariable(typeVar, another, argType);
+          if (resolved != null) {
+            // No need to continue
+            break;
+          }
+        }
+        if (resolved != null) {
+          typeArgs.add(new TypeArg(factory.create(resolved), true));
+        } else {
+          typeArgs.add(null);
+        }
+      }
+    }
+    return typeArgs;
+  }
+
+  /**
+   * Resolve the type variable, basically some kind of inference:
+   *
+   * for the method {@code <T> void m(T t)}
+   *   - resolveType(<T>,T,m("s")) -> String
+   *   - resolveType(<T>,T,m(null)) -> null
+   * for the method {@code <T> void m(List<T> t)}
+   *   - resolveType(<T>,List<T>,m(Arrays.asList("s"))) -> String
+   *   - resolveType(<T>,List<T>,m(BooleanList)) where BooleanList extends List<Boolean> -> Boolean
+   *   - resolveType(<T>,List<T>,m(null)) -> null
+   */
+  private TypeMirror resolveTypeVariable(TypeVariable typeVar, TypeMirror parameterType, TypeMirror argumentType) {
+    if (typeVar.equals(parameterType) && argumentType.getKind() != TypeKind.NULL) {
+      return argumentType;
+    } else {
+      TypeParameterElement ttt = resolveTypeParameterElement(typeVar, parameterType);
+      if (ttt != null && argumentType.getKind() == TypeKind.DECLARED) {
+        TypeMirror resolved = io.vertx.codegen.Helper.resolveTypeParameter(typeUtils, (DeclaredType) argumentType, ttt);
+        if (resolved != null) {
+          return resolved;
+        }
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Resolve the type variable as a type parameter in the given type.
+   *
+   * for the method {@code <T> void m(List<T>)} -> the <T> of List<T>
+   * for the method {@code <T> void m(List<Set<T>>)} -> the <T> of Set<T>
+   */
+  private TypeParameterElement resolveTypeParameterElement(TypeVariable typeVar, TypeMirror type) {
+    if (type.getKind() == TypeKind.DECLARED) {
+      DeclaredType dt = (DeclaredType) type;
+      for (int i = 0;i < dt.getTypeArguments().size();i++) {
+        if (typeVar.equals(dt.getTypeArguments().get(i))) {
+          TypeElement te = (TypeElement) dt.asElement();
+          return te.getTypeParameters().get(i);
+        }
+      }
+      for (int i = 0;i < dt.getTypeArguments().size();i++) {
+        TypeParameterElement te = resolveTypeParameterElement(typeVar, dt.getTypeArguments().get(i));
+        if (te != null) {
+          return te;
+        }
+      }
+    }
+    return null;
   }
 
   private MethodSignature createMethodSignature(ExecutableElement sym, boolean varargs) {

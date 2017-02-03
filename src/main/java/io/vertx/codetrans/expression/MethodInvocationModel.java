@@ -4,6 +4,7 @@ import io.vertx.codegen.type.TypeInfo;
 import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.MethodSignature;
+import io.vertx.codetrans.TypeArg;
 
 import java.util.List;
 
@@ -16,12 +17,12 @@ public class MethodInvocationModel extends ExpressionModel {
   public final TypeInfo receiverType;
   public final MethodSignature method;
   public final TypeInfo returnType;
-  public final List<TypeInfo> typeArguments;
+  public final List<TypeArg> typeArguments;
   public final List<ExpressionModel> argumentModels;
   public final List<TypeInfo> argumentTypes;
 
   public MethodInvocationModel(CodeBuilder builder, ExpressionModel expression, TypeInfo receiverType, MethodSignature method,
-                               TypeInfo returnType, List<TypeInfo> typeArguments, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
+                               TypeInfo returnType, List<TypeArg> typeArguments, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
     super(builder);
     this.expression = expression;
     this.receiverType = receiverType;

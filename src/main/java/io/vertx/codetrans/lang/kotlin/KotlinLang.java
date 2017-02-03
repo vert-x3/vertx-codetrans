@@ -9,6 +9,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -35,17 +37,16 @@ public class KotlinLang implements Lang {
   @Override
   public Script loadScript(ClassLoader loader, String path, String method) throws Exception {
     loader = new URLClassLoader(new URL[]{ new File(new File("target"), "kotlin-classes").toURI().toURL() }, loader);
-//    String fqn = path.replace('/', '.') + "." + Character.toUpperCase(method.charAt(0)) + method.substring(1) + "Kt";
-//    Class<?> c = loader.loadClass(fqn);
-//    Method m = c.getDeclaredMethod(method);
     String fqn = path.replace('/', '.') + "." + method;
     Class<?> c = loader.loadClass(fqn);
     Field accessor = c.getDeclaredField("INSTANCE");
     Method m = c.getDeclaredMethod(method);
+    File f = new File(("src/test/generated/kotlin/" + path + "/" + method + ".kt").replace('/', File.separatorChar));
+    String source = new String(Files.readAllBytes(f.toPath()));
     return new Script() {
       @Override
       public String getSource() {
-        throw new UnsupportedOperationException();
+        return source;
       }
       @Override
       public void run(Map<String, Object> globals) throws Exception {

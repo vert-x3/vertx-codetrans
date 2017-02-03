@@ -1,8 +1,9 @@
 package io.vertx.support;
 
 import io.vertx.codegen.annotations.VertxGen;
-import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
+
+import java.util.List;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -18,7 +19,11 @@ public interface MethodReceiver {
     return false;
   }
 
-  static <T> void parameterizedMethod(Handler<T> handler) {
-    handler.handle((T)"hello");
+  static <T> Object parameterizedMethodMatchingTypeVariableParameter(T arg) {
+    return arg == null ? (T)"hello" : arg;
+  }
+
+  static <T> Object parameterizedMethodMatchingGenericParameter(Parameterized<T> arg) {
+    return arg == null ? (T)"hello" : arg.get();
   }
 }

@@ -3,7 +3,17 @@ module.exports = {
         return true;
   }, blue: function() {
         return false;
-  }, parameterizedMethod: function(callback) {
-        callback("hello");
+  }, parameterizedMethodMatchingTypeVariableParameter: function(arg) {
+        if (arg !== null) {
+          return arg;
+        } else {
+          return "hello";
+        }
+  }, parameterizedMethodMatchingGenericParameter: function(arg) {
+    if (arg !== null) {
+      return arg.get();
+    } else {
+      return "hello";
+    }
   }
 };

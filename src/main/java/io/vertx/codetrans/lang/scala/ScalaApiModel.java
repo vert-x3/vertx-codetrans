@@ -6,6 +6,7 @@ import io.vertx.codegen.type.TypeInfo;
 import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.MethodSignature;
+import io.vertx.codetrans.TypeArg;
 import io.vertx.codetrans.expression.ApiModel;
 import io.vertx.codetrans.expression.ExpressionModel;
 import io.vertx.codetrans.expression.MethodInvocationModel;
@@ -29,7 +30,7 @@ public class ScalaApiModel extends ApiModel {
   }
 
   @Override
-  public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<TypeInfo> typeArguments, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
+  public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<TypeArg> typeArguments, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
     if (argumentTypes.size() > 0) {
       TypeInfo last = argumentTypes.get(argumentTypes.size() - 1);
       if (methodAcceptsAsyncResultHandler(last)) {
