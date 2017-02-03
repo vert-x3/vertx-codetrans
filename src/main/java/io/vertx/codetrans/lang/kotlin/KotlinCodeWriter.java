@@ -12,6 +12,7 @@ import kotlin.collections.CollectionsKt;
 
 import javax.lang.model.element.TypeElement;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Sergey Mashkov
@@ -129,7 +130,7 @@ public class KotlinCodeWriter extends CodeWriter {
       }
     }
 
-    renderMethodInvocation(expression, VoidTypeInfo.INSTANCE, signature, VoidTypeInfo.INSTANCE, arguments, CollectionsKt.emptyList());
+    renderMethodInvocation(expression, VoidTypeInfo.INSTANCE, signature, VoidTypeInfo.INSTANCE, Collections.emptyList(), arguments, CollectionsKt.emptyList());
     append(" }");
   }
 
@@ -490,22 +491,31 @@ public class KotlinCodeWriter extends CodeWriter {
     args.add(new StringLiteralModel(getBuilder(), name));
 
     if (value instanceof NullLiteralModel) {
-      renderMethodInvocation(expression, VoidTypeInfo.INSTANCE, new MethodSignature("putNull", Collections.emptyList(), false, VoidTypeInfo.INSTANCE), VoidTypeInfo.INSTANCE, args, Collections.emptyList());
+      renderMethodInvocation(expression, VoidTypeInfo.INSTANCE, new MethodSignature("putNull", Collections.emptyList(), false, VoidTypeInfo.INSTANCE), VoidTypeInfo.INSTANCE, Collections.emptyList(), args, Collections.emptyList());
     } else {
       args.add(value);
-      renderMethodInvocation(expression, VoidTypeInfo.INSTANCE, new MethodSignature("put", Collections.emptyList(), false, VoidTypeInfo.INSTANCE), VoidTypeInfo.INSTANCE, args, Collections.emptyList());
+      renderMethodInvocation(expression, VoidTypeInfo.INSTANCE, new MethodSignature("put", Collections.emptyList(), false, VoidTypeInfo.INSTANCE), VoidTypeInfo.INSTANCE, Collections.emptyList(), args, Collections.emptyList());
     }
   }
 
   @Override
-  public void renderMethodInvocation(ExpressionModel expression, TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
-
+  public void renderMethodInvocation(ExpressionModel expression, TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<TypeInfo> typeArguments, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
     if (!(expression instanceof ThisModel)) {
       expression.render(this);
       append('.');
     }
-
     renderIdentifier(method.getName(), VariableScope.FIELD);
+    if (typeArguments.size() > 0) {
+      append('<');
+      append(typeArguments.stream().map(ti -> {
+        if (ti != null) {
+          return ti.getSimpleName();
+        } else {
+          return "Any";
+        }
+      }).collect(Collectors.joining(", ")));
+      append('>');
+    }
     append('(');
     for (int i = 0; i < argumentModels.size(); i++) {
       if (i > 0) {

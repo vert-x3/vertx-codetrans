@@ -8,5 +8,8 @@ module Support
     def self.blue?
       false
     end
+    def self.parameterized_method(&callback)
+      callback.call 'hello'
+    end
   end
 end

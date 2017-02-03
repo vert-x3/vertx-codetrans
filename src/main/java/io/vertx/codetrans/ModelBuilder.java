@@ -62,6 +62,7 @@ import io.vertx.codetrans.statement.TryCatchModel;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
@@ -511,13 +512,27 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
     boolean varargs = exec.isVarArgs();
 
     // Compute the argument types
-    List<TypeInfo> argumentTypes = new ArrayList<>();
-    for (JCTree.JCExpression argument : ((JCTree.JCMethodInvocation) node).getArguments()) {
-      TypeInfo argumentType = null;
-      if (argument.type.getKind() != TypeKind.NULL) {
-        argumentType = factory.create(argument.type);
+    List<TypeInfo> argTypes = new ArrayList<>();
+    for (JCTree.JCExpression argExpr : ((JCTree.JCMethodInvocation) node).getArguments()) {
+      TypeInfo argType = null;
+      if (argExpr.type.getKind() != TypeKind.NULL) {
+        argType = factory.create(argExpr.type);
       }
-      argumentTypes.add(argumentType);
+      argTypes.add(argType);
+    }
+
+    //
+    List<TypeInfo> typeArgs = new ArrayList<>();
+    List<JCTree.JCExpression> typeArgsExpr = ((JCTree.JCMethodInvocation) node).getTypeArguments();
+    List<? extends TypeParameterElement> typeParams = exec.getTypeParameters();
+    for (int i = 0;i < typeParams.size();i++) {
+      if (i < typeArgsExpr.size()) {
+        JCTree.JCExpression typeArgExpr = typeArgsExpr.get(i);
+        TypeInfo typeArg = factory.create(typeArgExpr.type);
+        typeArgs.add(typeArg);
+      } else {
+        typeArgs.add(null);
+      }
     }
 
     //
@@ -552,7 +567,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
       context.getReferencedMethods().add(name);
     }
 
-    ExpressionModel expression = memberSelectExpression.onMethodInvocation(type, signature, returnType, argumentModels, argumentTypes);
+    ExpressionModel expression = memberSelectExpression.onMethodInvocation(type, signature, returnType, typeArgs, argumentModels, argTypes);
     return expression.as(returnType);
   }
 

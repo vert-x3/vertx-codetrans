@@ -16,12 +16,12 @@ public class ArraysModel extends ClassModel {
   }
 
   @Override
-  public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<ExpressionModel> arguments, List<TypeInfo> argumentTypes) {
+  public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<TypeInfo> typeArguments, List<ExpressionModel> arguments, List<TypeInfo> argumentTypes) {
     if (method.getName().equals("asList")) {
       return builder.render(writer -> {
         writer.renderListLiteral(arguments);
       });
     }
-    return super.onMethodInvocation(receiverType, method, returnType, arguments, argumentTypes);
+    return super.onMethodInvocation(receiverType, method, returnType, typeArguments, arguments, argumentTypes);
   }
 }

@@ -23,6 +23,7 @@
       "expression.PostfixIncrement#start",
       "expression.PrefixDecrement#start",
       "expression.PrefixIncrement#start",
+      "generics.Generics",
       "json.JsArray#getArray",
       "json.JsArray#getObject",
       "json.JsObject#getJsonArray",

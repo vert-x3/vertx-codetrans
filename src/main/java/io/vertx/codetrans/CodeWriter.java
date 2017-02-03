@@ -190,6 +190,7 @@ public abstract class CodeWriter implements Appendable {
                                      TypeInfo receiverType,
                                      MethodSignature method,
                                      TypeInfo returnType,
+                                     List<TypeInfo> typeArguments,
                                      List<ExpressionModel> argumentModels,
                                      List<TypeInfo> argumentTypes) {
     expression.render(this); // ?

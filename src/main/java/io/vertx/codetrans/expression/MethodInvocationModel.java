@@ -16,21 +16,24 @@ public class MethodInvocationModel extends ExpressionModel {
   public final TypeInfo receiverType;
   public final MethodSignature method;
   public final TypeInfo returnType;
+  public final List<TypeInfo> typeArguments;
   public final List<ExpressionModel> argumentModels;
   public final List<TypeInfo> argumentTypes;
 
-  public MethodInvocationModel(CodeBuilder builder, ExpressionModel expression, TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
+  public MethodInvocationModel(CodeBuilder builder, ExpressionModel expression, TypeInfo receiverType, MethodSignature method,
+                               TypeInfo returnType, List<TypeInfo> typeArguments, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
     super(builder);
     this.expression = expression;
     this.receiverType = receiverType;
     this.method = method;
     this.returnType = returnType;
+    this.typeArguments = typeArguments;
     this.argumentModels = argumentModels;
     this.argumentTypes = argumentTypes;
   }
 
   @Override
   public void render(CodeWriter writer) {
-    writer.renderMethodInvocation(expression, receiverType, method, returnType, argumentModels, argumentTypes);
+    writer.renderMethodInvocation(expression, receiverType, method, returnType, typeArguments, argumentModels, argumentTypes);
   }
 }

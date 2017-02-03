@@ -397,7 +397,7 @@ public class ScalaCodeWriter extends CodeWriter {
   }
 
   @Override
-  public void renderMethodInvocation(ExpressionModel expression, TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes){
+  public void renderMethodInvocation(ExpressionModel expression, TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<TypeInfo> typeArguments, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes){
     String lbracket = (method.getName() == "onComplete") ? "" : "(";
     String rbracket = (method.getName() == "onComplete") ? "" : ")";
     if(method.getName() != "onComplete")

@@ -11,7 +11,7 @@ import java.util.List;
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 public class ParenthesizedModel extends ExpressionModel {
-  
+
   final ExpressionModel expression;
 
   public ParenthesizedModel(CodeBuilder builder, ExpressionModel expression) {
@@ -25,8 +25,8 @@ public class ParenthesizedModel extends ExpressionModel {
   }
 
   @Override
-  public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
-    return expression.onMethodInvocation(receiverType, method, returnType, argumentModels, argumenTypes);
+  public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<TypeInfo> typeArguments, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
+    return expression.onMethodInvocation(receiverType, method, returnType, typeArguments, argumentModels, argumentTypes);
   }
 
   @Override

@@ -38,7 +38,7 @@ public class DataObjectLiteralModel extends ExpressionModel {
   }
 
   @Override
-  public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
+  public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodSignature method, TypeInfo returnType, List<TypeInfo> typeArguments, List<ExpressionModel> argumentModels, List<TypeInfo> argumentTypes) {
     String methodName = method.getName();
     if (isSet(methodName)) {
       if (argumentModels.size() == 1) {
@@ -61,7 +61,7 @@ public class DataObjectLiteralModel extends ExpressionModel {
         member.append(value);
         copy.put(name, member);
         return new DataObjectLiteralModel(builder, type, copy);
-      } else if (argumentModels.size() == 2 && argumenTypes.get(0).getName().equals("java.lang.String")) {
+      } else if (argumentModels.size() == 2 && argumentTypes.get(0).getName().equals("java.lang.String")) {
         String name = unwrapSet(methodName) + "s";
         Map<String, Member> copy = new LinkedHashMap<>(members);
         ExpressionModel key = argumentModels.get(0);

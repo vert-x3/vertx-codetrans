@@ -51,14 +51,15 @@ public class ExpressionModel extends CodeModel {
   }
 
   public ExpressionModel onMethodInvocation(TypeInfo receiverType, MethodSignature method, TypeInfo returnType,
-                                            List<ExpressionModel> argumentModels, List<TypeInfo> argumenTypes) {
+                                            List<TypeInfo> typeArguments, List<ExpressionModel> argumentModels,
+                                            List<TypeInfo> argumentTypes) {
     if (method.getName().equals("equals") && method.getParameterTypes().size() == 1) {
       return builder.render(writer -> {
         writer.renderEquals(ExpressionModel.this, argumentModels.get(0));
       });
     } else {
       return new MethodInvocationModel(builder, ExpressionModel.this, receiverType, method,
-          returnType, argumentModels, argumenTypes);
+          returnType, typeArguments, argumentModels, argumentTypes);
     }
   }
 

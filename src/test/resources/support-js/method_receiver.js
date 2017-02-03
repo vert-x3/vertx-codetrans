@@ -3,5 +3,7 @@ module.exports = {
         return true;
   }, blue: function() {
         return false;
-    }
+  }, parameterizedMethod: function(callback) {
+        callback("hello");
+  }
 };

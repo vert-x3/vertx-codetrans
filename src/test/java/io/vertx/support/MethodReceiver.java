@@ -17,4 +17,8 @@ public interface MethodReceiver {
   static boolean blue() {
     return false;
   }
+
+  static <T> void parameterizedMethod(Handler<T> handler) {
+    handler.handle((T)"hello");
+  }
 }
