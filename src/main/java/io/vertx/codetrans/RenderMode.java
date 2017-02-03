@@ -13,9 +13,9 @@ public enum RenderMode {
   SNIPPET,
 
   /**
-   * Render to run as a Vert.x Verticle.
+   * Render to run as an example.
    */
-  VERTICLE,
+  EXAMPLE,
 
   /**
    * Render to be tested by codetrans.

@@ -42,7 +42,7 @@ public class KotlinCodeBuilder implements CodeBuilder {
         writer.append("object ").append(unit.getMain().getSignature().getName()).append(" {\n");
         writer.indent();
         break;
-      case VERTICLE:
+      case EXAMPLE:
         writer.append("class ").append(unit.getMain().getSignature().getName()).append(" : io.vertx.core.AbstractVerticle() ").append(" {\n");
         writer.indent();
         break;
@@ -92,7 +92,7 @@ public class KotlinCodeBuilder implements CodeBuilder {
         writer.append("fun ").append(unit.getMain().getSignature().getName()).append("() {\n");
         writer.indent();
         break;
-      case VERTICLE:
+      case EXAMPLE:
         writer.append("override fun ").append("start").append("() {\n");
         writer.indent();
         break;
@@ -102,7 +102,7 @@ public class KotlinCodeBuilder implements CodeBuilder {
 
     switch (renderMode) {
       case TEST:
-      case VERTICLE:
+      case EXAMPLE:
         writer.unindent();
         writer.append("}\n");
         writer.unindent();

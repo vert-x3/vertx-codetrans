@@ -109,7 +109,7 @@ public class CodeTransProcessor extends AbstractProcessor {
     translator = new CodeTranslator(processingEnv);
     langs = new ArrayList<>();
     String renderOpt = processingEnv.getOptions().get("codetrans.render");
-    renderMode = renderOpt != null ? RenderMode.valueOf(renderOpt.toUpperCase()) : RenderMode.VERTICLE;
+    renderMode = renderOpt != null ? RenderMode.valueOf(renderOpt.toUpperCase()) : RenderMode.EXAMPLE;
     String langsOpt = processingEnv.getOptions().get("codetrans.langs");
     Set<String> langs;
     if (langsOpt != null) {
