@@ -62,6 +62,10 @@ public class CodeTranslator {
     };
   }
 
+  public String translate(ExecutableElement methodElt, Lang lang) {
+    return translate(methodElt, false, lang, RenderMode.SNIPPET);
+  }
+
   public String translate(ExecutableElement methodElt, boolean isVerticle, Lang lang) {
     return translate(methodElt, isVerticle, lang, RenderMode.SNIPPET);
   }
