@@ -92,13 +92,13 @@ public class DataObjectTest extends ConversionTestBase {
   public void testNested() throws Exception {
     o = null;
     runJavaScript("dataobject/DataObject", "nested");
-    Assert.assertEquals(new JsonObject().put("keyStoreOptions", new JsonObject().put("path", "/mystore.jks").put("password", "secret")), unwrapJsonObject((ScriptObjectMirror) o));
+    Assert.assertEquals(new JsonObject().put("keyStore", new JsonObject().put("path", "/mystore.jks").put("password", "secret")), unwrapJsonObject((ScriptObjectMirror) o));
     o = null;
     runGroovy("dataobject/DataObject", "nested");
-    Assert.assertEquals(new JsonObject().put("keyStoreOptions", new JsonObject().put("path", "/mystore.jks").put("password", "secret")), unwrapJsonObject((Map<String, Object>) o));
+    Assert.assertEquals(new JsonObject().put("keyStore", new JsonObject().put("path", "/mystore.jks").put("password", "secret")), unwrapJsonObject((Map<String, Object>) o));
     o = null;
     runRuby("dataobject/DataObject", "nested");
-    Assert.assertEquals(new JsonObject().put("keyStoreOptions", new JsonObject().put("path", "/mystore.jks").put("password", "secret")), unwrapJsonObject((Map<String, Object>) o));
+    Assert.assertEquals(new JsonObject().put("keyStore", new JsonObject().put("path", "/mystore.jks").put("password", "secret")), unwrapJsonObject((Map<String, Object>) o));
     o = null;
 //    runScala("dataobject/DataObject", "nested");
 //    Assert.assertEquals(new JsonObject().put("keyStoreOptions", new JsonObject().put("path", "/mystore.jks").put("password", "secret")), unwrapJsonObject((Map<String, Object>) o));

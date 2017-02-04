@@ -1,12 +1,11 @@
 package dataobject;
 
 import io.vertx.core.eventbus.DeliveryOptions;
-import io.vertx.core.http.HttpServerOptions;
-import io.vertx.core.http.HttpClientOptions;
 import io.vertx.codetrans.annotations.CodeTranslate;
 import io.vertx.codetrans.DataObjectTest;
 import io.vertx.core.http.HttpVersion;
-import io.vertx.core.net.JksOptions;
+import io.vertx.support.KeyStoreOptions;
+import io.vertx.support.ServerOptions;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -15,17 +14,17 @@ public class DataObject {
 
   @CodeTranslate
   public void empty() throws Exception {
-    DataObjectTest.o = new HttpServerOptions();
+    DataObjectTest.o = new ServerOptions();
   }
 
   @CodeTranslate
   public void nested() throws Exception {
-    DataObjectTest.o = new HttpServerOptions().setKeyStoreOptions(new JksOptions().setPath("/mystore.jks").setPassword("secret"));
+    DataObjectTest.o = new ServerOptions().setKeyStore(new KeyStoreOptions().setPath("/mystore.jks").setPassword("secret"));
   }
 
   @CodeTranslate
   public void addToList() throws Exception {
-    DataObjectTest.o = new HttpServerOptions().addEnabledCipherSuite("foo").addEnabledCipherSuite("bar");
+    DataObjectTest.o = new ServerOptions().addEnabledCipherSuite("foo").addEnabledCipherSuite("bar");
   }
 
   @CodeTranslate
@@ -35,12 +34,12 @@ public class DataObject {
 
   @CodeTranslate
   public void setFromConstructor() throws Exception {
-    DataObjectTest.o = new HttpServerOptions().setPort(8080).setHost("localhost");
+    DataObjectTest.o = new ServerOptions().setPort(8080).setHost("localhost");
   }
 
   @CodeTranslate
   public void setFromIdentifier() throws Exception {
-    HttpServerOptions obj = new HttpServerOptions();
+    ServerOptions obj = new ServerOptions();
     obj.setPort(8080);
     obj.setHost("localhost");
     DataObjectTest.o = obj;
@@ -48,19 +47,19 @@ public class DataObject {
 
   @CodeTranslate
   public void getFromIdentifier() throws Exception {
-    HttpServerOptions obj = new HttpServerOptions().setHost("localhost");
+    ServerOptions obj = new ServerOptions().setHost("localhost");
     DataObjectTest.o = obj.getHost();
   }
 
   @CodeTranslate
   public void enumValueFromConstructor() throws Exception {
-    HttpClientOptions obj = new HttpClientOptions().setProtocolVersion(HttpVersion.HTTP_2);
+    ServerOptions obj = new ServerOptions().setProtocolVersion(HttpVersion.HTTP_2);
     DataObjectTest.o = obj;
   }
 
   @CodeTranslate
   public void enumValueFromIdentifier() throws Exception {
-    HttpClientOptions obj = new HttpClientOptions();
+    ServerOptions obj = new ServerOptions();
     obj.setProtocolVersion(HttpVersion.HTTP_2);
     DataObjectTest.o = obj;
   }
