@@ -125,6 +125,13 @@ public class KotlinCodeBuilder implements CodeBuilder {
   }
 
   @Override
+  public DataObjectClassModel dataObjectClass(ClassTypeInfo type) {
+    addImport(type);
+    imports.add(type.translatePackageName("kotlin") + ".*");
+    return CodeBuilder.super.dataObjectClass(type);
+  }
+
+  @Override
   public EnumExpressionModel enumType(EnumTypeInfo type) {
     addImport(type);
     return CodeBuilder.super.enumType(type);

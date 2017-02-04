@@ -547,23 +547,22 @@ public class KotlinCodeWriter extends CodeWriter {
 
   @Override
   public void renderDataObject(DataObjectLiteralModel model) {
-    renderJavaType(model.getType());
-    append("(\n");
-    indent();
-
-    int index = 0;
-    for (Member m : model.getMembers()) {
-      if (index > 0) {
-        append(",\n");
+    append(model.getType().getSimpleName());
+    append("(");
+    if (model.getMembers().iterator().hasNext()) {
+      append("\n");
+      indent();
+      int index = 0;
+      for (Member m : model.getMembers()) {
+        if (index > 0) {
+          append(",\n");
+        }
+        append(m.getName()).append(" = ");
+        renderMember(m);
+        index++;
       }
-
-      append(m.getName()).append(" = ");
-      renderMember(m);
-
-      index++;
+      unindent();
     }
-
-    unindent();
     append(")");
   }
 

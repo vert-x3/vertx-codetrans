@@ -399,7 +399,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
         } else if (type.getKind() == ClassKind.JSON_ARRAY) {
           return new JsonArrayClassModel(context.builder);
         } else if (type.getKind() == ClassKind.DATA_OBJECT) {
-          return new DataObjectClassModel(context.builder, type);
+          return context.builder.dataObjectClass(type);
         } else if (type.getKind() == ClassKind.ENUM) {
           return context.builder.enumType((EnumTypeInfo) type);
         } else {

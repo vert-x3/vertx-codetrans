@@ -5,7 +5,9 @@ import io.vertx.core.http.HttpVersion;
 import io.vertx.core.json.JsonObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -18,15 +20,13 @@ public class ServerOptions {
   private KeyStoreOptions keyStore;
   private List<String> enabledCipherSuites = new ArrayList<>();
   private HttpVersion protocolVersion = HttpVersion.HTTP_1_1;
+  private Map<String, String> headers = new HashMap<>();
 
   public ServerOptions() {
   }
 
   public ServerOptions(JsonObject json) {
-    host = json.getString("host");
-    port = json.getInteger("port");
-    keyStore = json.containsKey("keyStore") ? new KeyStoreOptions(json.getJsonObject("keyStore")) : null;
-    protocolVersion = json.containsKey("protocolVersion") ? HttpVersion.valueOf(json.getString("protocolVersion")) : null;
+    throw new UnsupportedOperationException();
   }
 
   public String getHost() {
@@ -76,6 +76,11 @@ public class ServerOptions {
 
   public ServerOptions setProtocolVersion(HttpVersion protocolVersion) {
     this.protocolVersion = protocolVersion;
+    return this;
+  }
+
+  public ServerOptions addHeader(String name, String value) {
+    headers.put(name, value);
     return this;
   }
 }

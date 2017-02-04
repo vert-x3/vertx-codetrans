@@ -12,7 +12,9 @@ import io.vertx.codetrans.expression.ApiTypeModel;
 import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
+import io.vertx.codetrans.expression.EnumFieldExpressionModel;
 import io.vertx.codetrans.expression.ExpressionModel;
+import io.vertx.codetrans.expression.StringLiteralModel;
 import io.vertx.codetrans.expression.VariableScope;
 import io.vertx.codetrans.expression.LambdaExpressionModel;
 import io.vertx.codetrans.MethodModel;
@@ -70,6 +72,11 @@ class JavaScriptCodeBuilder implements CodeBuilder {
   public ApiTypeModel apiType(ApiTypeInfo type) {
     modules.add(type);
     return CodeBuilder.super.apiType(type);
+  }
+
+  @Override
+  public ExpressionModel toDataObjectValue(EnumFieldExpressionModel enumField) {
+    return new StringLiteralModel(this, enumField.identifier);
   }
 
   @Override

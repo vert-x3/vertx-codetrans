@@ -10,7 +10,9 @@ import io.vertx.codetrans.RenderMode;
 import io.vertx.codetrans.expression.ApiTypeModel;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.expression.EnumExpressionModel;
+import io.vertx.codetrans.expression.EnumFieldExpressionModel;
 import io.vertx.codetrans.expression.ExpressionModel;
+import io.vertx.codetrans.expression.StringLiteralModel;
 import io.vertx.codetrans.expression.VariableScope;
 import io.vertx.codetrans.expression.LambdaExpressionModel;
 import io.vertx.codetrans.CodeBuilder;
@@ -79,6 +81,11 @@ class GroovyCodeBuilder implements CodeBuilder {
   public ApiTypeModel apiType(ApiTypeInfo type) {
     imports.add(type);
     return CodeBuilder.super.apiType(type);
+  }
+
+  @Override
+  public ExpressionModel toDataObjectValue(EnumFieldExpressionModel enumField) {
+    return new StringLiteralModel(this, enumField.identifier);
   }
 
   @Override

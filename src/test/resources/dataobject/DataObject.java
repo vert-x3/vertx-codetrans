@@ -1,6 +1,5 @@
 package dataobject;
 
-import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.codetrans.annotations.CodeTranslate;
 import io.vertx.codetrans.DataObjectTest;
 import io.vertx.core.http.HttpVersion;
@@ -29,7 +28,7 @@ public class DataObject {
 
   @CodeTranslate
   public void addToMap() throws Exception {
-    DataObjectTest.o = new DeliveryOptions().addHeader("foo", "foo_value").addHeader("bar", "bar_value");
+    DataObjectTest.o = new ServerOptions().addHeader("foo", "foo_value").addHeader("bar", "bar_value");
   }
 
   @CodeTranslate

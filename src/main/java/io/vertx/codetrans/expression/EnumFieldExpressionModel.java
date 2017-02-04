@@ -10,7 +10,7 @@ import io.vertx.codetrans.CodeWriter;
 public class EnumFieldExpressionModel extends ExpressionModel {
 
   private final EnumTypeInfo type;
-  private final String identifier;
+  public final String identifier;
 
   public EnumFieldExpressionModel(CodeBuilder builder, EnumTypeInfo type, String identifier) {
     super(builder);
@@ -20,7 +20,7 @@ public class EnumFieldExpressionModel extends ExpressionModel {
 
   @Override
   public ExpressionModel toDataObjectValue() {
-    return new StringLiteralModel(builder, identifier);
+    return builder.toDataObjectValue(this);
   }
 
   @Override

@@ -225,7 +225,7 @@
               <jvmTarget>1.6</jvmTarget>
               <sourceDirs>
                 <sourceDir>${basedir}/src/test/generated/kotlin</sourceDir>
-                <sourceDir>>${basedir}/src/test/java</sourceDir>
+                <sourceDir>${basedir}/src/test/java</sourceDir>
               </sourceDirs>
               <testOutput>${project.build.directory}/kotlin-classes</testOutput>
             </configuration>

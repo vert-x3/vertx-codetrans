@@ -41,13 +41,6 @@
   },
   "kotlin": {
     "excludes": [
-      "dataobject.DataObject#addToList",
-      "dataobject.DataObject#addToMap",
-      "dataobject.DataObject#enumValueFromConstructor",
-      "dataobject.DataObject#enumValueFromIdentifier",
-      "dataobject.DataObject#getFromIdentifier",
-      "dataobject.DataObject#nested",
-      "dataobject.DataObject#setFromConstructor",
       "expression.LiteralString#concat4",
       "variable.Variable#globalExpression",
       "variable.Variable#uninitializedMemberExpression"

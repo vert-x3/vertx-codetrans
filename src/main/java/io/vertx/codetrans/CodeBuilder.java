@@ -2,6 +2,7 @@ package io.vertx.codetrans;
 
 import com.sun.source.tree.LambdaExpressionTree;
 import io.vertx.codegen.type.ApiTypeInfo;
+import io.vertx.codegen.type.ClassTypeInfo;
 import io.vertx.codegen.type.EnumTypeInfo;
 import io.vertx.codegen.type.ParameterizedTypeInfo;
 import io.vertx.codegen.type.TypeInfo;
@@ -9,8 +10,11 @@ import io.vertx.codetrans.expression.ApiModel;
 import io.vertx.codetrans.expression.ApiTypeModel;
 import io.vertx.codetrans.expression.AsyncResultModel;
 import io.vertx.codetrans.expression.BinaryExpressionModel;
+import io.vertx.codetrans.expression.DataObjectClassModel;
 import io.vertx.codetrans.expression.EnumExpressionModel;
+import io.vertx.codetrans.expression.EnumFieldExpressionModel;
 import io.vertx.codetrans.expression.ExpressionModel;
+import io.vertx.codetrans.expression.StringLiteralModel;
 import io.vertx.codetrans.expression.VariableScope;
 import io.vertx.codetrans.expression.IdentifierModel;
 import io.vertx.codetrans.expression.ThisModel;
@@ -37,6 +41,10 @@ public interface CodeBuilder {
 
   ExpressionModel asyncResultHandler(LambdaExpressionTree.BodyKind bodyKind, ParameterizedTypeInfo resultType, String resultName, CodeModel body, CodeModel succeededBody, CodeModel failedBody);
 
+  default DataObjectClassModel dataObjectClass(ClassTypeInfo type) {
+    return new DataObjectClassModel(this, type);
+  }
+
   default ApiTypeModel apiType(ApiTypeInfo type) {
     return new ApiTypeModel(this, type);
   }
@@ -47,6 +55,10 @@ public interface CodeBuilder {
 
   default EnumExpressionModel enumType(EnumTypeInfo type) {
     return new EnumExpressionModel(this, type);
+  }
+
+  default ExpressionModel toDataObjectValue(EnumFieldExpressionModel enumField) {
+    return enumField;
   }
 
   default ExpressionModel identifier(String name, VariableScope scope) {
