@@ -130,28 +130,30 @@ public class CodeTransProcessor extends AbstractProcessor {
         System.err.println("[ERROR] Cannot read configuration file " + file.getAbsolutePath() + " : " + e.getMessage());
         e.printStackTrace();
       }
-      for (String lang : langs) {
-        Lang l;
-        switch (lang) {
-          case "kotlin":
-            l = new KotlinLang();
-            break;
-          case "groovy":
-            l = new GroovyLang();
-            break;
-          case "js":
-            l = new JavaScriptLang();
-            break;
-          case "scala":
-            l = new ScalaLang();
-            break;
-          case "ruby":
-            l = new RubyLang();
-            break;
-          default:
-            continue;
-        }
-        this.langs.add(l);
+    }
+    for (String lang : langs) {
+      Lang l;
+      switch (lang) {
+        case "kotlin":
+          l = new KotlinLang();
+          break;
+        case "groovy":
+          l = new GroovyLang();
+          break;
+        case "js":
+          l = new JavaScriptLang();
+          break;
+        case "scala":
+          l = new ScalaLang();
+          break;
+        case "ruby":
+          l = new RubyLang();
+          break;
+        default:
+          continue;
+      }
+      this.langs.add(l);
+      if (config != null) {
         JsonNode n = config.get(lang);
         if (n != null && n.getNodeType() == JsonNodeType.OBJECT) {
           JsonNode excludes = n.get("excludes");
