@@ -267,7 +267,7 @@ public class CodeTransProcessor extends AbstractProcessor {
                 String translation = translator.translate(methodElt, isVerticle, lang, renderMode);
                 Files.write(f.toPath(), translation.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
                 log.println("Generated " + f.getAbsolutePath());
-                copyDirRec(srcFolder, dstFolder, log);
+                copyDirRec(srcFolder, f.getParentFile(), log);
               } catch (Exception e) {
                 log.println("Skipping generation of " + typeElt.getQualifiedName());
                 e.printStackTrace(log);
