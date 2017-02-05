@@ -73,12 +73,6 @@
       <artifactId>kotlin-stdlib</artifactId>
       <version>${kotlin.version}</version>
     </dependency>
-    <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-kotlin-common</artifactId>
-      <version>${project.version}</version>
-      <optional>true</optional>
-    </dependency>
 
     <dependency>
       <groupId>com.sun</groupId>

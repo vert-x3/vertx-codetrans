@@ -232,13 +232,13 @@ public class KotlinCodeBuilder implements CodeBuilder {
 
   @Override
   public JsonObjectClassModel jsonObjectClassModel() {
-    imports.add("io.vertx.kotlin.common.json.*");
+    imports.add("io.vertx.kotlin.core.json.*");
     return CodeBuilder.super.jsonObjectClassModel();
   }
 
   @Override
   public JsonArrayClassModel jsonArrayClassModel() {
-    imports.add("io.vertx.kotlin.common.json.*");
+    imports.add("io.vertx.kotlin.core.json.*");
     return CodeBuilder.super.jsonArrayClassModel();
   }
 
