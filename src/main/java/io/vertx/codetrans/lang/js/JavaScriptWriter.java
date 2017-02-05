@@ -50,10 +50,12 @@ class JavaScriptWriter extends CodeWriter {
           left = tmp;
         }
         if (left instanceof NullLiteralModel) {
+          // Todo find a way to suppress these when not needed i.e (( xxx ))
+          append("(");
           right.render(this);
-          append(" === null ||");
+          append(" === null || ");
           right.render(this);
-          append(" === undefined");
+          append(" === undefined)");
           return;
         }
         break;
@@ -64,10 +66,12 @@ class JavaScriptWriter extends CodeWriter {
           left = tmp;
         }
         if (left instanceof NullLiteralModel) {
+          // Todo find a way to suppress these when not needed i.e (( xxx ))
+          append("(");
           right.render(this);
-          append(" !== null &&");
+          append(" !== null && ");
           right.render(this);
-          append(" !== undefined");
+          append(" !== undefined)");
           return;
         }
         op = "!==";
