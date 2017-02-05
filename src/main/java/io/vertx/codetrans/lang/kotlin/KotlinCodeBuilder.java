@@ -15,7 +15,6 @@ public class KotlinCodeBuilder implements CodeBuilder {
   private TreeSet<String> imports = new TreeSet<>();
 
   KotlinCodeBuilder() {
-    imports.add("io.vertx.kotlin.common.json.*");
   }
 
   @Override
@@ -229,6 +228,18 @@ public class KotlinCodeBuilder implements CodeBuilder {
       renderer.unindent();
       renderer.append("\n}\n");
     });
+  }
+
+  @Override
+  public JsonObjectClassModel jsonObjectClassModel() {
+    imports.add("io.vertx.kotlin.common.json.*");
+    return CodeBuilder.super.jsonObjectClassModel();
+  }
+
+  @Override
+  public JsonArrayClassModel jsonArrayClassModel() {
+    imports.add("io.vertx.kotlin.common.json.*");
+    return CodeBuilder.super.jsonArrayClassModel();
   }
 
   private void renderType(TypeInfo type, CodeWriter renderer) {

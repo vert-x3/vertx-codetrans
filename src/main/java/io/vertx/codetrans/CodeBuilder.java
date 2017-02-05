@@ -14,6 +14,8 @@ import io.vertx.codetrans.expression.DataObjectClassModel;
 import io.vertx.codetrans.expression.EnumExpressionModel;
 import io.vertx.codetrans.expression.EnumFieldExpressionModel;
 import io.vertx.codetrans.expression.ExpressionModel;
+import io.vertx.codetrans.expression.JsonArrayClassModel;
+import io.vertx.codetrans.expression.JsonObjectClassModel;
 import io.vertx.codetrans.expression.StringLiteralModel;
 import io.vertx.codetrans.expression.VariableScope;
 import io.vertx.codetrans.expression.IdentifierModel;
@@ -72,6 +74,14 @@ public interface CodeBuilder {
   StatementModel forLoop(StatementModel initializer, ExpressionModel condition, ExpressionModel update, StatementModel body);
 
   StatementModel sequenceForLoop(String variableName, ExpressionModel fromValue, ExpressionModel toValue, StatementModel body);
+
+  default JsonObjectClassModel jsonObjectClassModel() {
+    return new JsonObjectClassModel(this);
+  }
+
+  default JsonArrayClassModel jsonArrayClassModel() {
+    return new JsonArrayClassModel(this);
+  }
 
   default ExpressionModel jsonArrayEncoder(ExpressionModel expression) {
     return render(writer -> {

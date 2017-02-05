@@ -395,9 +395,9 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
         if (type.getKind() == ClassKind.API) {
           return context.builder.apiType((ApiTypeInfo) type);
         } else if (type.getKind() == ClassKind.JSON_OBJECT) {
-          return new JsonObjectClassModel(context.builder);
+          return context.builder.jsonObjectClassModel();
         } else if (type.getKind() == ClassKind.JSON_ARRAY) {
-          return new JsonArrayClassModel(context.builder);
+          return context.builder.jsonArrayClassModel();
         } else if (type.getKind() == ClassKind.DATA_OBJECT) {
           return context.builder.dataObjectClass(type);
         } else if (type.getKind() == ClassKind.ENUM) {
