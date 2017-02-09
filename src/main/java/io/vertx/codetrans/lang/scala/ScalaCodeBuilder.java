@@ -1,12 +1,28 @@
 package io.vertx.codetrans.lang.scala;
 
 import com.sun.source.tree.LambdaExpressionTree;
-import io.vertx.codegen.type.*;
-import io.vertx.codetrans.*;
-import io.vertx.codetrans.expression.*;
+import io.vertx.codegen.type.ApiTypeInfo;
+import io.vertx.codegen.type.EnumTypeInfo;
+import io.vertx.codegen.type.ParameterizedTypeInfo;
+import io.vertx.codegen.type.TypeInfo;
+import io.vertx.codetrans.CodeBuilder;
+import io.vertx.codetrans.CodeModel;
+import io.vertx.codetrans.CodeWriter;
+import io.vertx.codetrans.MethodModel;
+import io.vertx.codetrans.RenderMode;
+import io.vertx.codetrans.RunnableCompilationUnit;
+import io.vertx.codetrans.expression.ApiModel;
+import io.vertx.codetrans.expression.ApiTypeModel;
+import io.vertx.codetrans.expression.EnumExpressionModel;
+import io.vertx.codetrans.expression.ExpressionModel;
+import io.vertx.codetrans.expression.VariableScope;
 import io.vertx.codetrans.statement.StatementModel;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.IntStream;
 
 /**
@@ -149,29 +165,32 @@ public class ScalaCodeBuilder implements CodeBuilder {
   public String render(RunnableCompilationUnit unit, RenderMode renderMode) {
     CodeWriter writer = newWriter();
 
-    for (String importedType : imports) {
-      writer.append("import ").append(importedType).append('\n');
+    if (renderMode != RenderMode.SNIPPET) {
+      for (String importedType : imports) {
+        writer.append("import ").append(importedType).append('\n');
+      }
+
+      for (StatementModel value : unit.getFields().values()) {
+        value.render(writer);
+        writer.append("\n");
+      }
+      for (Map.Entry<String, MethodModel> method : unit.getMethods().entrySet()) {
+        writer.append("def ").append(method.getKey()).append("(");
+
+        IntStream.range(0, method.getValue().getParameterNames().size()).forEach(i -> {
+          if (i > 0) writer.append(", ");
+          writer.append(method.getValue().getParameterNames().get(i));
+          writer.append(":");
+          writer.append(method.getValue().getSignature().getParameterTypes().get(i).getName());
+        });
+        writer.append(") = {\n");
+        writer.indent();
+        method.getValue().render(writer);
+        writer.unindent();
+        writer.append("}\n");
+      }
     }
 
-    for (StatementModel value : unit.getFields().values()) {
-      value.render(writer);
-      writer.append("\n");
-    }
-    for (Map.Entry<String, MethodModel> method : unit.getMethods().entrySet()) {
-      writer.append("def ").append(method.getKey()).append("(");
-
-      IntStream.range(0, method.getValue().getParameterNames().size()).forEach(i -> {
-        if (i > 0) writer.append(", ");
-        writer.append(method.getValue().getParameterNames().get(i));
-        writer.append(":");
-        writer.append(method.getValue().getSignature().getParameterTypes().get(i).getName());
-      });
-      writer.append(") = {\n");
-      writer.indent();
-      method.getValue().render(writer);
-      writer.unindent();
-      writer.append("}\n");
-    }
     unit.getMain().render(writer);
 
     String ret = writer.getBuffer().toString();
