@@ -5,20 +5,20 @@ import io.vertx.codegen.Helper;
 import io.vertx.codegen.type.ApiTypeInfo;
 import io.vertx.codegen.type.ClassTypeInfo;
 import io.vertx.codegen.type.ParameterizedTypeInfo;
-import io.vertx.codegen.type.TypeReflectionFactory;
 import io.vertx.codegen.type.TypeInfo;
-import io.vertx.codetrans.RenderMode;
-import io.vertx.codetrans.expression.ApiTypeModel;
+import io.vertx.codegen.type.TypeReflectionFactory;
 import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
+import io.vertx.codetrans.MethodModel;
+import io.vertx.codetrans.RenderMode;
+import io.vertx.codetrans.RunnableCompilationUnit;
+import io.vertx.codetrans.expression.ApiTypeModel;
 import io.vertx.codetrans.expression.EnumFieldExpressionModel;
 import io.vertx.codetrans.expression.ExpressionModel;
+import io.vertx.codetrans.expression.LambdaExpressionModel;
 import io.vertx.codetrans.expression.StringLiteralModel;
 import io.vertx.codetrans.expression.VariableScope;
-import io.vertx.codetrans.expression.LambdaExpressionModel;
-import io.vertx.codetrans.MethodModel;
-import io.vertx.codetrans.RunnableCompilationUnit;
 import io.vertx.codetrans.statement.StatementModel;
 
 import java.util.Arrays;
@@ -43,26 +43,28 @@ class JavaScriptCodeBuilder implements CodeBuilder {
     CodeWriter writer = newWriter();
     for (ClassTypeInfo module : modules) {
       writer.append("var ").append(module.getSimpleName()).append(" = require(\"").
-          append(module.getModuleName()).append("-js/").append(Helper.convertCamelCaseToUnderscores(module.getSimpleName())).append("\");\n");
+        append(module.getModuleName()).append("-js/").append(Helper.convertCamelCaseToUnderscores(module.getSimpleName())).append("\");\n");
     }
-    for (Map.Entry<String, StatementModel> field : unit.getFields().entrySet()) {
-      field.getValue().render(writer);
-      writer.append(";\n");
-    }
-    for (Map.Entry<String, MethodModel> member : unit.getMethods().entrySet()) {
-      writer.append("var ").append(member.getKey()).append(" = function(");
-      for (Iterator<String> it = member.getValue().getParameterNames().iterator();it.hasNext();) {
-        String paramName = it.next();
-        writer.append(paramName);
-        if (it.hasNext()) {
-          writer.append(", ");
-        }
+    if (renderMode != RenderMode.SNIPPET) {
+      for (Map.Entry<String, StatementModel> field : unit.getFields().entrySet()) {
+        field.getValue().render(writer);
+        writer.append(";\n");
       }
-      writer.append(") {\n");
-      writer.indent();
-      member.getValue().render(writer);
-      writer.unindent();
-      writer.append("};\n");
+      for (Map.Entry<String, MethodModel> member : unit.getMethods().entrySet()) {
+        writer.append("var ").append(member.getKey()).append(" = function(");
+        for (Iterator<String> it = member.getValue().getParameterNames().iterator(); it.hasNext(); ) {
+          String paramName = it.next();
+          writer.append(paramName);
+          if (it.hasNext()) {
+            writer.append(", ");
+          }
+        }
+        writer.append(") {\n");
+        writer.indent();
+        member.getValue().render(writer);
+        writer.unindent();
+        writer.append("};\n");
+      }
     }
     unit.getMain().render(writer);
     return writer.getBuffer().toString();

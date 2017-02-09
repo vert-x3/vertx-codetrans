@@ -1,12 +1,33 @@
 package io.vertx.codetrans.lang.kotlin;
 
 import com.sun.source.tree.LambdaExpressionTree;
-import io.vertx.codegen.type.*;
-import io.vertx.codetrans.*;
-import io.vertx.codetrans.expression.*;
+import io.vertx.codegen.type.ApiTypeInfo;
+import io.vertx.codegen.type.ClassTypeInfo;
+import io.vertx.codegen.type.EnumTypeInfo;
+import io.vertx.codegen.type.ParameterizedTypeInfo;
+import io.vertx.codegen.type.TypeInfo;
+import io.vertx.codegen.type.VoidTypeInfo;
+import io.vertx.codetrans.CodeBuilder;
+import io.vertx.codetrans.CodeModel;
+import io.vertx.codetrans.CodeWriter;
+import io.vertx.codetrans.MethodModel;
+import io.vertx.codetrans.RenderMode;
+import io.vertx.codetrans.RunnableCompilationUnit;
+import io.vertx.codetrans.expression.ApiTypeModel;
+import io.vertx.codetrans.expression.DataObjectClassModel;
+import io.vertx.codetrans.expression.EnumExpressionModel;
+import io.vertx.codetrans.expression.ExpressionModel;
+import io.vertx.codetrans.expression.JsonArrayClassModel;
+import io.vertx.codetrans.expression.JsonObjectClassModel;
+import io.vertx.codetrans.expression.LambdaExpressionModel;
+import io.vertx.codetrans.expression.NullLiteralModel;
+import io.vertx.codetrans.expression.VariableScope;
 import io.vertx.codetrans.statement.StatementModel;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 
 /**
  * @author Sergey Mashkov
@@ -26,98 +47,95 @@ public class KotlinCodeBuilder implements CodeBuilder {
   public String render(RunnableCompilationUnit unit, RenderMode renderMode) {
     KotlinCodeWriter writer = newWriter();
 
-    String foo = null;
-    if (renderMode == RenderMode.TEST || renderMode == RenderMode.EXAMPLE) {
+    if (renderMode != RenderMode.SNIPPET) {
+      String foo;
       String className = unit.getMain().getClassName();
       String pkg;
       if (unit.isVerticle()) {
         int index = className.lastIndexOf('.');
         pkg = className.substring(0, index);
         foo = className.substring(index + 1);
-      } else{
+      } else {
         pkg = className;
         foo = unit.getMain().getSignature().getName();
       }
       writer.append("package ").append(pkg).append("\n\n");
-    }
 
-    for (String i : imports) {
-      writer.append("import ").append(i).append("\n");
-    }
-    writer.append("\n");
-
-
-    switch (renderMode) {
-      case TEST:
-        writer.append("object ").append(foo).append(" {\n");
-        writer.indent();
-        break;
-      case EXAMPLE:
-        writer.append("class ").append(foo).append(" : io.vertx.core.AbstractVerticle() ").append(" {\n");
-        writer.indent();
-        break;
-    }
-
-    for (Map.Entry<String, StatementModel> field : unit.getFields().entrySet()) {
-      field.getValue().render(writer);
+      for (String i : imports) {
+        writer.append("import ").append(i).append("\n");
+      }
       writer.append("\n");
-    }
 
-    for (Map.Entry<String, MethodModel> method : unit.getMethods().entrySet()) {
-      writer.append("fun ").append(method.getKey()).append("(");
-      List<TypeInfo> types = method.getValue().getSignature().getParameterTypes();
-      List<String> names = method.getValue().getParameterNames();
 
-      int count = Math.min(types.size(), names.size());
+      switch (renderMode) {
+        case TEST:
+          writer.append("object ").append(foo).append(" {\n");
+          writer.indent();
+          break;
+        case EXAMPLE:
+          writer.append("class ").append(foo).append(" : io.vertx.core.AbstractVerticle() ").append(" {\n");
+          writer.indent();
+          break;
+      }
 
-      for (int i = 0; i < count; ++i) {
-        String name = names.get(i);
-        TypeInfo type = types.get(i);
+      for (Map.Entry<String, StatementModel> field : unit.getFields().entrySet()) {
+        field.getValue().render(writer);
+        writer.append("\n");
+      }
 
-        if (i > 0) {
-          writer.append(", ");
+      for (Map.Entry<String, MethodModel> method : unit.getMethods().entrySet()) {
+        writer.append("fun ").append(method.getKey()).append("(");
+        List<TypeInfo> types = method.getValue().getSignature().getParameterTypes();
+        List<String> names = method.getValue().getParameterNames();
+
+        int count = Math.min(types.size(), names.size());
+
+        for (int i = 0; i < count; ++i) {
+          String name = names.get(i);
+          TypeInfo type = types.get(i);
+
+          if (i > 0) {
+            writer.append(", ");
+          }
+
+          writer.append(name).append(": ");
+          renderType(type, writer);
         }
 
-        writer.append(name).append(": ");
-        renderType(type, writer);
+        writer.append(") ");
+
+        TypeInfo returnType = method.getValue().getSignature().getReturnType();
+        if (returnType != VoidTypeInfo.INSTANCE) {
+          writer.append(": ");
+          renderType(returnType, writer);
+        }
+
+        writer.append("{\n");
+        writer.indent();
+        method.getValue().render(writer);
+        writer.unindent();
+        writer.append("}\n");
       }
 
-      writer.append(") ");
-
-      TypeInfo returnType = method.getValue().getSignature().getReturnType();
-      if (returnType != VoidTypeInfo.INSTANCE) {
-        writer.append(": ");
-        renderType(returnType, writer);
+      switch (renderMode) {
+        case TEST:
+          writer.append("fun ").append(unit.getMain().getSignature().getName()).append("() {\n");
+          writer.indent();
+          break;
+        case EXAMPLE:
+          writer.append("override fun ").append("start").append("() {\n");
+          writer.indent();
+          break;
       }
-
-      writer.append("{\n");
-      writer.indent();
-      method.getValue().render(writer);
-      writer.unindent();
-      writer.append("}\n");
-    }
-
-    switch (renderMode) {
-      case TEST:
-        writer.append("fun ").append(unit.getMain().getSignature().getName()).append("() {\n");
-        writer.indent();
-        break;
-      case EXAMPLE:
-        writer.append("override fun ").append("start").append("() {\n");
-        writer.indent();
-        break;
     }
 
     unit.getMain().render(writer);
 
-    switch (renderMode) {
-      case TEST:
-      case EXAMPLE:
+    if (renderMode != RenderMode.SNIPPET) {
         writer.unindent();
         writer.append("}\n");
         writer.unindent();
         writer.append("}\n");
-        break;
     }
 
     return writer.getBuffer().toString();
