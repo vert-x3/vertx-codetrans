@@ -163,11 +163,15 @@
               <resources>
                 <resource>
                   <directory>${project.basedir}/src/test/resources</directory>
-                  <includes>io/**</includes>
+                  <includes>
+                    <include>io/**</include>
+                  </includes>
                 </resource>
                 <resource>
                   <directory>${project.basedir}/src/test/java</directory>
-                  <includes>io/**</includes>
+                  <includes>
+                    <include>io/**</include>
+                  </includes>
                 </resource>
               </resources>
             </configuration>
