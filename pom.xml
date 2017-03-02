@@ -46,19 +46,19 @@
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
       <artifactId>groovy-all</artifactId>
-      <version>2.4.6</version>
+      <version>2.4.7</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.jruby</groupId>
       <artifactId>jruby-core</artifactId>
-      <version>1.7.18</version>
+      <version>9.1.7.0</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.jruby</groupId>
       <artifactId>jruby-stdlib</artifactId>
-      <version>1.7.18</version>
+      <version>9.1.7.0</version>
       <optional>true</optional>
     </dependency>
     <dependency>
