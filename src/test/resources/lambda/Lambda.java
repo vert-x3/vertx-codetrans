@@ -40,9 +40,16 @@ public class Lambda {
   }
 
   @CodeTranslate
-  public void invokeStringHandlerLastParam() throws Exception {
+  public void invokeStringHandlerLastParamBlock() throws Exception {
+    // Block
     HandlerInvoker.invokeStringHandlerLastParam("the_other_value", s -> {
       LambdaTest.o = s;
     });
+  }
+
+  @CodeTranslate
+  public void invokeStringHandlerLastParamExpression() throws Exception {
+    // Expression
+    HandlerInvoker.invokeStringHandlerLastParam("the_other_value", s -> LambdaTest.o = s);
   }
 }

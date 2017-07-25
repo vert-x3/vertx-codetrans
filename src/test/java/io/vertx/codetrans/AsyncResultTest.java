@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -47,14 +48,16 @@ public class AsyncResultTest extends ConversionTestBase {
 
   @Test
   public void testAsyncResultHandlerSucceeded() throws Exception {
-    for (Lang lang : langs()) {
-      if(ScalaLang.class.equals(lang.getClass())) continue;
-      resultLatch = new CountDownLatch(1);
-      result = null;
-      run(lang, "asyncresult/AsyncResultHandler", "succeeded");
-      Assert.assertTrue(resultLatch.await(10, TimeUnit.SECONDS));
-      Assert.assertEquals("hello", result);
-      Assert.assertEquals(Boolean.TRUE, succeeded);
+    for (String name : Arrays.asList("succeededBlock", "succeededExpression")) {
+      for (Lang lang : langs()) {
+        if(ScalaLang.class.equals(lang.getClass())) continue;
+        resultLatch = new CountDownLatch(1);
+        result = null;
+        run(lang, "asyncresult/AsyncResultHandler", name);
+        Assert.assertTrue(resultLatch.await(10, TimeUnit.SECONDS));
+        Assert.assertEquals("hello", result);
+        Assert.assertEquals(Boolean.TRUE, succeeded);
+      }
     }
   }
 

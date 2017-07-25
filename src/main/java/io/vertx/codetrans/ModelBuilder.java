@@ -36,7 +36,6 @@ import com.sun.tools.javac.tree.JCTree;
 import io.vertx.codegen.type.*;
 import io.vertx.codetrans.expression.ArraysModel;
 import io.vertx.codetrans.expression.ClassModel;
-import io.vertx.codetrans.expression.DataObjectClassModel;
 import io.vertx.codetrans.expression.ExpressionModel;
 import io.vertx.codetrans.expression.IdentifierModel;
 import io.vertx.codetrans.expression.ListClassModel;
@@ -44,8 +43,6 @@ import io.vertx.codetrans.expression.MethodInvocationModel;
 import io.vertx.codetrans.expression.NullLiteralModel;
 import io.vertx.codetrans.expression.VariableScope;
 import io.vertx.codetrans.expression.JavaClassModel;
-import io.vertx.codetrans.expression.JsonArrayClassModel;
-import io.vertx.codetrans.expression.JsonObjectClassModel;
 import io.vertx.codetrans.expression.LambdaExpressionModel;
 import io.vertx.codetrans.expression.StringLiteralModel;
 import io.vertx.codetrans.expression.MapClassModel;
@@ -760,6 +757,7 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
         map(parameter -> factory.create(((JCTree.JCVariableDecl) parameter).type)).
         collect(Collectors.toList());
     int size = parameterNames.size();
+    Tree body = node.getBody();
     if (size > 0) {
       JCTree.JCVariableDecl last = (JCTree.JCVariableDecl) node.getParameters().get(size - 1);
       if (last.vartype instanceof ParameterizedTypeTree) {
@@ -769,12 +767,12 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
           if (type.getKind() == ClassKind.ASYNC_RESULT) {
             String identifier = last.name.toString();
             ExpressionModel result = context.builder.asyncResult(identifier, ((ParameterizedTypeInfo)(type)).getArgs().get(0));
-            CodeModel body = scan(node.getBody(), context.putAlias(last.sym, result));
+            CodeModel bodyModel = scan(body, context.putAlias(last.sym, result));
             ParameterizedTypeInfo parameterized = (ParameterizedTypeInfo) type;
-            BlockTree block = (BlockTree) node.getBody();
             CodeModel succeededBody = null;
             CodeModel failedBody = null;
-            if (block.getStatements().size() == 1) {
+            if (body instanceof BlockTree && ((BlockTree) body).getStatements().size() == 1) {
+              BlockTree block = (BlockTree) body;
               StatementTree statement = block.getStatements().get(0);
               if (statement.getKind() == Tree.Kind.IF) {
                 IfTree ifTree = (IfTree) statement;
@@ -802,13 +800,13 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
                 }
               }
             }
-            return context.builder.asyncResultHandler(node.getBodyKind(), parameterized, identifier, body, succeededBody, failedBody);
+            return context.builder.asyncResultHandler(node.getBodyKind(), parameterized, identifier, bodyModel, succeededBody, failedBody);
           }
         }
       }
     }
-    CodeModel body = scan(node.getBody(), context);
-    return new LambdaExpressionModel(context.builder, node.getBodyKind(), parameterTypes, parameterNames, body);
+    CodeModel bodyModel = scan(body, context);
+    return new LambdaExpressionModel(context.builder, node.getBodyKind(), parameterTypes, parameterNames, bodyModel);
   }
 
   @Override

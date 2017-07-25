@@ -11,16 +11,21 @@ import io.vertx.support.HandlerInvoker;
 public class AsyncResultHandler {
 
   @CodeTranslate
-  public void failed() throws Exception {
-    HandlerInvoker.invokeAsyncResultHandlerFailure(res -> {
-      AsyncResultTest.setCause(res.cause(), res.failed());
+  public void succeededBlock() throws Exception {
+    HandlerInvoker.invokeAsyncResultHandlerSuccess(res -> {
+      AsyncResultTest.setResult(res.result(), res.succeeded());
     });
   }
 
   @CodeTranslate
-  public void succeeded() throws Exception {
-    HandlerInvoker.invokeAsyncResultHandlerSuccess(res -> {
-      AsyncResultTest.setResult(res.result(), res.succeeded());
+  public void succeededExpression() throws Exception {
+    HandlerInvoker.invokeAsyncResultHandlerSuccess(res -> AsyncResultTest.setResult(res.result(), res.succeeded()));
+  }
+
+  @CodeTranslate
+  public void failed() throws Exception {
+    HandlerInvoker.invokeAsyncResultHandlerFailure(res -> {
+      AsyncResultTest.setCause(res.cause(), res.failed());
     });
   }
 

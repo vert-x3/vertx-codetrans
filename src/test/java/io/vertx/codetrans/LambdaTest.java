@@ -65,8 +65,16 @@ public class LambdaTest extends ConversionTestBase {
   }
 
   @Test
-  public void testInvokeStringHandlerLastParam() throws Exception {
-    runAll("lambda/Lambda", "invokeStringHandlerLastParam", () -> {
+  public void testInvokeStringHandlerLastParamBlock() throws Exception {
+    runAll("lambda/Lambda", "invokeStringHandlerLastParamBlock", () -> {
+      Assert.assertEquals("the_other_value", o);
+      o = null;
+    });
+  }
+
+  @Test
+  public void testInvokeStringHandlerLastParamExpression() throws Exception {
+    runAll("lambda/Lambda", "invokeStringHandlerLastParamExpression", () -> {
       Assert.assertEquals("the_other_value", o);
       o = null;
     });
