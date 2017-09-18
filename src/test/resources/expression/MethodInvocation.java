@@ -54,4 +54,31 @@ public class MethodInvocation {
   public void invokeNullArgument() throws Exception {
     MethodExpressionTest.checkNull(null);
   }
+
+  @CodeTranslate
+  public void invokeMethodWithBooleanReturn() {
+    boolean res = someMethodWithBooleanReturn();
+  }
+
+  public boolean someMethodWithBooleanReturn() {
+    return false;
+  }
+
+  @CodeTranslate
+  public void invokeMethodWithIntReturn() {
+    someMethodWithIntReturn();
+  }
+
+  public int someMethodWithIntReturn() {
+    return 1;
+  }
+
+  @CodeTranslate
+  public void invokeMethodWithIntegerReturn() {
+    someMethodWithIntegerReturn();
+  }
+
+  public Integer someMethodWithIntegerReturn() {
+    return 1;
+  }
 }

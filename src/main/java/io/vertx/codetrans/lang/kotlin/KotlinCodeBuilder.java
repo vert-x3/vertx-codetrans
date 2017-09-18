@@ -5,11 +5,11 @@ import io.vertx.codegen.type.ApiTypeInfo;
 import io.vertx.codegen.type.ClassTypeInfo;
 import io.vertx.codegen.type.EnumTypeInfo;
 import io.vertx.codegen.type.ParameterizedTypeInfo;
+import io.vertx.codegen.type.PrimitiveTypeInfo;
 import io.vertx.codegen.type.TypeInfo;
 import io.vertx.codegen.type.VoidTypeInfo;
 import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.CodeModel;
-import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.MethodModel;
 import io.vertx.codetrans.RenderMode;
 import io.vertx.codetrans.RunnableCompilationUnit;
@@ -182,7 +182,7 @@ public class KotlinCodeBuilder implements CodeBuilder {
       if (initializer != null) {
         if (initializer instanceof NullLiteralModel) {
           renderer.append(": ");
-          renderType(type, renderer);
+          renderType(type, (KotlinCodeWriter) renderer);
           renderer.append("? = null");
         } else {
           renderer.append(" = ");
@@ -190,7 +190,7 @@ public class KotlinCodeBuilder implements CodeBuilder {
         }
       } else {
         renderer.append(": ");
-        renderType(type, renderer);
+        renderType(type, (KotlinCodeWriter) renderer);
       }
     });
   }
@@ -260,11 +260,13 @@ public class KotlinCodeBuilder implements CodeBuilder {
     return CodeBuilder.super.jsonArrayClassModel();
   }
 
-  private void renderType(TypeInfo type, CodeWriter renderer) {
+  private void renderType(TypeInfo type, KotlinCodeWriter renderer) {
     if (type instanceof ApiTypeInfo) {
       renderer.renderApiType((ApiTypeInfo) type);
     } else if (type instanceof ClassTypeInfo) {
       renderer.renderJavaType((ClassTypeInfo) type);
+    } else if (type instanceof PrimitiveTypeInfo) {
+      renderer.renderBasicType(type);
     } else {
       renderer.append(type.getName());
     }

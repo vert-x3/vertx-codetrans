@@ -1,24 +1,67 @@
 package io.vertx.codetrans.lang.kotlin;
 
 import com.sun.source.tree.LambdaExpressionTree;
-import io.vertx.codegen.type.*;
+import io.vertx.codegen.type.ApiTypeInfo;
+import io.vertx.codegen.type.ClassTypeInfo;
+import io.vertx.codegen.type.EnumTypeInfo;
+import io.vertx.codegen.type.TypeInfo;
+import io.vertx.codegen.type.VoidTypeInfo;
 import io.vertx.codetrans.CodeBuilder;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.MethodSignature;
 import io.vertx.codetrans.TypeArg;
-import io.vertx.codetrans.expression.*;
+import io.vertx.codetrans.expression.BinaryExpressionModel;
+import io.vertx.codetrans.expression.DataObjectLiteralModel;
+import io.vertx.codetrans.expression.ExpressionModel;
+import io.vertx.codetrans.expression.IdentifierModel;
+import io.vertx.codetrans.expression.JsonArrayLiteralModel;
+import io.vertx.codetrans.expression.JsonObjectLiteralModel;
+import io.vertx.codetrans.expression.Member;
+import io.vertx.codetrans.expression.NullLiteralModel;
+import io.vertx.codetrans.expression.StringLiteralModel;
+import io.vertx.codetrans.expression.ThisModel;
+import io.vertx.codetrans.expression.VariableScope;
 import io.vertx.codetrans.statement.StatementModel;
 import kotlin.collections.CollectionsKt;
 
 import javax.lang.model.element.TypeElement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
  * @author Sergey Mashkov
  */
 public class KotlinCodeWriter extends CodeWriter {
+
+  private static final Map<String, String> BASIC_TYPES = new HashMap<>();
+
+  static {
+    BASIC_TYPES.put(java.lang.Byte.class.getName(), "Byte");
+    BASIC_TYPES.put(byte.class.getName(), "Byte");
+    BASIC_TYPES.put(java.lang.Short.class.getName(), "Short");
+    BASIC_TYPES.put(short.class.getName(), "Short");
+    BASIC_TYPES.put(java.lang.Integer.class.getName(), "Int");
+    BASIC_TYPES.put(int.class.getName(), "Int");
+    BASIC_TYPES.put(java.lang.Long.class.getName(), "Long");
+    BASIC_TYPES.put(long.class.getName(), "Long");
+    BASIC_TYPES.put(java.lang.Float.class.getName(), "Float");
+    BASIC_TYPES.put(float.class.getName(), "Float");
+    BASIC_TYPES.put(java.lang.Double.class.getName(), "Double");
+    BASIC_TYPES.put(double.class.getName(), "Double");
+    BASIC_TYPES.put(java.lang.Character.class.getName(), "Char");
+    BASIC_TYPES.put(char.class.getName(), "Char");
+    BASIC_TYPES.put(java.lang.Boolean.class.getName(), "Boolean");
+    BASIC_TYPES.put(boolean.class.getName(), "Boolean");
+  }
+
   private int jsonLevel = 0;
 
   public KotlinCodeWriter(CodeBuilder builder) {
@@ -261,9 +304,8 @@ public class KotlinCodeWriter extends CodeWriter {
       case VOID:
         append("Unit");
         break;
-      case PRIMITIVE:
       case BOXED_PRIMITIVE:
-        renderPrimitive(javaType);
+        renderBasicType(javaType);
         break;
       default:
         append(javaType.getName());
@@ -283,8 +325,8 @@ public class KotlinCodeWriter extends CodeWriter {
     }
   }
 
-  private void renderPrimitive(ClassTypeInfo type) {
-    append(type.getName());
+  public void renderBasicType(TypeInfo type) {
+    append(BASIC_TYPES.getOrDefault(type.getName(), type.getName()));
   }
 
   @Override
