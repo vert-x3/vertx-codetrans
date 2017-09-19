@@ -56,9 +56,11 @@ class RubyCodeBuilder implements CodeBuilder {
         writer.append("\n");
       }
       for (Map.Entry<String, MethodModel> member : unit.getMethods().entrySet()) {
-        String methodName = Case.SNAKE.format(Case.CAMEL.parse(member.getKey()));
+        MethodModel methodModel = member.getValue();
+        TypeInfo returnType = methodModel.getSignature().getReturnType();
+        String methodName = ((RubyWriter) writer).javaToRubyMethodName(member.getKey(), returnType);
         writer.append("def ").append(methodName).append("(");
-        for (Iterator<String> it = member.getValue().getParameterNames().iterator(); it.hasNext(); ) {
+        for (Iterator<String> it = methodModel.getParameterNames().iterator(); it.hasNext(); ) {
           String paramName = it.next();
           writer.append(paramName);
           if (it.hasNext()) {
@@ -67,7 +69,7 @@ class RubyCodeBuilder implements CodeBuilder {
         }
         writer.append(")\n");
         writer.indent();
-        member.getValue().render(writer);
+        methodModel.render(writer);
         writer.unindent();
         writer.append("end\n");
       }
