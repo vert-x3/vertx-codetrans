@@ -57,10 +57,11 @@ public class MethodInvocation {
 
   @CodeTranslate
   public void invokeMethodWithBooleanReturn() {
-    boolean res = someMethodWithBooleanReturn();
+    someMethodWithBooleanReturn();
   }
 
   public boolean someMethodWithBooleanReturn() {
+    MethodExpressionTest.count();
     return false;
   }
 
@@ -70,6 +71,7 @@ public class MethodInvocation {
   }
 
   public int someMethodWithIntReturn() {
+    MethodExpressionTest.count();
     return 1;
   }
 
@@ -79,6 +81,7 @@ public class MethodInvocation {
   }
 
   public Integer someMethodWithIntegerReturn() {
+    MethodExpressionTest.count();
     return 1;
   }
 }

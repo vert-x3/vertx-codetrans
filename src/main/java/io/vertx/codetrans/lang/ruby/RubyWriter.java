@@ -2,27 +2,27 @@ package io.vertx.codetrans.lang.ruby;
 
 import com.sun.source.tree.LambdaExpressionTree;
 import io.vertx.codegen.Case;
-import io.vertx.codegen.type.ClassKind;
 import io.vertx.codegen.type.ApiTypeInfo;
+import io.vertx.codegen.type.ClassKind;
 import io.vertx.codegen.type.ClassTypeInfo;
 import io.vertx.codegen.type.EnumTypeInfo;
 import io.vertx.codegen.type.TypeInfo;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
-import io.vertx.codetrans.TypeArg;
-import io.vertx.codetrans.statement.ConditionalBlockModel;
-import io.vertx.codetrans.expression.DataObjectLiteralModel;
-import io.vertx.codetrans.expression.ExpressionModel;
 import io.vertx.codetrans.FragmentParser;
 import io.vertx.codetrans.Helper;
-import io.vertx.codetrans.expression.VariableScope;
+import io.vertx.codetrans.MethodSignature;
+import io.vertx.codetrans.TypeArg;
+import io.vertx.codetrans.expression.DataObjectLiteralModel;
+import io.vertx.codetrans.expression.ExpressionModel;
 import io.vertx.codetrans.expression.JsonArrayLiteralModel;
 import io.vertx.codetrans.expression.JsonObjectLiteralModel;
 import io.vertx.codetrans.expression.LambdaExpressionModel;
 import io.vertx.codetrans.expression.Member;
-import io.vertx.codetrans.MethodSignature;
-import io.vertx.codetrans.statement.StatementModel;
 import io.vertx.codetrans.expression.ThisModel;
+import io.vertx.codetrans.expression.VariableScope;
+import io.vertx.codetrans.statement.ConditionalBlockModel;
+import io.vertx.codetrans.statement.StatementModel;
 
 import javax.lang.model.element.TypeElement;
 import java.util.ArrayList;
@@ -251,13 +251,7 @@ class RubyWriter extends CodeWriter {
       }
     }
 
-    methodName = Case.SNAKE.format(Case.CAMEL.parse(methodName));
-    if (returnType.getName().equals("boolean") || returnType.getName().equals("java.lang.Boolean")) {
-      if (methodName.startsWith("is_")) {
-        methodName = methodName.substring(3);
-      }
-      methodName += "?";
-    }
+    methodName = javaToRubyMethodName(methodName, returnType);
 
     if (!(expression instanceof ThisModel)) {
       expression.render(this);
@@ -271,6 +265,17 @@ class RubyWriter extends CodeWriter {
       append(" ");
       renderBlock(lambda.getBodyKind(), lambda.getParameterTypes(), lambda.getParameterNames(), lambda.getBody(), this);
     }
+  }
+
+  String javaToRubyMethodName(String javaName, TypeInfo returnType) {
+    String result = Case.SNAKE.format(Case.CAMEL.parse(javaName));
+    if (returnType.getName().equals(boolean.class.getName()) || returnType.getName().equals(Boolean.class.getName())) {
+      if (result.startsWith("is_")) {
+        result = result.substring(3);
+      }
+      result += "?";
+    }
+    return result;
   }
 
   private void renderArguments(List<ExpressionModel> arguments, CodeWriter writer) {

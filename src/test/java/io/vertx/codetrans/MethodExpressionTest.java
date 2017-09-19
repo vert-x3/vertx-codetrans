@@ -4,8 +4,7 @@ import io.vertx.codetrans.lang.groovy.GroovyLang;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -126,6 +125,30 @@ public class MethodExpressionTest extends ConversionTestBase {
   @Test
   public void testBooleanApiMethod() throws Exception {
     runAll("expression/MethodNaming", "booleanApiMethod", () -> {
+    });
+  }
+
+  @Test
+  public void testInvokeMethodWithBooleanReturn() throws Exception {
+    runAll("expression/MethodInvocation", "invokeMethodWithBooleanReturn", () -> {
+      assertEquals(1, countValue);
+      countValue = 0;
+    });
+  }
+
+  @Test
+  public void testInvokeMethodWithIntReturn() throws Exception {
+    runAll("expression/MethodInvocation", "invokeMethodWithIntReturn", () -> {
+      assertEquals(1, countValue);
+      countValue = 0;
+    });
+  }
+
+  @Test
+  public void testInvokeMethodWithIntegerReturn() throws Exception {
+    runAll("expression/MethodInvocation", "invokeMethodWithIntegerReturn", () -> {
+      assertEquals(1, countValue);
+      countValue = 0;
     });
   }
 }
