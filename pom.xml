@@ -218,7 +218,7 @@
         <executions>
           <execution>
             <configuration>
-              <jvmTarget>1.6</jvmTarget>
+              <jvmTarget>1.8</jvmTarget>
               <sourceDirs>
                 <sourceDir>${basedir}/src/test/generated/kotlin</sourceDir>
                 <sourceDir>${basedir}/src/test/java</sourceDir>
