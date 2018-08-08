@@ -1,7 +1,7 @@
 package dataobject;
 
-import io.vertx.codetrans.annotations.CodeTranslate;
 import io.vertx.codetrans.DataObjectTest;
+import io.vertx.codetrans.annotations.CodeTranslate;
 import io.vertx.core.http.HttpVersion;
 import io.vertx.core.json.JsonObject;
 import io.vertx.support.KeyStoreOptions;
@@ -62,6 +62,17 @@ public class DataObject {
     ServerOptions obj = new ServerOptions();
     obj.setProtocolVersion(HttpVersion.HTTP_2);
     DataObjectTest.o = obj;
+  }
+
+  @CodeTranslate
+  public void toJson() throws Exception {
+    JsonObject jsonObject = new JsonObject();
+    ServerOptions serverOptions = new ServerOptions()
+      .setProtocolVersion(HttpVersion.HTTP_2)
+      .setPort(8080)
+      .setKeyStore(new KeyStoreOptions().setPath("/keystore").setPassword("r00t"));
+    jsonObject.put("result", serverOptions.toJson());
+    DataObjectTest.o = jsonObject;
   }
 
   @CodeTranslate

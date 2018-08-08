@@ -1,6 +1,9 @@
 package io.vertx.codetrans.lang.kotlin;
 
 import com.sun.source.tree.LambdaExpressionTree;
+import io.vertx.codegen.type.*;
+import io.vertx.codetrans.*;
+import io.vertx.codetrans.expression.*;
 import io.vertx.codegen.type.ApiTypeInfo;
 import io.vertx.codegen.type.ClassTypeInfo;
 import io.vertx.codegen.type.EnumTypeInfo;
@@ -16,14 +19,7 @@ import io.vertx.codetrans.statement.StatementModel;
 import kotlin.collections.CollectionsKt;
 
 import javax.lang.model.element.TypeElement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -605,6 +601,12 @@ public class KotlinCodeWriter extends CodeWriter {
       unindent();
     }
     append(")");
+  }
+
+  @Override
+  public void renderDataObjectToJson(IdentifierModel model) {
+    model.render(this);
+    append(".toJson()");
   }
 
   @Override

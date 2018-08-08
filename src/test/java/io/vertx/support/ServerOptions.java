@@ -2,6 +2,7 @@ package io.vertx.support;
 
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.http.HttpVersion;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 import java.util.*;
@@ -80,6 +81,19 @@ public class ServerOptions {
   public ServerOptions addHeader(String name, String value) {
     headers.put(name, value);
     return this;
+  }
+
+  public JsonObject toJson() {
+    JsonObject jsonObject = new JsonObject();
+    if (host != null) jsonObject.put("host", host);
+    jsonObject.put("port", port);
+    if (keyStore != null) jsonObject.put("keyStore", keyStore.toJson());
+    if (enabledCipherSuites != null && !enabledCipherSuites.isEmpty())
+      jsonObject.put("enabledCipherSuites", enabledCipherSuites.stream().<JsonArray>collect(JsonArray::new, JsonArray::add, JsonArray::addAll));
+    if (protocolVersion != null) jsonObject.put("protocolVersion", protocolVersion);
+    if (headers != null && !headers.isEmpty())
+      jsonObject.put("headers", headers.entrySet().stream().<JsonObject>collect(JsonObject::new, (obj, entry) -> obj.put(entry.getKey(), entry.getValue()), JsonObject::mergeIn));
+    return jsonObject;
   }
 
   @Override

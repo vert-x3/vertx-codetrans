@@ -5,7 +5,6 @@ import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.support.ServerOptions;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
-import jdk.nashorn.internal.runtime.ScriptObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -194,6 +193,26 @@ public class DataObjectTest extends ConversionTestBase {
 //    o = null;
 //    runScala("dataobject/DataObject", "enumValueFromConstructor");
 //    Assert.assertEquals(new JsonObject().put("protocolVersion", "HTTP_2"), unwrapJsonObject((Map<String, Object>) o));
+  }
+
+  @Test
+  public void testToJson() throws Exception {
+    JsonObject expected = new JsonObject()
+      .put("protocolVersion", "HTTP_2")
+      .put("port", 8080)
+      .put("keyStore", new JsonObject().put("path", "/keystore").put("password", "r00t"));
+    o = null;
+    runJavaScript("dataobject/DataObject", "toJson");
+    Assert.assertEquals(new JsonObject().put("result", expected), unwrapJsonObject((ScriptObjectMirror) o));
+    o = null;
+    runGroovy("dataobject/DataObject", "toJson");
+    Assert.assertEquals(new JsonObject().put("result", expected), unwrapJsonObject((Map<String, Object>) o));
+    o = null;
+    runRuby("dataobject/DataObject", "toJson");
+    Assert.assertEquals(new JsonObject().put("result", expected), unwrapJsonObject((Map<String, Object>) o));
+    o = null;
+//    runScala("dataobject/DataObject", "toJson");
+//    Assert.assertEquals(expected, unwrapJsonObject((Map<String, Object>) o));
   }
 
   @Test

@@ -37,4 +37,11 @@ public class KeyStoreOptions {
     this.password = password;
     return this;
   }
+
+  public JsonObject toJson() {
+    JsonObject jsonObject = new JsonObject();
+    if (path != null) jsonObject.put("path", path);
+    if (password != null) jsonObject.put("password", password);
+    return jsonObject;
+  }
 }
