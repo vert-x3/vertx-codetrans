@@ -15,6 +15,7 @@ public class ClassIdentifierExpressionTest extends ConversionTestBase {
   private static int invoked;
   private static final ArrayList<Object> args = new ArrayList<>();
   public static Object field;
+  public static String expected;
 
   public static void noArg() {
     invoked++;
@@ -31,7 +32,7 @@ public class ClassIdentifierExpressionTest extends ConversionTestBase {
   }
 
   @Test
-  public void testInvokeStaticMethod() throws Exception {
+  public void testInvokeStaticMethod() {
     invoked = 0;
     args.clear();
     runJavaScript("expression/ClassIdentifier", "invokeStaticMethod");
@@ -50,15 +51,29 @@ public class ClassIdentifierExpressionTest extends ConversionTestBase {
   }
 
   @Test
-  public void testAccessStaticField() throws Exception {
+  public void testReadStaticField() {
+    expected = "expected-value";
     field = null;
-    runJavaScript("expression/ClassIdentifier", "accessStaticField");
+    runJavaScript("expression/ClassIdentifier", "readStaticField");
+    Assert.assertEquals(expected, field);
+    field = null;
+    runGroovy("expression/ClassIdentifier", "readStaticField");
+    Assert.assertEquals(expected, field);
+    field = null;
+    runScala("expression/ClassIdentifier", "readStaticField");
+    Assert.assertEquals(expected, field);
+  }
+
+  @Test
+  public void testWriteStaticField() {
+    field = null;
+    runJavaScript("expression/ClassIdentifier", "writeStaticField");
     Assert.assertEquals("foo", field);
     field = null;
-    runGroovy("expression/ClassIdentifier", "accessStaticField");
+    runGroovy("expression/ClassIdentifier", "writeStaticField");
     Assert.assertEquals("foo", field);
     field = null;
-    runScala("expression/ClassIdentifier", "accessStaticField");
+    runScala("expression/ClassIdentifier", "writeStaticField");
     Assert.assertEquals("foo", field);
   }
 }

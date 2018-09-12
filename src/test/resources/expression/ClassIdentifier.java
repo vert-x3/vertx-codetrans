@@ -9,7 +9,12 @@ import io.vertx.codetrans.annotations.CodeTranslate;
 public class ClassIdentifier {
 
   @CodeTranslate
-  public void accessStaticField() throws Exception {
+  public void readStaticField() throws Exception {
+    ClassIdentifierExpressionTest.field = ClassIdentifierExpressionTest.expected;
+  }
+
+  @CodeTranslate
+  public void writeStaticField() throws Exception {
     ClassIdentifierExpressionTest.field = "foo";
   }
 
