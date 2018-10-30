@@ -1,7 +1,7 @@
 Vert.x code translator :
 ========
 
-[![Build Status](https://travis-ci.org/vert-x3/vertx-codetrans.svg?branch=master?branch=master)](https://travis-ci.org/vert-x3/vertx-codetrans)
+[![Build Status](https://travis-ci.org/vert-x3/vertx-codetrans.svg?branch=master)](https://travis-ci.org/vert-x3/vertx-codetrans)
 
 This projects aims to translate Java code using the Vert.x API in another languages whenever it's possible.
 
