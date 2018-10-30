@@ -23,7 +23,6 @@ import io.vertx.codetrans.expression.StringLiteralModel;
 import io.vertx.codetrans.expression.ThisModel;
 import io.vertx.codetrans.expression.VariableScope;
 import io.vertx.codetrans.statement.StatementModel;
-import kotlin.collections.CollectionsKt;
 
 import javax.lang.model.element.TypeElement;
 import java.util.ArrayList;
@@ -174,7 +173,7 @@ public class KotlinCodeWriter extends CodeWriter {
       }
     }
 
-    renderMethodInvocation(expression, VoidTypeInfo.INSTANCE, signature, VoidTypeInfo.INSTANCE, Collections.emptyList(), arguments, CollectionsKt.emptyList());
+    renderMethodInvocation(expression, VoidTypeInfo.INSTANCE, signature, VoidTypeInfo.INSTANCE, Collections.emptyList(), arguments, Collections.emptyList());
     append(" }");
   }
 
@@ -631,7 +630,7 @@ public class KotlinCodeWriter extends CodeWriter {
 
   private void renderMapStructure(String builderFunctionName, Iterable<Member> members) {
     List<Member> membersList = new ArrayList<>();
-    CollectionsKt.addAll(membersList, members);
+    members.forEach(membersList::add);
     boolean feedLine = membersList.size() > 1;
 
     append(builderFunctionName);
