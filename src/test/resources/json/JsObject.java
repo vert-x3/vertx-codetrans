@@ -203,4 +203,10 @@ public class JsObject {
     String s = obj.getString("the_key");
     JsonTest.o = null != s;
   }
+
+  @CodeTranslate
+  public void size() throws Exception {
+    JsonObject obj = new JsonObject().put("0", 0).put("1", 1);
+    JsonTest.o = obj.size();
+  }
 }

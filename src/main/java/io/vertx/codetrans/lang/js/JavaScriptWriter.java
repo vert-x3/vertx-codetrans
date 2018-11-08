@@ -215,6 +215,19 @@ class JavaScriptWriter extends CodeWriter {
   }
 
   @Override
+  public void renderJsonObjectSize(ExpressionModel expression) {
+    append("Object.keys(");
+    expression.render(this);
+    append(").length");
+  }
+
+  @Override
+  public void renderJsonArraySize(ExpressionModel expression) {
+    expression.render(this);
+    append(".length");
+  }
+
+  @Override
   public void renderLambda(LambdaExpressionTree.BodyKind bodyKind, List<TypeInfo> parameterTypes, List<String> parameterNames, CodeModel body) {
     append("function (");
     for (int i = 0; i < parameterNames.size(); i++) {

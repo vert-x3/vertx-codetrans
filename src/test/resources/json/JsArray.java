@@ -157,4 +157,9 @@ public class JsArray {
     JsonTest.o = JsonConverter.toJsonArray(arr);
   }
 
+  @CodeTranslate
+  public void size() throws Exception {
+    JsonArray arr = new JsonArray().add(0).add(1).add(2);
+    JsonTest.o = arr.size();
+  }
 }

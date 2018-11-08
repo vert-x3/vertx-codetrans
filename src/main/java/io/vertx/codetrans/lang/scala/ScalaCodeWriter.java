@@ -143,6 +143,16 @@ public class ScalaCodeWriter extends CodeWriter {
   }
 
   @Override
+  public void renderJsonObjectSize(ExpressionModel expression) {
+    append("todo-renderJsonObjectSize");
+  }
+
+  @Override
+  public void renderJsonArraySize(ExpressionModel expression) {
+    append("todo-renderJsonArraySize");
+  }
+
+  @Override
   public void renderEnumConstant(EnumTypeInfo type, String constant){
     append(type.getSimpleName()).append('.').append(constant);
   }

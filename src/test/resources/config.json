@@ -27,6 +27,7 @@
       "generics.Generics",
       "json.JsArray#getArray",
       "json.JsArray#getObject",
+      "json.JsArray#size",
       "json.JsObject#getJsonArray",
       "json.JsObject#getJsonObject",
       "json.JsObject#getObject",
@@ -36,6 +37,7 @@
       "json.JsObject#equalsNullValueRight",
       "json.JsObject#equalsNotNullValueLeft",
       "json.JsObject#equalsNotNullValueRight",
+      "json.JsObject#size",
       "variable.Variable#globalExpression",
       "variable.Variable#declareAndAssignNull"
     ]

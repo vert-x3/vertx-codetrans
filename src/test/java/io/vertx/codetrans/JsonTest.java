@@ -411,4 +411,20 @@ public class JsonTest extends ConversionTestBase {
       Assert.assertEquals(true, o);
     });
   }
+
+  @Test
+  public void testJsonArraySize() {
+    runAllExcept("json/JsArray", "size", ScalaLang.class, () -> {
+      Assert.assertEquals(3, ((Number)o).intValue());
+      o = null;
+    });
+  }
+
+  @Test
+  public void testJsonObjectSize() {
+    runAllExcept("json/JsObject", "size", ScalaLang.class, () -> {
+      Assert.assertEquals(2, ((Number)o).intValue());
+      o = null;
+    });
+  }
 }

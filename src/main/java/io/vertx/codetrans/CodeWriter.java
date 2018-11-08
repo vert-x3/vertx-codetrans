@@ -346,6 +346,10 @@ public abstract class CodeWriter implements Appendable {
     append(']');
   }
 
+  public abstract void renderJsonObjectSize(ExpressionModel expression);
+
+  public abstract void renderJsonArraySize(ExpressionModel expression);
+
   public void renderReturn(ExpressionModel expression) {
     append("return");
     if (expression != null) {

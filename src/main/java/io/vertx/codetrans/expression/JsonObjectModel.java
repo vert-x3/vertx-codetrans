@@ -73,6 +73,8 @@ public class JsonObjectModel extends ExpressionModel {
         } else {
           throw unsupported("Invalid arguments " + argumentModels);
         }
+      case "size":
+        return builder.render(writer -> writer.renderJsonObjectSize(expression));
       default:
         throw unsupported("Method " + method);
     }

@@ -310,6 +310,18 @@ class GroovyWriter extends CodeWriter {
   }
 
   @Override
+  public void renderJsonObjectSize(ExpressionModel expression) {
+    expression.render(this);
+    append(".size()");
+  }
+
+  @Override
+  public void renderJsonArraySize(ExpressionModel expression) {
+    expression.render(this);
+    append(".size()");
+  }
+
+  @Override
   public void renderListAdd(ExpressionModel list, ExpressionModel value) {
     list.render(this);
     append(".add(");

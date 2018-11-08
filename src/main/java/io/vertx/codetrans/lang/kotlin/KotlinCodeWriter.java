@@ -623,6 +623,18 @@ public class KotlinCodeWriter extends CodeWriter {
   }
 
   @Override
+  public void renderJsonObjectSize(ExpressionModel expression) {
+    expression.render(this);
+    append(".size()");
+  }
+
+  @Override
+  public void renderJsonArraySize(ExpressionModel expression) {
+    expression.render(this);
+    append(".size()");
+  }
+
+  @Override
   public void renderMemberSelect(ExpressionModel expression, String identifier) {
     expression.render(this);
     append('.');

@@ -64,6 +64,7 @@ class RubyWriter extends CodeWriter {
     }
     append('"');
   }
+
   @Override
   public void renderFragment(String fragment) {
     FragmentParser renderer = new FragmentParser() {
@@ -455,6 +456,18 @@ class RubyWriter extends CodeWriter {
   @Override
   public void renderDataObjectMemberSelect(ExpressionModel expression, String name) {
     renderJsonObjectMemberSelect(expression, Object.class, name);
+  }
+
+  @Override
+  public void renderJsonObjectSize(ExpressionModel expression) {
+    expression.render(this);
+    append(".length");
+  }
+
+  @Override
+  public void renderJsonArraySize(ExpressionModel expression) {
+    expression.render(this);
+    append(".length");
   }
 
   @Override

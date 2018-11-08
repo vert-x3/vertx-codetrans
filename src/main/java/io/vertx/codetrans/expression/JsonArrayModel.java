@@ -63,6 +63,8 @@ public class JsonArrayModel extends ExpressionModel {
           writer.renderJsonArrayAdd(expression, new NullLiteralModel(builder));
         });
       }
+      case "size":
+        return builder.render(writer -> writer.renderJsonArraySize(expression));
       default:
         throw unsupported("Method " + method);
     }
