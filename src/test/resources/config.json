@@ -19,6 +19,7 @@
       "dataobject.DataObject#setFromConstructor",
       "dataobject.DataObject#setFromIdentifier",
       "dataobject.DataObject#jsonObjectConstructor",
+      "dataobject.DataObject#literalJsonObjectConstructor",
       "expression.LiteralChar#start",
       "expression.PostfixDecrement#start",
       "expression.PostfixIncrement#start",

@@ -6,18 +6,11 @@ import io.vertx.codegen.type.ClassTypeInfo;
 import io.vertx.codegen.type.EnumTypeInfo;
 import io.vertx.codegen.type.TypeInfo;
 import io.vertx.codetrans.TypeArg;
-import io.vertx.codetrans.expression.BinaryExpressionModel;
+import io.vertx.codetrans.expression.*;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
-import io.vertx.codetrans.expression.DataObjectLiteralModel;
-import io.vertx.codetrans.expression.ExpressionModel;
-import io.vertx.codetrans.expression.JsonArrayLiteralModel;
-import io.vertx.codetrans.expression.JsonObjectLiteralModel;
-import io.vertx.codetrans.expression.Member;
 import io.vertx.codetrans.MethodSignature;
-import io.vertx.codetrans.expression.NullLiteralModel;
 import io.vertx.codetrans.statement.StatementModel;
-import io.vertx.codetrans.expression.ThisModel;
 
 import javax.lang.model.element.TypeElement;
 import java.util.Arrays;
@@ -120,6 +113,11 @@ class JavaScriptWriter extends CodeWriter {
 
   public void renderDataObject(DataObjectLiteralModel model) {
     renderJsonObject(model.getMembers());
+  }
+
+  @Override
+  public void renderToDataObject(JsonObjectModel model, ClassTypeInfo type) {
+    model.render(this);
   }
 
   public void renderJsonObject(JsonObjectLiteralModel jsonObject) {

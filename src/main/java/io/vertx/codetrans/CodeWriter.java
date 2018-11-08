@@ -5,12 +5,7 @@ import io.vertx.codegen.type.ApiTypeInfo;
 import io.vertx.codegen.type.ClassTypeInfo;
 import io.vertx.codegen.type.EnumTypeInfo;
 import io.vertx.codegen.type.TypeInfo;
-import io.vertx.codetrans.expression.BinaryExpressionModel;
-import io.vertx.codetrans.expression.DataObjectLiteralModel;
-import io.vertx.codetrans.expression.ExpressionModel;
-import io.vertx.codetrans.expression.VariableScope;
-import io.vertx.codetrans.expression.JsonArrayLiteralModel;
-import io.vertx.codetrans.expression.JsonObjectLiteralModel;
+import io.vertx.codetrans.expression.*;
 import io.vertx.codetrans.statement.ConditionalBlockModel;
 import io.vertx.codetrans.statement.StatementModel;
 
@@ -322,6 +317,8 @@ public abstract class CodeWriter implements Appendable {
   public abstract void renderJsonArray(JsonArrayLiteralModel jsonArray);
 
   public abstract void renderDataObject(DataObjectLiteralModel model);
+
+  public abstract void renderToDataObject(JsonObjectModel model, ClassTypeInfo type);
 
   public abstract void renderJsonObjectAssign(ExpressionModel expression, String name, ExpressionModel value);
 

@@ -138,6 +138,11 @@ public class ScalaCodeWriter extends CodeWriter {
   }
 
   @Override
+  public void renderToDataObject(JsonObjectModel model, ClassTypeInfo type) {
+    append("todo-renderToDataObject");
+  }
+
+  @Override
   public void renderDataObjectMemberSelect(ExpressionModel expression, String name){
     append("todo-renderDataObjectMemberSelect");
   }

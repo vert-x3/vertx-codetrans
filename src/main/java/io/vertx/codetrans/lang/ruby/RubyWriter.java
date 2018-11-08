@@ -13,14 +13,7 @@ import io.vertx.codetrans.FragmentParser;
 import io.vertx.codetrans.Helper;
 import io.vertx.codetrans.MethodSignature;
 import io.vertx.codetrans.TypeArg;
-import io.vertx.codetrans.expression.DataObjectLiteralModel;
-import io.vertx.codetrans.expression.ExpressionModel;
-import io.vertx.codetrans.expression.JsonArrayLiteralModel;
-import io.vertx.codetrans.expression.JsonObjectLiteralModel;
-import io.vertx.codetrans.expression.LambdaExpressionModel;
-import io.vertx.codetrans.expression.Member;
-import io.vertx.codetrans.expression.ThisModel;
-import io.vertx.codetrans.expression.VariableScope;
+import io.vertx.codetrans.expression.*;
 import io.vertx.codetrans.statement.ConditionalBlockModel;
 import io.vertx.codetrans.statement.StatementModel;
 
@@ -451,6 +444,11 @@ class RubyWriter extends CodeWriter {
     append("['");
     append(name);
     append("']");
+  }
+
+  @Override
+  public void renderToDataObject(JsonObjectModel model, ClassTypeInfo type) {
+    model.render(this);
   }
 
   @Override

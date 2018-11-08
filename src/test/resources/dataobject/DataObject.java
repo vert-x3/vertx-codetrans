@@ -66,6 +66,14 @@ public class DataObject {
 
   @CodeTranslate
   public void jsonObjectConstructor() throws Exception {
+    JsonObject json = new JsonObject()
+      .put("host", "localhost")
+      .put("port", 8080);
+    DataObjectTest.o = new ServerOptions(json);
+  }
+
+  @CodeTranslate
+  public void literalJsonObjectConstructor() throws Exception {
     DataObjectTest.o = new ServerOptions(new JsonObject()
       .put("host", "localhost")
       .put("port", 8080)

@@ -11,17 +11,7 @@ import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.MethodSignature;
 import io.vertx.codetrans.TypeArg;
-import io.vertx.codetrans.expression.BinaryExpressionModel;
-import io.vertx.codetrans.expression.DataObjectLiteralModel;
-import io.vertx.codetrans.expression.ExpressionModel;
-import io.vertx.codetrans.expression.IdentifierModel;
-import io.vertx.codetrans.expression.JsonArrayLiteralModel;
-import io.vertx.codetrans.expression.JsonObjectLiteralModel;
-import io.vertx.codetrans.expression.Member;
-import io.vertx.codetrans.expression.NullLiteralModel;
-import io.vertx.codetrans.expression.StringLiteralModel;
-import io.vertx.codetrans.expression.ThisModel;
-import io.vertx.codetrans.expression.VariableScope;
+import io.vertx.codetrans.expression.*;
 import io.vertx.codetrans.statement.StatementModel;
 import kotlin.collections.CollectionsKt;
 
@@ -585,6 +575,15 @@ public class KotlinCodeWriter extends CodeWriter {
     append("(");
     renderStringLiteral(name);
     append(")");
+  }
+
+  @Override
+  public void renderToDataObject(JsonObjectModel model, ClassTypeInfo type) {
+    append(type.getSimpleName());
+    append("(");
+    model.render(this);
+    append(")");
+
   }
 
   @Override

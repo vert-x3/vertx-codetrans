@@ -3,6 +3,7 @@ package io.vertx.codetrans;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
+import io.vertx.support.ServerOptions;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.internal.runtime.ScriptObject;
 import org.junit.Assert;
@@ -196,6 +197,21 @@ public class DataObjectTest extends ConversionTestBase {
   }
 
   @Test
+  public void testLiteralJsonObjectConstructor() throws Exception {
+    JsonObject expected = new JsonObject().put("host", "localhost").put("port", 8080);
+    o = null;
+    runJavaScript("dataobject/DataObject", "literalJsonObjectConstructor");
+    Assert.assertEquals(expected, unwrapJsonObject((ScriptObjectMirror) o));
+    o = null;
+    runGroovy("dataobject/DataObject", "literalJsonObjectConstructor");
+    Assert.assertEquals(expected, unwrapJsonObject((Map<String, Object>) o));
+    o = null;
+    runRuby("dataobject/DataObject", "literalJsonObjectConstructor");
+    Assert.assertEquals(expected, unwrapJsonObject((Map<String, Object>) o));
+    o = null;
+  }
+
+  @Test
   public void testJsonObjectConstructor() throws Exception {
     JsonObject expected = new JsonObject().put("host", "localhost").put("port", 8080);
     o = null;
@@ -208,5 +224,20 @@ public class DataObjectTest extends ConversionTestBase {
     runRuby("dataobject/DataObject", "jsonObjectConstructor");
     Assert.assertEquals(expected, unwrapJsonObject((Map<String, Object>) o));
     o = null;
+    runKotlin("dataobject/DataObject", "jsonObjectConstructor");
+    Assert.assertEquals(new ServerOptions(expected), o);
+    /*
+    JsonObject expected = new JsonObject().put("host", "localhost").put("port", 8080);
+    o = null;
+    runJavaScript("dataobject/DataObject", "literalJsonObjectConstructor");
+    Assert.assertEquals(expected, unwrapJsonObject((ScriptObjectMirror) o));
+    o = null;
+    runGroovy("dataobject/DataObject", "literalJsonObjectConstructor");
+    Assert.assertEquals(expected, unwrapJsonObject((Map<String, Object>) o));
+    o = null;
+    runRuby("dataobject/DataObject", "literalJsonObjectConstructor");
+    Assert.assertEquals(expected, unwrapJsonObject((Map<String, Object>) o));
+    o = null;
+    */
   }
 }

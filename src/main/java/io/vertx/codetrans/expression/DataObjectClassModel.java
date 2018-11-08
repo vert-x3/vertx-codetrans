@@ -33,6 +33,9 @@ public class DataObjectClassModel extends ClassModel {
             copy.put(member.name, member);
           });
           return new DataObjectLiteralModel(builder, this.type, copy);
+        } else if (em instanceof JsonObjectModel) {
+          JsonObjectModel jsonModel = (JsonObjectModel) em;
+          return new DataObjectModel(builder, builder.render(writer -> writer.renderToDataObject(jsonModel, this.type)));
         }
         break;
     }

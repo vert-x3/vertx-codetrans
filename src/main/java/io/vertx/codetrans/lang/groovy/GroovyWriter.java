@@ -8,11 +8,7 @@ import io.vertx.codegen.type.TypeInfo;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.MethodSignature;
-import io.vertx.codetrans.expression.DataObjectLiteralModel;
-import io.vertx.codetrans.expression.ExpressionModel;
-import io.vertx.codetrans.expression.JsonArrayLiteralModel;
-import io.vertx.codetrans.expression.JsonObjectLiteralModel;
-import io.vertx.codetrans.expression.Member;
+import io.vertx.codetrans.expression.*;
 import io.vertx.codetrans.statement.StatementModel;
 
 import javax.lang.model.element.TypeElement;
@@ -176,6 +172,11 @@ class GroovyWriter extends CodeWriter {
     append("System.err.println(");
     expression.render(this);
     append(")");
+  }
+
+  @Override
+  public void renderToDataObject(JsonObjectModel model, ClassTypeInfo type) {
+    model.render(this);
   }
 
   @Override

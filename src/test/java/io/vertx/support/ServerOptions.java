@@ -4,10 +4,7 @@ import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.http.HttpVersion;
 import io.vertx.core.json.JsonObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -26,7 +23,8 @@ public class ServerOptions {
   }
 
   public ServerOptions(JsonObject json) {
-    throw new UnsupportedOperationException();
+    this.host = json.getString("host");
+    this.port = json.getInteger("port");
   }
 
   public String getHost() {
@@ -82,5 +80,14 @@ public class ServerOptions {
   public ServerOptions addHeader(String name, String value) {
     headers.put(name, value);
     return this;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof ServerOptions) {
+      ServerOptions that = (ServerOptions) obj;
+      return Objects.equals(host, that.host) && port == that.port;
+    }
+    return false;
   }
 }
