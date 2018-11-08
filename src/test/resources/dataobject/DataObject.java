@@ -3,6 +3,7 @@ package dataobject;
 import io.vertx.codetrans.annotations.CodeTranslate;
 import io.vertx.codetrans.DataObjectTest;
 import io.vertx.core.http.HttpVersion;
+import io.vertx.core.json.JsonObject;
 import io.vertx.support.KeyStoreOptions;
 import io.vertx.support.ServerOptions;
 
@@ -61,5 +62,13 @@ public class DataObject {
     ServerOptions obj = new ServerOptions();
     obj.setProtocolVersion(HttpVersion.HTTP_2);
     DataObjectTest.o = obj;
+  }
+
+  @CodeTranslate
+  public void jsonObjectConstructor() throws Exception {
+    DataObjectTest.o = new ServerOptions(new JsonObject()
+      .put("host", "localhost")
+      .put("port", 8080)
+    );
   }
 }

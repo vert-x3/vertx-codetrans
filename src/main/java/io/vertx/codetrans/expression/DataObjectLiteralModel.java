@@ -24,7 +24,7 @@ public class DataObjectLiteralModel extends ExpressionModel {
     this(builder, type, Collections.emptyMap());
   }
 
-  private DataObjectLiteralModel(CodeBuilder builder, ClassTypeInfo type, Map<String, Member> members) {
+  public DataObjectLiteralModel(CodeBuilder builder, ClassTypeInfo type, Map<String, Member> members) {
     super(builder);
     this.type = type;
     this.members = members;
