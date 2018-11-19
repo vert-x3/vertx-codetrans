@@ -10,6 +10,8 @@ import io.vertx.codetrans.expression.*;
 import io.vertx.codetrans.CodeModel;
 import io.vertx.codetrans.CodeWriter;
 import io.vertx.codetrans.MethodSignature;
+import io.vertx.codetrans.TypeArg;
+import io.vertx.codetrans.expression.*;
 import io.vertx.codetrans.statement.StatementModel;
 
 import javax.lang.model.element.TypeElement;
@@ -113,6 +115,11 @@ class JavaScriptWriter extends CodeWriter {
 
   public void renderDataObject(DataObjectLiteralModel model) {
     renderJsonObject(model.getMembers());
+  }
+
+  @Override
+  public void renderDataObjectToJson(IdentifierModel model) {
+    model.render(this);
   }
 
   @Override

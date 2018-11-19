@@ -36,8 +36,20 @@ public class DataObjectModel extends ExpressionModel {
             DataObjectLiteralModel.unwrapSet(methodName));
       });
     }
+    if (isToJson(method)) {
+      return builder.render(writer -> {
+        writer.renderDataObjectToJson((IdentifierModel) expression);
+      });
+    }
     throw new UnsupportedOperationException("Unsupported method " + method + " on object model");
   }
+
+  private boolean isToJson(MethodSignature method) {
+    return "toJson".equals(method.getName())
+      && method.getReturnType().getKind().json
+      && method.getParameterTypes().isEmpty();
+  }
+
   @Override
   public void render(CodeWriter writer) {
     expression.render(writer);

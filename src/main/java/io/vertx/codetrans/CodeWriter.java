@@ -320,6 +320,8 @@ public abstract class CodeWriter implements Appendable {
 
   public abstract void renderToDataObject(JsonObjectModel model, ClassTypeInfo type);
 
+  public abstract void renderDataObjectToJson(IdentifierModel model);
+
   public abstract void renderJsonObjectAssign(ExpressionModel expression, String name, ExpressionModel value);
 
   public abstract void renderDataObjectAssign(ExpressionModel expression, String name, ExpressionModel value);

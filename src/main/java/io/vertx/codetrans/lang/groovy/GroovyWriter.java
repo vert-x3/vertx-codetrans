@@ -193,6 +193,11 @@ class GroovyWriter extends CodeWriter {
     renderJsonObject(model.getMembers());
   }
 
+  @Override
+  public void renderDataObjectToJson(IdentifierModel model) {
+    model.render(this);
+  }
+
   public void renderJsonObject(JsonObjectLiteralModel jsonObject) {
     renderJsonObject(jsonObject.getMembers());
   }

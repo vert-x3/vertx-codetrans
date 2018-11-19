@@ -18,6 +18,7 @@
       "dataobject.DataObject#nested",
       "dataobject.DataObject#setFromConstructor",
       "dataobject.DataObject#setFromIdentifier",
+      "dataobject.DataObject#toJson",
       "dataobject.DataObject#jsonObjectConstructor",
       "dataobject.DataObject#literalJsonObjectConstructor",
       "expression.LiteralChar#start",

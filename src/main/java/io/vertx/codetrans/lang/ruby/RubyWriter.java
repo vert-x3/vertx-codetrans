@@ -14,6 +14,9 @@ import io.vertx.codetrans.Helper;
 import io.vertx.codetrans.MethodSignature;
 import io.vertx.codetrans.TypeArg;
 import io.vertx.codetrans.expression.*;
+import io.vertx.codegen.type.*;
+import io.vertx.codetrans.*;
+import io.vertx.codetrans.expression.*;
 import io.vertx.codetrans.statement.ConditionalBlockModel;
 import io.vertx.codetrans.statement.StatementModel;
 
@@ -390,6 +393,11 @@ class RubyWriter extends CodeWriter {
   @Override
   public void renderDataObject(DataObjectLiteralModel model) {
     renderJsonObject(model.getMembers(), this);
+  }
+
+  @Override
+  public void renderDataObjectToJson(IdentifierModel model) {
+    model.render(this);
   }
 
   @Override
