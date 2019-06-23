@@ -14,10 +14,6 @@ jobs:
       name: "OpenJDK 8"
       jdk: openjdk8
       script: mvn -q clean verify -B
-    - if: type != pull_request
-      name: "OpenJDK 11"
-      jdk: openjdk11
-      script: mvn -q clean verify -B
     - stage: deploy
       name: "Deploy to Sonatype's snapshots repository"
       jdk: openjdk8
