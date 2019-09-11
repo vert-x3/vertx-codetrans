@@ -46,7 +46,7 @@ public class CodeTranslator {
     Context context = ((JavacProcessingEnvironment)processingEnv).getContext();
     this.attr = Attr.instance(context);
     this.typeUtils = processingEnv.getTypeUtils();
-    this.factory = new TypeMirrorFactory(processingEnv.getElementUtils(), processingEnv.getTypeUtils(), null) {
+    this.factory = new TypeMirrorFactory(processingEnv.getElementUtils(), processingEnv.getTypeUtils()) {
       @Override
       public TypeInfo create(TypeUse use, TypeMirror type) {
         if (type.getKind() == TypeKind.WILDCARD) {
