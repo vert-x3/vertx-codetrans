@@ -28,8 +28,12 @@ public class ExpressionModel extends CodeModel {
         return new JsonObjectModel(builder, this);
       case JSON_ARRAY:
         return new JsonArrayModel(builder, this);
-      case DATA_OBJECT:
-        return new DataObjectModel(builder, this);
+      case OTHER:
+        if (type.isDataObjectHolder()) {
+          return new DataObjectModel(builder, this);
+        } else {
+          return this;
+        }
       case MAP:
         return new MapModel(builder, this);
       case LIST:

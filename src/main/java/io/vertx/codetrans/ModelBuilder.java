@@ -395,18 +395,21 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
           return context.builder.jsonObjectClassModel();
         } else if (type.getKind() == ClassKind.JSON_ARRAY) {
           return context.builder.jsonArrayClassModel();
-        } else if (type.getKind() == ClassKind.DATA_OBJECT) {
-          return context.builder.dataObjectClass(type);
         } else if (type.getKind() == ClassKind.ENUM) {
           return context.builder.enumType((EnumTypeInfo) type);
         } else {
-          switch (type.getName()) {
-            case "java.util.HashMap":
-              return new MapClassModel(context.builder);
-            case "java.util.ArrayList":
-              return new ListClassModel(context.builder);
-            default:
-              return new JavaClassModel(context.builder, type);
+          // OTHER
+          if (type.isDataObjectHolder()) {
+            return context.builder.dataObjectClass(type);
+          } else {
+            switch (type.getName()) {
+              case "java.util.HashMap":
+                return new MapClassModel(context.builder);
+              case "java.util.ArrayList":
+                return new ListClassModel(context.builder);
+              default:
+                return new JavaClassModel(context.builder, type);
+            }
           }
         }
       }

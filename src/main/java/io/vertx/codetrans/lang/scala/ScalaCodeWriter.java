@@ -49,7 +49,7 @@ public class ScalaCodeWriter extends CodeWriter {
 
   @Override
   public void renderNew(ExpressionModel expression, TypeInfo type, List<ExpressionModel> argumentModels) {
-    if(ClassKind.API != type.getKind() && ClassKind.DATA_OBJECT != type.getKind())
+    if(ClassKind.API != type.getKind() && !type.isDataObjectHolder())
       append("new ");
     expression.render(this);
     append('(');
