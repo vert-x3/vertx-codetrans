@@ -1,10 +1,7 @@
 package io.vertx.codetrans;
 
-import groovy.lang.GString;
 import io.vertx.codetrans.lang.groovy.GroovyLang;
-import io.vertx.codetrans.lang.js.JavaScriptLang;
 import io.vertx.support.TheEnum;
-import org.jruby.RubySymbol;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,7 +13,7 @@ import static org.junit.Assert.*;
 public class LiteralExpressionTest extends ConversionTestBase {
 
   public static Number result;
-  
+
   public static Boolean bool;
 
   public static String string;
@@ -51,12 +48,8 @@ public class LiteralExpressionTest extends ConversionTestBase {
     // Can't pass in Ruby : a + ("#{b}_") -> Fixnum
     run(new GroovyLang(), "expression/LiteralString", "concat3");
     assertEquals("3_", string);
-    run(new JavaScriptLang(), "expression/LiteralString", "concat3");
-    assertEquals("3_", string);
     // Can't pass in Ruby
     run(new GroovyLang(), "expression/LiteralString", "concat4");
-    assertEquals("12_", string);
-    run(new JavaScriptLang(), "expression/LiteralString", "concat4");
     assertEquals("12_", string);
     runAll("expression/LiteralString", "concat5", () -> {
       assertEquals("_1", string);
@@ -66,8 +59,6 @@ public class LiteralExpressionTest extends ConversionTestBase {
     });
     // Can't pass in Ruby : ("_#{a}") + b -> Fixnum
     run(new GroovyLang(), "expression/LiteralString", "concat7");
-    assertEquals("_12", string);
-    run(new JavaScriptLang(), "expression/LiteralString", "concat7");
     assertEquals("_12", string);
     runAll("expression/LiteralString", "concat8", () -> {
       assertEquals("_3", string);

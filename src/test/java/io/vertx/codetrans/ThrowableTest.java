@@ -1,10 +1,7 @@
 package io.vertx.codetrans;
 
 import io.vertx.codetrans.lang.groovy.GroovyLang;
-import io.vertx.codetrans.lang.js.JavaScriptLang;
-import io.vertx.codetrans.lang.ruby.RubyLang;
 import io.vertx.codetrans.lang.scala.ScalaLang;
-import org.jruby.embed.EvalFailedException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,16 +38,6 @@ public class ThrowableTest extends ConversionTestBase {
       assertEquals(null, e.getMessage());
     }
     try {
-      script(new JavaScriptLang(), "throwable/Throwable", "throwRuntimeExceptionNoArg").run();
-      fail();
-    } catch (ScriptException e) {
-    }
-    try {
-      script(new RubyLang(), "throwable/Throwable", "throwRuntimeExceptionNoArg").run();
-      fail();
-    } catch (EvalFailedException e) {
-    }
-    try {
       script(new ScalaLang(), "throwable/Throwable", "throwRuntimeExceptionNoArg").run();
       fail();
     } catch (RuntimeException e) {
@@ -64,18 +51,6 @@ public class ThrowableTest extends ConversionTestBase {
       fail();
     } catch (RuntimeException e) {
       assertEquals("foobar", e.getMessage());
-    }
-    try {
-      script(new JavaScriptLang(), "throwable/Throwable", "throwRuntimeExceptionStringArg").run();
-      fail();
-    } catch (ScriptException e) {
-      assertTrue(e.getMessage().contains("foobar"));
-    }
-    try {
-      script(new RubyLang(), "throwable/Throwable", "throwRuntimeExceptionStringArg").run();
-      fail();
-    } catch (EvalFailedException e) {
-      assertTrue(e.getMessage().contains("foobar"));
     }
     try {
       script(new ScalaLang(), "throwable/Throwable", "throwRuntimeExceptionStringArg").run();

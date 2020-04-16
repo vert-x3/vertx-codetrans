@@ -1,9 +1,7 @@
 package io.vertx.codetrans;
 
 import io.vertx.codetrans.lang.groovy.GroovyLang;
-import io.vertx.codetrans.lang.js.JavaScriptLang;
 import io.vertx.codetrans.lang.kotlin.KotlinLang;
-import io.vertx.codetrans.lang.ruby.RubyLang;
 import io.vertx.codetrans.lang.scala.ScalaLang;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
@@ -17,15 +15,7 @@ import java.util.stream.Collectors;
  */
 public abstract class ConversionTestBase {
 
-  public static Lang[] langs() { return new Lang[] { new GroovyLang(), new JavaScriptLang(), new KotlinLang(), new RubyLang(), new ScalaLang() }; }
-
-  public void runJavaScript(String path) {
-    run(new JavaScriptLang(), path);
-  }
-
-  public void runJavaScript(String path, String method) {
-    run(new JavaScriptLang(), path, method);
-  }
+  public static Lang[] langs() { return new Lang[] { new GroovyLang(), new KotlinLang(), new ScalaLang() }; }
 
   public void runGroovy(String path) {
     run(new GroovyLang(), path);
@@ -33,14 +23,6 @@ public abstract class ConversionTestBase {
 
   public void runGroovy(String path, String method) {
     run(new GroovyLang(), path, method);
-  }
-
-  public void runRuby(String path) {
-    run(new RubyLang(), path);
-  }
-
-  public void runRuby(String path, String method) {
-    run(new RubyLang(), path, method);
   }
 
   public void runScala(String path) {

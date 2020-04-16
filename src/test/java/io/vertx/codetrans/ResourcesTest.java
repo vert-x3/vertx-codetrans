@@ -16,9 +16,7 @@ public class ResourcesTest extends ConversionTestBase {
   @Test
   public void testCopyResource() throws Exception {
     String[] paths = {
-      "src/test/generated/js/resources/resources/file.txt",
       "src/test/generated/groovy/resources/resources/file.txt",
-      "src/test/generated/ruby/resources/resources/file.txt",
       "src/test/generated/kotlin/resources/Resources/file.txt",
       "src/test/generated/scala/resources/Resources/file.txt",
     };

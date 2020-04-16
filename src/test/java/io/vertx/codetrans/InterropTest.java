@@ -35,20 +35,6 @@ public class InterropTest extends ConversionTestBase {
   }
 
   @Test
-  public void testObjectEqualsJavaScript() throws Exception {
-    runJavaScript("interrop/MethodInterrop", "objectEquals");
-    Assert.assertEquals(true, isEquals);
-    Assert.assertFalse(called);
-  }
-
-  @Test
-  public void testObjectEqualsRuby() throws Exception {
-    runRuby("interrop/MethodInterrop", "objectEquals");
-    Assert.assertEquals(true, isEquals);
-    Assert.assertTrue(called);
-  }
-
-  @Test
   public void testStringEquals() throws Exception {
     runAll("interrop/MethodInterrop", "stringEquals", () -> {
       Assert.assertEquals(true, isEquals);

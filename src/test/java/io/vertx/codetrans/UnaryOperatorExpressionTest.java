@@ -1,8 +1,6 @@
 package io.vertx.codetrans;
 
 import io.vertx.codetrans.lang.groovy.GroovyLang;
-import io.vertx.codetrans.lang.js.JavaScriptLang;
-import io.vertx.codetrans.lang.ruby.RubyLang;
 import io.vertx.codetrans.lang.scala.ScalaLang;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,12 +48,6 @@ public class UnaryOperatorExpressionTest extends ConversionTestBase {
     run(new GroovyLang(), "expression/PostfixIncrement");
     assertEquals(3, result.intValue());
     assertEquals(4, result2.intValue());
-    run(new JavaScriptLang(), "expression/PostfixIncrement");
-    assertEquals(3, result.intValue());
-    assertEquals(4, result2.intValue());
-    run(new RubyLang(), "expression/PostfixIncrement");
-    assertEquals(4, result.intValue()); // YEAH!
-    assertEquals(4, result2.intValue());
     //There is no pre/postic increment in Scala
   }
 
@@ -63,12 +55,6 @@ public class UnaryOperatorExpressionTest extends ConversionTestBase {
   public void testPostfixDecrement() throws Exception {
     run(new GroovyLang(), "expression/PostfixDecrement");
     assertEquals(3, result.intValue());
-    assertEquals(2, result2.intValue());
-    run(new JavaScriptLang(), "expression/PostfixDecrement");
-    assertEquals(3, result.intValue());
-    assertEquals(2, result2.intValue());
-    run(new RubyLang(), "expression/PostfixDecrement");
-    assertEquals(2, result.intValue()); // YEAH
     assertEquals(2, result2.intValue());
     //There is no pre/postic decrement in Scala
   }

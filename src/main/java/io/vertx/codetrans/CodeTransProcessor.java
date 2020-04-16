@@ -9,9 +9,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import io.vertx.codetrans.annotations.CodeTranslate;
 import io.vertx.codetrans.lang.groovy.GroovyLang;
-import io.vertx.codetrans.lang.js.JavaScriptLang;
 import io.vertx.codetrans.lang.kotlin.KotlinLang;
-import io.vertx.codetrans.lang.ruby.RubyLang;
 import io.vertx.codetrans.lang.scala.ScalaLang;
 import io.vertx.core.Verticle;
 
@@ -140,14 +138,8 @@ public class CodeTransProcessor extends AbstractProcessor {
         case "groovy":
           l = new GroovyLang();
           break;
-        case "js":
-          l = new JavaScriptLang();
-          break;
         case "scala":
           l = new ScalaLang();
-          break;
-        case "ruby":
-          l = new RubyLang();
           break;
         default:
           continue;

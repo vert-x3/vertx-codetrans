@@ -1,8 +1,6 @@
 package io.vertx.codetrans;
 
 import io.vertx.codetrans.lang.groovy.GroovyLang;
-import io.vertx.codetrans.lang.js.JavaScriptLang;
-import io.vertx.codetrans.lang.ruby.RubyLang;
 import io.vertx.core.Handler;
 import org.junit.Test;
 
@@ -69,10 +67,6 @@ public class FragmentTest extends ConversionTestBase {
   public void testEmpty() {
     Script s = loadScript(new GroovyLang(), "fragment/Fragment", "empty");
     assertEquals("def a = null\n", s.getSource());
-    s = loadScript(new JavaScriptLang(), "fragment/Fragment", "empty");
-    assertEquals("var a = null;\n", s.getSource());
-    s = loadScript(new RubyLang(), "fragment/Fragment", "empty");
-    assertEquals("a = nil\n", s.getSource());
   }
 
   @Test
@@ -82,16 +76,6 @@ public class FragmentTest extends ConversionTestBase {
         "// foo\n" +
         "// bar\n" +
         "// juu\n", s.getSource());
-    s = loadScript(new JavaScriptLang(), "fragment/Fragment", "onlyLineComments");
-    assertEquals("" +
-        "// foo\n" +
-        "// bar\n" +
-        "// juu\n", s.getSource());
-    s = loadScript(new RubyLang(), "fragment/Fragment", "onlyLineComments");
-    assertEquals("" +
-        "# foo\n" +
-        "# bar\n" +
-        "# juu\n", s.getSource());
   }
 
   @Test
@@ -103,20 +87,6 @@ public class FragmentTest extends ConversionTestBase {
         "// bar\n" +
         "def s = null\n" +
         "// juu\n", s.getSource());
-    s = loadScript(new JavaScriptLang(), "fragment/Fragment", "lineComments");
-    assertEquals("" +
-        "// foo\n" +
-        "var t = null;\n" +
-        "// bar\n" +
-        "var s = null;\n" +
-        "// juu\n", s.getSource());
-    s = loadScript(new RubyLang(), "fragment/Fragment", "lineComments");
-    assertEquals("" +
-        "# foo\n" +
-        "t = nil\n" +
-        "# bar\n" +
-        "s = nil\n" +
-        "# juu\n", s.getSource());
   }
 
   @Test
@@ -134,32 +104,6 @@ public class FragmentTest extends ConversionTestBase {
         "/*\n" +
         " * a\n" +
         " */\n", s.getSource());
-    s = loadScript(new JavaScriptLang(), "fragment/Fragment", "multiLineComments");
-    assertEquals("" +
-        "/*a\n" +
-        "  b\n" +
-        " c\n" +
-        "d\n" +
-        "e\n" +
-        "f\n" +
-        " */\n" +
-        "var t = null;\n" +
-        "/*\n" +
-        " * a\n" +
-        " */\n", s.getSource());
-    s = loadScript(new RubyLang(), "fragment/Fragment", "multiLineComments");
-    assertEquals("" +
-        "=begina\n" +
-        "  b\n" +
-        " c\n" +
-        "d\n" +
-        "e\n" +
-        "f\n" +
-        " =end\n" +
-        "t = nil\n" +
-        "=begin\n" +
-        " * a\n" +
-        " =end\n", s.getSource());
   }
 
   public static void someMethod(Handler<String> handler) {
@@ -176,23 +120,5 @@ public class FragmentTest extends ConversionTestBase {
         "  def s = null\n" +
         "  // juu\n" +
         "})\n", s.getSource());
-    s = loadScript(new JavaScriptLang(), "fragment/Fragment", "lineCommentsInLamba");
-    assertEquals("" +
-        "Java.type(\"io.vertx.codetrans.FragmentTest\").someMethod(function (arg) {\n" +
-        "  // foo\n" +
-        "  var t = null;\n" +
-        "  // bar\n" +
-        "  var s = null;\n" +
-        "  // juu\n" +
-        "});\n", s.getSource());
-    s = loadScript(new RubyLang(), "fragment/Fragment", "lineCommentsInLamba");
-    assertEquals("" +
-        "Java::IoVertxCodetrans::FragmentTest.some_method() { |arg|\n" +
-        "  # foo\n" +
-        "  t = nil\n" +
-        "  # bar\n" +
-        "  s = nil\n" +
-        "  # juu\n" +
-        "}\n", s.getSource());
   }
 }

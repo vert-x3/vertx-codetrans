@@ -52,18 +52,6 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>org.jruby</groupId>
-      <artifactId>jruby-core</artifactId>
-      <version>9.2.7.0</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.jruby</groupId>
-      <artifactId>jruby-stdlib</artifactId>
-      <version>9.2.7.0</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
       <groupId>org.scala-lang</groupId>
       <artifactId>scala-library</artifactId>
       <version>2.12.0</version>
@@ -120,7 +108,7 @@
                   <arg>-Acodetrans.output=${project.basedir}/src/test/generated</arg>
                   <arg>-Acodetrans.config=${project.basedir}/src/test/resources/config.json</arg>
                   <arg>-Acodetrans.render=test</arg>
-                  <arg>-Acodetrans.langs=js,ruby,groovy,kotlin,scala</arg>
+                  <arg>-Acodetrans.langs=groovy,kotlin,scala</arg>
                 </compilerArgs>
 <!--
                 <testIncludes>

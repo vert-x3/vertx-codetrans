@@ -35,11 +35,6 @@ public class ClassIdentifierExpressionTest extends ConversionTestBase {
   public void testInvokeStaticMethod() {
     invoked = 0;
     args.clear();
-    runJavaScript("expression/ClassIdentifier", "invokeStaticMethod");
-    Assert.assertEquals(1, invoked);
-    Assert.assertEquals(Collections.<Object>singletonList("foo"), args);
-    invoked = 0;
-    args.clear();
     runGroovy("expression/ClassIdentifier", "invokeStaticMethod");
     Assert.assertEquals(1, invoked);
     Assert.assertEquals(Collections.<Object>singletonList("foo"), args);
@@ -54,9 +49,6 @@ public class ClassIdentifierExpressionTest extends ConversionTestBase {
   public void testReadStaticField() {
     expected = "expected-value";
     field = null;
-    runJavaScript("expression/ClassIdentifier", "readStaticField");
-    Assert.assertEquals(expected, field);
-    field = null;
     runGroovy("expression/ClassIdentifier", "readStaticField");
     Assert.assertEquals(expected, field);
     field = null;
@@ -66,9 +58,6 @@ public class ClassIdentifierExpressionTest extends ConversionTestBase {
 
   @Test
   public void testWriteStaticField() {
-    field = null;
-    runJavaScript("expression/ClassIdentifier", "writeStaticField");
-    Assert.assertEquals("foo", field);
     field = null;
     runGroovy("expression/ClassIdentifier", "writeStaticField");
     Assert.assertEquals("foo", field);

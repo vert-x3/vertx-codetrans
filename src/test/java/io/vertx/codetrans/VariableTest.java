@@ -1,9 +1,7 @@
 package io.vertx.codetrans;
 
 import io.vertx.codetrans.lang.groovy.GroovyLang;
-import io.vertx.codetrans.lang.js.JavaScriptLang;
 import io.vertx.codetrans.lang.kotlin.KotlinLang;
-import io.vertx.codetrans.lang.ruby.RubyLang;
 import io.vertx.codetrans.lang.scala.ScalaLang;
 import org.junit.Assert;
 import org.junit.Before;
@@ -70,16 +68,10 @@ public class VariableTest extends ConversionTestBase {
     run(new GroovyLang(), "variable/Variable", "uninitializedMemberExpression");
     Assert.assertNull(o);
     o = null;
-    run(new JavaScriptLang(), "variable/Variable", "uninitializedMemberExpression");
-    Assert.assertTrue(o instanceof jdk.nashorn.internal.runtime.Undefined);
-    o = null;
     // kotlin doesn't allow uninitialized member access
 //    run(new KotlinLang(), "variable/Variable", "uninitializedMemberExpression");
 //    Assert.assertNull(o);
 //    o = null;
-    run(new RubyLang(), "variable/Variable", "uninitializedMemberExpression");
-    Assert.assertNull(o);
-    o = null;
     run(new ScalaLang(), "variable/Variable", "uninitializedMemberExpression");
     Assert.assertNull(o);
     o = null;

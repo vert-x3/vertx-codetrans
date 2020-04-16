@@ -3,7 +3,6 @@ package io.vertx.codetrans;
 import static org.junit.Assert.*;
 
 import io.vertx.codetrans.lang.scala.ScalaLang;
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -73,13 +72,6 @@ public class CollectionTest extends ConversionTestBase {
     runGroovy("collection/ListApi", "newArrayList");
     assertEquals(Collections.emptyList(), o);
     o = null;
-    runJavaScript("collection/ListApi", "newArrayList");
-    ScriptObjectMirror so = (ScriptObjectMirror) o;
-    assertEquals(0, so.size());
-    o = null;
-    runRuby("collection/ListApi", "newArrayList");
-    assertEquals(Collections.emptyList(), o);
-    o = null;
 //    runScala("collection/ListApi", "newArrayList");
 //    assertEquals(Collections.emptyList(), o);
 //    o = null;
@@ -88,14 +80,6 @@ public class CollectionTest extends ConversionTestBase {
   @Test
   public void testListAdd() {
     runGroovy("collection/ListApi", "add");
-    assertEquals(Collections.singletonList("foo"), o);
-    o = null;
-    runJavaScript("collection/ListApi", "add");
-    ScriptObjectMirror so = (ScriptObjectMirror) o;
-    assertEquals(1, so.size());
-    assertEquals("foo", so.get("0"));
-    o = null;
-    runRuby("collection/ListApi", "add");
     assertEquals(Collections.singletonList("foo"), o);
     o = null;
 //    runScala("collection/ListApi", "add");
@@ -122,16 +106,6 @@ public class CollectionTest extends ConversionTestBase {
   @Test
   public void testAsList() {
     runGroovy("collection/ListApi", "asList");
-    assertEquals(Arrays.asList("foo", "bar", "juu"), o);
-    o = null;
-    runJavaScript("collection/ListApi", "asList");
-    ScriptObjectMirror so = (ScriptObjectMirror) o;
-    assertEquals(3, so.size());
-    assertEquals("foo", so.get("0"));
-    assertEquals("bar", so.get("1"));
-    assertEquals("juu", so.get("2"));
-    o = null;
-    runRuby("collection/ListApi", "asList");
     assertEquals(Arrays.asList("foo", "bar", "juu"), o);
     o = null;
   }
