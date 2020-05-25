@@ -1,6 +1,8 @@
 package io.vertx.codetrans;
 
-import io.vertx.codegen.Case;
+import io.vertx.codegen.format.CamelCase;
+import io.vertx.codegen.format.Case;
+import io.vertx.codegen.format.SnakeCase;
 
 import java.io.File;
 import java.util.List;
@@ -24,7 +26,7 @@ public interface Lang {
     }
     String t = builder
       .build()
-      .map(s -> Case.SNAKE.format(Case.CAMEL.parse(s)).replace('.', File.separatorChar))
+      .map(s -> SnakeCase.INSTANCE.format(CamelCase.INSTANCE.parse(s)).replace('.', File.separatorChar))
       .collect(Collectors.joining(File.separator));
     return new File(root, t + "." + getExtension());
   }

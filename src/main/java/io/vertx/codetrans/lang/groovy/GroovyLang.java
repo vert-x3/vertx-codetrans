@@ -3,7 +3,9 @@ package io.vertx.codetrans.lang.groovy;
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.Script;
-import io.vertx.codegen.Case;
+import io.vertx.codegen.format.CamelCase;
+import io.vertx.codegen.format.Case;
+import io.vertx.codegen.format.SnakeCase;
 import io.vertx.codetrans.Lang;
 import io.vertx.codetrans.CodeBuilder;
 
@@ -33,10 +35,10 @@ public class GroovyLang implements Lang {
   @Override
   public io.vertx.codetrans.Script loadScript(ClassLoader loader, String path, String method) throws Exception {
     String name = "src/test/generated/groovy/".replace('/', File.separatorChar) + Stream.of(path.split("/"))
-      .map(f -> Case.SNAKE.format(Case.CAMEL.parse(f)))
+      .map(f -> SnakeCase.INSTANCE.format(CamelCase.INSTANCE.parse(f)))
       .collect(Collectors.joining(File.separator));
     loader = new URLClassLoader(new URL[]{ new File(name).toURI().toURL() }, loader);
-    File f = new File(name + File.separator + Case.SNAKE.format(Case.CAMEL.parse(method)) + ".groovy");
+    File f = new File(name + File.separator + SnakeCase.INSTANCE.format(CamelCase.INSTANCE.parse(method)) + ".groovy");
     String src = new String(Files.readAllBytes(f.toPath()));
     GroovyClassLoader compiler = new GroovyClassLoader(loader);
     Class clazz = compiler.parseClass(src);
