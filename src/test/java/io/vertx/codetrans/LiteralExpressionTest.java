@@ -5,7 +5,7 @@ import io.vertx.support.TheEnum;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -69,7 +69,10 @@ public class LiteralExpressionTest extends ConversionTestBase {
     runAll("expression/LiteralString", "concat10", () -> {
       assertEquals("\n2", string);
     });
-    String expected = "\n\r\t\f\b\"\\'\u0000\u0041\u007F";
+    runAll("expression/LiteralString", "concat11", () -> {
+      assertEquals("$2", string);
+    });
+    String expected = "\n\r\t$\f\b\"\\'\u0000\u0041\u007F";
     runAll("expression/LiteralString", "escape", () -> {
       assertEquals(expected, string);
     });
@@ -77,7 +80,7 @@ public class LiteralExpressionTest extends ConversionTestBase {
       CodeWriter writer = lang.codeBuilder().newWriter();
       writer.renderChars(expected);
       String ret = unescape(writer.getBuffer().toString());
-      assertEquals("\n\r\t\f\b\"\\'\u0000A\u007F", ret);
+      assertEquals("\n\r\t$\f\b\"\\'\u0000A\u007F", ret);
     }
   }
 
@@ -120,7 +123,10 @@ public class LiteralExpressionTest extends ConversionTestBase {
                 throw new IllegalArgumentException(e.getMessage());
               }
               int val = Integer.parseInt(sub, 16);
-              sb.append((char)val);
+              sb.append((char) val);
+              break;
+            case '$':
+              sb.append("$");
               break;
             default:
               throw new UnsupportedOperationException("Handle me gracefully " + c);

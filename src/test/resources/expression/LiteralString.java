@@ -99,7 +99,14 @@ public class LiteralString {
   }
 
   @CodeTranslate
+  public void concat11() throws Exception {
+    int a = 0;
+    a = 2;
+    LiteralExpressionTest.string = "$" + a;
+  }
+
+  @CodeTranslate
   public void escape() throws Exception {
-    LiteralExpressionTest.string = "\n\r\t\f\b\"\\'\u0000A\u007F";
+    LiteralExpressionTest.string = "\n\r\t$\f\b\"\\'\u0000A\u007F";
   }
 }
