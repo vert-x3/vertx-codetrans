@@ -352,13 +352,18 @@ class GroovyWriter extends CodeWriter {
   @Override
   public void renderListLiteral(List<ExpressionModel> arguments) {
     append("[");
-    for (Iterator<ExpressionModel> it = arguments.iterator();it.hasNext();) {
+    for (Iterator<ExpressionModel> it = arguments.iterator(); it.hasNext(); ) {
       it.next().render(this);
       if (it.hasNext()) {
         append(", ");
       }
     }
     append("]");
+  }
+
+  @Override
+  public void renderNewArray(String primitiveType, List<ExpressionModel> arguments) {
+    renderListLiteral(arguments);
   }
 
   @Override

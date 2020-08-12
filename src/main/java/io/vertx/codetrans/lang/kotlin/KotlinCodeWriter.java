@@ -428,6 +428,23 @@ public class KotlinCodeWriter extends CodeWriter {
   }
 
   @Override
+  public void renderNewArray(String primitiveType, List<ExpressionModel> arguments) {
+    if (primitiveType != null) {
+      append(primitiveType).append("ArrayOf(");
+    } else {
+      append("arrayOf(");
+    }
+    for (int i = 0; i < arguments.size(); ++i) {
+      if (i > 0) {
+        append(", ");
+      }
+
+      arguments.get(i).render(this);
+    }
+    append(")");
+  }
+
+  @Override
   public void renderJsonArrayToString(ExpressionModel expression) {
     expression.render(this);
     append(".toString()");
