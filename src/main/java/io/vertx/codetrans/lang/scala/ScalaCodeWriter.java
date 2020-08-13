@@ -22,7 +22,7 @@ public class ScalaCodeWriter extends CodeWriter {
   }
 
   private String capitalize(String string) {
-    return string.substring(0,1).toUpperCase()+string.substring(1, string.length());
+    return string.substring(0, 1).toUpperCase() + string.substring(1, string.length());
   }
 
   @Override
@@ -31,18 +31,69 @@ public class ScalaCodeWriter extends CodeWriter {
   }
 
   @Override
+  public void renderChars(String value) {
+    renderChars(value, false);
+  }
+
+  private void renderChars(String value, boolean interpolated) {
+    for (int i = 0; i < value.length(); i++) {
+      char c = value.charAt(i);
+      switch (c) {
+        case '\b':
+          append("\\b");
+          break;
+        case '\f':
+          append("\\f");
+          break;
+        case '\n':
+          append("\\n");
+          break;
+        case '\t':
+          append("\\t");
+          break;
+        case '\r':
+          append("\\r");
+          break;
+        case '"':
+          append("\\\"");
+          break;
+        case '\\':
+          append("\\\\");
+          break;
+        case '$':
+          if (interpolated) {
+            append('$');
+          }
+          append('$');
+          break;
+        default:
+          if (c < 32 || c > 126) {
+            String s = Integer.toHexString(c).toUpperCase();
+            while (s.length() < 4) {
+              s = "0" + s;
+            }
+            append("\\u").append(s);
+          } else {
+            append(c);
+          }
+      }
+    }
+  }
+
+  @Override
   public void renderStringLiteral(List<?> parts) {
-    if(parts.stream().anyMatch(a -> a instanceof ExpressionModel))
+    boolean interpolated = parts.stream().anyMatch(a -> a instanceof ExpressionModel);
+    if (interpolated)
       append("s\"");
     else append("\"");
     parts.stream().forEach(part -> {
-    if (part instanceof ExpressionModel) {
-      append("${");
-      ((ExpressionModel)part).render(this);
-      append("}");
-    } else {
-      renderChars(part.toString());
-    }
+      if (part instanceof ExpressionModel) {
+        append("${");
+        ((ExpressionModel) part).render(this);
+        append("}");
+      } else {
+        renderChars(part.toString(), interpolated);
+      }
     });
     append("\"");
   }
