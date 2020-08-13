@@ -167,17 +167,27 @@ public class ScalaCodeWriter extends CodeWriter {
   }
 
   @Override
-  public void renderListLiteral(List<ExpressionModel> arguments){
+  public void renderListLiteral(List<ExpressionModel> arguments) {
     append("List(");
     IntStream.range(0, arguments.size()).forEach(i -> {
-      if(i > 0) append(", ");
+      if (i > 0) append(", ");
       arguments.get(i).render(this);
     });
     append(')');
   }
 
   @Override
-  public void renderJsonObjectMemberSelect(ExpressionModel expression, Class<?> type, String name){
+  public void renderNewArray(String primitiveType, List<ExpressionModel> arguments) {
+    append("Array(");
+    IntStream.range(0, arguments.size()).forEach(i -> {
+      if (i > 0) append(", ");
+      arguments.get(i).render(this);
+    });
+    append(')');
+  }
+
+  @Override
+  public void renderJsonObjectMemberSelect(ExpressionModel expression, Class<?> type, String name) {
     expression.render(this);
     append(".getValue(\"");
     append(name);

@@ -2,18 +2,6 @@ package io.vertx.codetrans.lang.ruby;
 
 import com.sun.source.tree.LambdaExpressionTree;
 import io.vertx.codegen.Case;
-import io.vertx.codegen.type.ApiTypeInfo;
-import io.vertx.codegen.type.ClassKind;
-import io.vertx.codegen.type.ClassTypeInfo;
-import io.vertx.codegen.type.EnumTypeInfo;
-import io.vertx.codegen.type.TypeInfo;
-import io.vertx.codetrans.CodeModel;
-import io.vertx.codetrans.CodeWriter;
-import io.vertx.codetrans.FragmentParser;
-import io.vertx.codetrans.Helper;
-import io.vertx.codetrans.MethodSignature;
-import io.vertx.codetrans.TypeArg;
-import io.vertx.codetrans.expression.*;
 import io.vertx.codegen.type.*;
 import io.vertx.codetrans.*;
 import io.vertx.codetrans.expression.*;
@@ -311,13 +299,18 @@ class RubyWriter extends CodeWriter {
   @Override
   public void renderListLiteral(List<ExpressionModel> arguments) {
     append("[");
-    for (Iterator<ExpressionModel> it = arguments.iterator();it.hasNext();) {
+    for (Iterator<ExpressionModel> it = arguments.iterator(); it.hasNext(); ) {
       it.next().render(this);
       if (it.hasNext()) {
         append(", ");
       }
     }
     append("]");
+  }
+
+  @Override
+  public void renderNewArray(String primitiveType, List<ExpressionModel> arguments) {
+    renderListLiteral(arguments);
   }
 
   @Override
