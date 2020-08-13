@@ -58,6 +58,49 @@ class GroovyWriter extends CodeWriter {
   }
 
   @Override
+  public void renderChars(String value) {
+    for (int i = 0; i < value.length(); i++) {
+      char c = value.charAt(i);
+      switch (c) {
+        case '\b':
+          append("\\b");
+          break;
+        case '\f':
+          append("\\f");
+          break;
+        case '\n':
+          append("\\n");
+          break;
+        case '\t':
+          append("\\t");
+          break;
+        case '\r':
+          append("\\r");
+          break;
+        case '"':
+          append("\\\"");
+          break;
+        case '\\':
+          append("\\\\");
+          break;
+        case '$':
+          append("\\$");
+          break;
+        default:
+          if (c < 32 || c > 126) {
+            String s = Integer.toHexString(c).toUpperCase();
+            while (s.length() < 4) {
+              s = "0" + s;
+            }
+            append("\\u").append(s);
+          } else {
+            append(c);
+          }
+      }
+    }
+  }
+
+  @Override
   public void renderTryCatch(StatementModel tryBlock, StatementModel catchBlock) {
     append("try {\n");
     indent();
