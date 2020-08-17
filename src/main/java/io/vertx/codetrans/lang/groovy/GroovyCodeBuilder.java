@@ -1,23 +1,9 @@
 package io.vertx.codetrans.lang.groovy;
 
 import com.sun.source.tree.LambdaExpressionTree;
-import io.vertx.codegen.type.ApiTypeInfo;
-import io.vertx.codegen.type.ClassTypeInfo;
-import io.vertx.codegen.type.EnumTypeInfo;
-import io.vertx.codegen.type.ParameterizedTypeInfo;
-import io.vertx.codegen.type.TypeInfo;
-import io.vertx.codetrans.CodeBuilder;
-import io.vertx.codetrans.CodeModel;
-import io.vertx.codetrans.MethodModel;
-import io.vertx.codetrans.RenderMode;
-import io.vertx.codetrans.RunnableCompilationUnit;
-import io.vertx.codetrans.expression.ApiTypeModel;
-import io.vertx.codetrans.expression.EnumExpressionModel;
-import io.vertx.codetrans.expression.EnumFieldExpressionModel;
-import io.vertx.codetrans.expression.ExpressionModel;
-import io.vertx.codetrans.expression.LambdaExpressionModel;
-import io.vertx.codetrans.expression.StringLiteralModel;
-import io.vertx.codetrans.expression.VariableScope;
+import io.vertx.codegen.type.*;
+import io.vertx.codetrans.*;
+import io.vertx.codetrans.expression.*;
 import io.vertx.codetrans.statement.StatementModel;
 
 import java.util.Collections;
@@ -98,7 +84,12 @@ class GroovyCodeBuilder implements CodeBuilder {
   @Override
   public StatementModel variableDecl(VariableScope scope, TypeInfo type, String name, ExpressionModel initializer) {
     return StatementModel.render(renderer -> {
-      renderer.append("def ").append(name);
+      if (type instanceof ArrayTypeInfo) {
+        renderer.append(type.getName()).append(" ");
+      } else {
+        renderer.append("def ");
+      }
+      renderer.append(name);
       if (initializer != null) {
         renderer.append(" = ");
         initializer.render(renderer);

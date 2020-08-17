@@ -303,6 +303,8 @@ public abstract class CodeWriter implements Appendable {
 
   public abstract void renderListLiteral(List<ExpressionModel> arguments);
 
+  public abstract void renderNewArray(String primitiveType, List<ExpressionModel> arguments);
+
   public abstract void renderMapGet(ExpressionModel map, ExpressionModel key);
 
   public abstract void renderMapPut(ExpressionModel map, ExpressionModel key, ExpressionModel value);
