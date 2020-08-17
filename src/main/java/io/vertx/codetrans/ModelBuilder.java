@@ -1,72 +1,20 @@
 package io.vertx.codetrans;
 
-import com.sun.source.tree.AssignmentTree;
-import com.sun.source.tree.BinaryTree;
-import com.sun.source.tree.BlockTree;
-import com.sun.source.tree.CompilationUnitTree;
-import com.sun.source.tree.ConditionalExpressionTree;
-import com.sun.source.tree.EnhancedForLoopTree;
-import com.sun.source.tree.ExpressionStatementTree;
-import com.sun.source.tree.ExpressionTree;
-import com.sun.source.tree.ForLoopTree;
-import com.sun.source.tree.IdentifierTree;
-import com.sun.source.tree.IfTree;
-import com.sun.source.tree.InstanceOfTree;
-import com.sun.source.tree.LambdaExpressionTree;
-import com.sun.source.tree.LiteralTree;
-import com.sun.source.tree.MemberReferenceTree;
-import com.sun.source.tree.MemberSelectTree;
-import com.sun.source.tree.MethodInvocationTree;
-import com.sun.source.tree.MethodTree;
-import com.sun.source.tree.NewClassTree;
-import com.sun.source.tree.ParameterizedTypeTree;
-import com.sun.source.tree.ParenthesizedTree;
-import com.sun.source.tree.ReturnTree;
-import com.sun.source.tree.StatementTree;
-import com.sun.source.tree.ThrowTree;
-import com.sun.source.tree.Tree;
-import com.sun.source.tree.TryTree;
-import com.sun.source.tree.UnaryTree;
-import com.sun.source.tree.VariableTree;
+import com.sun.source.tree.*;
 import com.sun.source.util.TreePath;
 import com.sun.source.util.TreePathScanner;
 import com.sun.source.util.Trees;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.tree.JCTree;
 import io.vertx.codegen.type.*;
-import io.vertx.codetrans.expression.ArraysModel;
-import io.vertx.codetrans.expression.ClassModel;
-import io.vertx.codetrans.expression.ExpressionModel;
-import io.vertx.codetrans.expression.IdentifierModel;
-import io.vertx.codetrans.expression.ListClassModel;
-import io.vertx.codetrans.expression.MethodInvocationModel;
-import io.vertx.codetrans.expression.NullLiteralModel;
-import io.vertx.codetrans.expression.VariableScope;
-import io.vertx.codetrans.expression.JavaClassModel;
-import io.vertx.codetrans.expression.LambdaExpressionModel;
-import io.vertx.codetrans.expression.StringLiteralModel;
-import io.vertx.codetrans.expression.MapClassModel;
-import io.vertx.codetrans.expression.ParenthesizedModel;
-import io.vertx.codetrans.expression.SystemModel;
-import io.vertx.codetrans.expression.ThisModel;
-import io.vertx.codetrans.expression.ThrowableClassModel;
-import io.vertx.codetrans.expression.ThrowableModel;
+import io.vertx.codetrans.expression.*;
 import io.vertx.codetrans.statement.ConditionalBlockModel;
 import io.vertx.codetrans.statement.ReturnModel;
 import io.vertx.codetrans.statement.StatementModel;
 import io.vertx.codetrans.statement.TryCatchModel;
 
-import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.TypeParameterElement;
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.ArrayType;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.ExecutableType;
-import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
-import javax.lang.model.type.TypeVariable;
+import javax.lang.model.element.*;
+import javax.lang.model.type.*;
 import javax.lang.model.util.Types;
 import java.io.IOException;
 import java.io.Reader;
@@ -454,6 +402,13 @@ public class ModelBuilder extends TreePathScanner<CodeModel, VisitContext> {
         throw new UnsupportedOperationException("Unsupported kind " + kind);
     }
     return scope;
+  }
+
+  @Override
+  public CodeModel visitNewArray(NewArrayTree node, VisitContext context) {
+    String primitiveType = node.getType().getKind() == Tree.Kind.PRIMITIVE_TYPE ? node.getType().toString() : null;
+    List<ExpressionModel> argumentModels = node.getInitializers().stream().map(argument -> scan(argument, context)).collect(Collectors.toList());
+    return new NewArrayModel(context.builder, primitiveType, argumentModels);
   }
 
   @Override
