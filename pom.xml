@@ -15,13 +15,13 @@
       
     <artifactId>vertx-codetrans</artifactId>
       
-    <version>3.9.10</version>
+    <version>3.9.11-SNAPSHOT</version>
       
     <name>Vert.x code translator</name>
       
     <properties>
             
-        <stack.version>3.9.10</stack.version>
+        <stack.version>3.9.11-SNAPSHOT</stack.version>
             
         <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
             
