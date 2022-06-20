@@ -16,7 +16,7 @@
   <properties>
     <stack.version>4.1.0-SNAPSHOT</stack.version>
     <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
-    <kotlin.version>1.4.32</kotlin.version>
+    <kotlin.version>1.6.0</kotlin.version>
   </properties>
 
   <dependencyManagement>
